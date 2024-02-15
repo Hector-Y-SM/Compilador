@@ -1,4 +1,4 @@
-// Generated from /home/hertorprime/6to/automatas_2/clean-project/grammar/ArrayInit.g4 by ANTLR 4.13.1
+// Generated from /home/hertorprime/6to/automatas_2/antlr4/comp/ANTLR4_base/grammar/ArrayInit.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -16,25 +16,28 @@ public class ArrayInitParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, ID=4, INT=5, NEWLINE=6, WS=7;
+		T__0=1, T__1=2, T__2=3, T__3=4, PR=5, INT=6, FLOAT=7, CHAR=8, ID=9, NUM=10, 
+		DEC=11, WS=12;
 	public static final int
-		RULE_init = 0, RULE_value = 1;
+		RULE_init = 0, RULE_contenido = 1, RULE_declaraciones = 2, RULE_asignaciones = 3, 
+		RULE_valores = 4;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"init", "value"
+			"init", "contenido", "declaraciones", "asignaciones", "valores"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'{'", "','", "'}'"
+			null, "'TPG'", "'{'", "'}'", "'='", null, "'int'", "'float'", "'char'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, "ID", "INT", "NEWLINE", "WS"
+			null, null, null, null, null, "PR", "INT", "FLOAT", "CHAR", "ID", "NUM", 
+			"DEC", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -90,11 +93,8 @@ public class ArrayInitParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class InitContext extends ParserRuleContext {
-		public List<ValueContext> value() {
-			return getRuleContexts(ValueContext.class);
-		}
-		public ValueContext value(int i) {
-			return getRuleContext(ValueContext.class,i);
+		public ContenidoContext contenido() {
+			return getRuleContext(ContenidoContext.class,0);
 		}
 		public InitContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -105,30 +105,15 @@ public class ArrayInitParser extends Parser {
 	public final InitContext init() throws RecognitionException {
 		InitContext _localctx = new InitContext(_ctx, getState());
 		enterRule(_localctx, 0, RULE_init);
-		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(4);
-			match(T__0);
-			setState(5);
-			value();
 			setState(10);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			while (_la==T__1) {
-				{
-				{
-				setState(6);
-				match(T__1);
-				setState(7);
-				value();
-				}
-				}
-				setState(12);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-			}
+			match(T__0);
+			setState(11);
+			match(T__1);
+			setState(12);
+			contenido();
 			setState(13);
 			match(T__2);
 			}
@@ -145,36 +130,249 @@ public class ArrayInitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class ValueContext extends ParserRuleContext {
-		public InitContext init() {
-			return getRuleContext(InitContext.class,0);
-		}
-		public TerminalNode INT() { return getToken(ArrayInitParser.INT, 0); }
-		public ValueContext(ParserRuleContext parent, int invokingState) {
+	public static class ContenidoContext extends ParserRuleContext {
+		public ContenidoContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_value; }
+		@Override public int getRuleIndex() { return RULE_contenido; }
+	 
+		public ContenidoContext() { }
+		public void copyFrom(ContenidoContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class PrintDeclaracionesContext extends ContenidoContext {
+		public List<DeclaracionesContext> declaraciones() {
+			return getRuleContexts(DeclaracionesContext.class);
+		}
+		public DeclaracionesContext declaraciones(int i) {
+			return getRuleContext(DeclaracionesContext.class,i);
+		}
+		public PrintDeclaracionesContext(ContenidoContext ctx) { copyFrom(ctx); }
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class PrintAsignacionContext extends ContenidoContext {
+		public List<AsignacionesContext> asignaciones() {
+			return getRuleContexts(AsignacionesContext.class);
+		}
+		public AsignacionesContext asignaciones(int i) {
+			return getRuleContext(AsignacionesContext.class,i);
+		}
+		public PrintAsignacionContext(ContenidoContext ctx) { copyFrom(ctx); }
 	}
 
-	public final ValueContext value() throws RecognitionException {
-		ValueContext _localctx = new ValueContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_value);
+	public final ContenidoContext contenido() throws RecognitionException {
+		ContenidoContext _localctx = new ContenidoContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_contenido);
+		int _la;
 		try {
-			setState(17);
+			setState(25);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case T__0:
+			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
+			case 1:
+				_localctx = new PrintDeclaracionesContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(15);
-				init();
+				setState(16); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				do {
+					{
+					{
+					setState(15);
+					declaraciones();
+					}
+					}
+					setState(18); 
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ( _la==PR );
 				}
 				break;
-			case INT:
+			case 2:
+				_localctx = new PrintAsignacionContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(16);
-				match(INT);
+				setState(21); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				do {
+					{
+					{
+					setState(20);
+					asignaciones();
+					}
+					}
+					setState(23); 
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ( _la==PR );
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class DeclaracionesContext extends ParserRuleContext {
+		public DeclaracionesContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_declaraciones; }
+	 
+		public DeclaracionesContext() { }
+		public void copyFrom(DeclaracionesContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class IndefinidoContext extends DeclaracionesContext {
+		public TerminalNode PR() { return getToken(ArrayInitParser.PR, 0); }
+		public TerminalNode ID() { return getToken(ArrayInitParser.ID, 0); }
+		public IndefinidoContext(DeclaracionesContext ctx) { copyFrom(ctx); }
+	}
+
+	public final DeclaracionesContext declaraciones() throws RecognitionException {
+		DeclaracionesContext _localctx = new DeclaracionesContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_declaraciones);
+		try {
+			_localctx = new IndefinidoContext(_localctx);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(27);
+			match(PR);
+			setState(28);
+			match(ID);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class AsignacionesContext extends ParserRuleContext {
+		public AsignacionesContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_asignaciones; }
+	 
+		public AsignacionesContext() { }
+		public void copyFrom(AsignacionesContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class DefinidoContext extends AsignacionesContext {
+		public TerminalNode PR() { return getToken(ArrayInitParser.PR, 0); }
+		public TerminalNode ID() { return getToken(ArrayInitParser.ID, 0); }
+		public ValoresContext valores() {
+			return getRuleContext(ValoresContext.class,0);
+		}
+		public DefinidoContext(AsignacionesContext ctx) { copyFrom(ctx); }
+	}
+
+	public final AsignacionesContext asignaciones() throws RecognitionException {
+		AsignacionesContext _localctx = new AsignacionesContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_asignaciones);
+		try {
+			_localctx = new DefinidoContext(_localctx);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(30);
+			match(PR);
+			setState(31);
+			match(ID);
+			setState(32);
+			match(T__3);
+			setState(33);
+			valores();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class ValoresContext extends ParserRuleContext {
+		public ValoresContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_valores; }
+	 
+		public ValoresContext() { }
+		public void copyFrom(ValoresContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class NumeroContext extends ValoresContext {
+		public TerminalNode NUM() { return getToken(ArrayInitParser.NUM, 0); }
+		public NumeroContext(ValoresContext ctx) { copyFrom(ctx); }
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class IdContext extends ValoresContext {
+		public TerminalNode ID() { return getToken(ArrayInitParser.ID, 0); }
+		public IdContext(ValoresContext ctx) { copyFrom(ctx); }
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class DecimalContext extends ValoresContext {
+		public TerminalNode DEC() { return getToken(ArrayInitParser.DEC, 0); }
+		public DecimalContext(ValoresContext ctx) { copyFrom(ctx); }
+	}
+
+	public final ValoresContext valores() throws RecognitionException {
+		ValoresContext _localctx = new ValoresContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_valores);
+		try {
+			setState(38);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case NUM:
+				_localctx = new NumeroContext(_localctx);
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(35);
+				match(NUM);
+				}
+				break;
+			case DEC:
+				_localctx = new DecimalContext(_localctx);
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(36);
+				match(DEC);
+				}
+				break;
+			case ID:
+				_localctx = new IdContext(_localctx);
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(37);
+				match(ID);
 				}
 				break;
 			default:
@@ -193,20 +391,33 @@ public class ArrayInitParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0007\u0014\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
-		"\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0005\u0000\t\b\u0000"+
-		"\n\u0000\f\u0000\f\t\u0000\u0001\u0000\u0001\u0000\u0001\u0001\u0001\u0001"+
-		"\u0003\u0001\u0012\b\u0001\u0001\u0001\u0000\u0000\u0002\u0000\u0002\u0000"+
-		"\u0000\u0013\u0000\u0004\u0001\u0000\u0000\u0000\u0002\u0011\u0001\u0000"+
-		"\u0000\u0000\u0004\u0005\u0005\u0001\u0000\u0000\u0005\n\u0003\u0002\u0001"+
-		"\u0000\u0006\u0007\u0005\u0002\u0000\u0000\u0007\t\u0003\u0002\u0001\u0000"+
-		"\b\u0006\u0001\u0000\u0000\u0000\t\f\u0001\u0000\u0000\u0000\n\b\u0001"+
-		"\u0000\u0000\u0000\n\u000b\u0001\u0000\u0000\u0000\u000b\r\u0001\u0000"+
-		"\u0000\u0000\f\n\u0001\u0000\u0000\u0000\r\u000e\u0005\u0003\u0000\u0000"+
-		"\u000e\u0001\u0001\u0000\u0000\u0000\u000f\u0012\u0003\u0000\u0000\u0000"+
-		"\u0010\u0012\u0005\u0005\u0000\u0000\u0011\u000f\u0001\u0000\u0000\u0000"+
-		"\u0011\u0010\u0001\u0000\u0000\u0000\u0012\u0003\u0001\u0000\u0000\u0000"+
-		"\u0002\n\u0011";
+		"\u0004\u0001\f)\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0001"+
+		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0001\u0004"+
+		"\u0001\u0011\b\u0001\u000b\u0001\f\u0001\u0012\u0001\u0001\u0004\u0001"+
+		"\u0016\b\u0001\u000b\u0001\f\u0001\u0017\u0003\u0001\u001a\b\u0001\u0001"+
+		"\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0001\u0003\u0001"+
+		"\u0003\u0001\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0003\u0004\'\b"+
+		"\u0004\u0001\u0004\u0000\u0000\u0005\u0000\u0002\u0004\u0006\b\u0000\u0000"+
+		"(\u0000\n\u0001\u0000\u0000\u0000\u0002\u0019\u0001\u0000\u0000\u0000"+
+		"\u0004\u001b\u0001\u0000\u0000\u0000\u0006\u001e\u0001\u0000\u0000\u0000"+
+		"\b&\u0001\u0000\u0000\u0000\n\u000b\u0005\u0001\u0000\u0000\u000b\f\u0005"+
+		"\u0002\u0000\u0000\f\r\u0003\u0002\u0001\u0000\r\u000e\u0005\u0003\u0000"+
+		"\u0000\u000e\u0001\u0001\u0000\u0000\u0000\u000f\u0011\u0003\u0004\u0002"+
+		"\u0000\u0010\u000f\u0001\u0000\u0000\u0000\u0011\u0012\u0001\u0000\u0000"+
+		"\u0000\u0012\u0010\u0001\u0000\u0000\u0000\u0012\u0013\u0001\u0000\u0000"+
+		"\u0000\u0013\u001a\u0001\u0000\u0000\u0000\u0014\u0016\u0003\u0006\u0003"+
+		"\u0000\u0015\u0014\u0001\u0000\u0000\u0000\u0016\u0017\u0001\u0000\u0000"+
+		"\u0000\u0017\u0015\u0001\u0000\u0000\u0000\u0017\u0018\u0001\u0000\u0000"+
+		"\u0000\u0018\u001a\u0001\u0000\u0000\u0000\u0019\u0010\u0001\u0000\u0000"+
+		"\u0000\u0019\u0015\u0001\u0000\u0000\u0000\u001a\u0003\u0001\u0000\u0000"+
+		"\u0000\u001b\u001c\u0005\u0005\u0000\u0000\u001c\u001d\u0005\t\u0000\u0000"+
+		"\u001d\u0005\u0001\u0000\u0000\u0000\u001e\u001f\u0005\u0005\u0000\u0000"+
+		"\u001f \u0005\t\u0000\u0000 !\u0005\u0004\u0000\u0000!\"\u0003\b\u0004"+
+		"\u0000\"\u0007\u0001\u0000\u0000\u0000#\'\u0005\n\u0000\u0000$\'\u0005"+
+		"\u000b\u0000\u0000%\'\u0005\t\u0000\u0000&#\u0001\u0000\u0000\u0000&$"+
+		"\u0001\u0000\u0000\u0000&%\u0001\u0000\u0000\u0000\'\t\u0001\u0000\u0000"+
+		"\u0000\u0004\u0012\u0017\u0019&";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

@@ -1,20 +1,30 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { analizar } from './module/generador.js'
 
 const HomePage = () => {
-  function iniciar(e)
-  {
-    e.preventDefault();
-    analizar("{1}")
+  const [txt, setTxt] = useState('');
+
+  const inter = () => {
+    //console.log(txt)
+    analizar(txt)
   }
+
   return (
     <div>
-      HomePage
-      <form onSubmit={iniciar}> 
-      <button>Analizar</button> 
-      </form>
-      </div>
+      <h1>
+        hola mundo
+      </h1>
+      <textarea 
+        value = {txt}
+        onChange={(e)=>{setTxt(e.target.value)}}
+      
+      /><br/>
+      <button 
+        onClick={inter}>
+          Revisar
+      </button>
+    </div>
   )
 }
 

@@ -12,8 +12,44 @@ export default class ArrayInitVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
-	// Visit a parse tree produced by ArrayInitParser#value.
-	visitValue(ctx) {
+	// Visit a parse tree produced by ArrayInitParser#printDeclaraciones.
+	visitPrintDeclaraciones(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by ArrayInitParser#printAsignacion.
+	visitPrintAsignacion(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by ArrayInitParser#indefinido.
+	visitIndefinido(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by ArrayInitParser#definido.
+	visitDefinido(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by ArrayInitParser#numero.
+	visitNumero(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by ArrayInitParser#decimal.
+	visitDecimal(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by ArrayInitParser#id.
+	visitId(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
