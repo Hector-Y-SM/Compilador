@@ -11,6 +11,11 @@ CHAR    : 'char';
 ID      : [a-zA-Z]+ ; // match identifiers
 NUM     : [0-9]+;
 DEC     : [0-9]+.[0-9]+;
+CADENAS :  '"' .*? '"' ;
+//ID      : [a-zA-Z_][a-zA-Z0-9_];
+
+//simbolos
+IGUAL: '=';
 
 //ignorar
-WS : [ \t]+ -> skip ; // toss out whitespace
+WS : [ \t\n]+ -> skip ; // toss out whitespace

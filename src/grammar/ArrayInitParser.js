@@ -3,18 +3,19 @@
 import antlr4 from 'antlr4';
 import ArrayInitVisitor from './ArrayInitVisitor.js';
 
-const serializedATN = [4,1,12,41,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,
+const serializedATN = [4,1,13,46,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,
 1,0,1,0,1,0,1,0,1,0,1,1,4,1,17,8,1,11,1,12,1,18,1,1,4,1,22,8,1,11,1,12,1,
-23,3,1,26,8,1,1,2,1,2,1,2,1,3,1,3,1,3,1,3,1,3,1,4,1,4,1,4,3,4,39,8,4,1,4,
-0,0,5,0,2,4,6,8,0,0,40,0,10,1,0,0,0,2,25,1,0,0,0,4,27,1,0,0,0,6,30,1,0,0,
-0,8,38,1,0,0,0,10,11,5,1,0,0,11,12,5,2,0,0,12,13,3,2,1,0,13,14,5,3,0,0,14,
-1,1,0,0,0,15,17,3,4,2,0,16,15,1,0,0,0,17,18,1,0,0,0,18,16,1,0,0,0,18,19,
-1,0,0,0,19,26,1,0,0,0,20,22,3,6,3,0,21,20,1,0,0,0,22,23,1,0,0,0,23,21,1,
-0,0,0,23,24,1,0,0,0,24,26,1,0,0,0,25,16,1,0,0,0,25,21,1,0,0,0,26,3,1,0,0,
-0,27,28,5,5,0,0,28,29,5,9,0,0,29,5,1,0,0,0,30,31,5,5,0,0,31,32,5,9,0,0,32,
-33,5,4,0,0,33,34,3,8,4,0,34,7,1,0,0,0,35,39,5,10,0,0,36,39,5,11,0,0,37,39,
-5,9,0,0,38,35,1,0,0,0,38,36,1,0,0,0,38,37,1,0,0,0,39,9,1,0,0,0,4,18,23,25,
-38];
+23,3,1,26,8,1,1,2,1,2,1,2,1,3,1,3,1,3,1,3,1,3,1,3,1,3,3,3,38,8,3,1,4,1,4,
+1,4,1,4,3,4,44,8,4,1,4,0,0,5,0,2,4,6,8,0,0,47,0,10,1,0,0,0,2,25,1,0,0,0,
+4,27,1,0,0,0,6,37,1,0,0,0,8,43,1,0,0,0,10,11,5,1,0,0,11,12,5,2,0,0,12,13,
+3,2,1,0,13,14,5,3,0,0,14,1,1,0,0,0,15,17,3,4,2,0,16,15,1,0,0,0,17,18,1,0,
+0,0,18,16,1,0,0,0,18,19,1,0,0,0,19,26,1,0,0,0,20,22,3,6,3,0,21,20,1,0,0,
+0,22,23,1,0,0,0,23,21,1,0,0,0,23,24,1,0,0,0,24,26,1,0,0,0,25,16,1,0,0,0,
+25,21,1,0,0,0,26,3,1,0,0,0,27,28,5,4,0,0,28,29,5,8,0,0,29,5,1,0,0,0,30,31,
+5,4,0,0,31,32,5,8,0,0,32,33,5,12,0,0,33,38,3,8,4,0,34,35,5,8,0,0,35,36,5,
+12,0,0,36,38,3,8,4,0,37,30,1,0,0,0,37,34,1,0,0,0,38,7,1,0,0,0,39,44,5,9,
+0,0,40,44,5,10,0,0,41,44,5,8,0,0,42,44,5,11,0,0,43,39,1,0,0,0,43,40,1,0,
+0,0,43,41,1,0,0,0,43,42,1,0,0,0,44,9,1,0,0,0,5,18,23,25,37,43];
 
 
 const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -26,10 +27,12 @@ const sharedContextCache = new antlr4.atn.PredictionContextCache();
 export default class ArrayInitParser extends antlr4.Parser {
 
     static grammarFileName = "ArrayInit.g4";
-    static literalNames = [ null, "'TPG'", "'{'", "'}'", "'='", null, "'int'", 
-                            "'float'", "'char'" ];
-    static symbolicNames = [ null, null, null, null, null, "PR", "INT", 
-                             "FLOAT", "CHAR", "ID", "NUM", "DEC", "WS" ];
+    static literalNames = [ null, "'TPG'", "'{'", "'}'", null, "'int'", 
+                            "'float'", "'char'", null, null, null, null, 
+                            "'='" ];
+    static symbolicNames = [ null, null, null, null, "PR", "INT", "FLOAT", 
+                             "CHAR", "ID", "NUM", "DEC", "CADENAS", "IGUAL", 
+                             "WS" ];
     static ruleNames = [ "init", "contenido", "declaraciones", "asignaciones", 
                          "valores" ];
 
@@ -93,7 +96,7 @@ export default class ArrayInitParser extends antlr4.Parser {
 	                this.state = 18; 
 	                this._errHandler.sync(this);
 	                _la = this._input.LA(1);
-	            } while(_la===5);
+	            } while(_la===4);
 	            break;
 
 	        case 2:
@@ -108,7 +111,7 @@ export default class ArrayInitParser extends antlr4.Parser {
 	                this.state = 23; 
 	                this._errHandler.sync(this);
 	                _la = this._input.LA(1);
-	            } while(_la===5);
+	            } while(_la===4 || _la===8);
 	            break;
 
 	        }
@@ -158,16 +161,34 @@ export default class ArrayInitParser extends antlr4.Parser {
 	    let localctx = new AsignacionesContext(this, this._ctx, this.state);
 	    this.enterRule(localctx, 6, ArrayInitParser.RULE_asignaciones);
 	    try {
-	        localctx = new DefinidoContext(this, localctx);
-	        this.enterOuterAlt(localctx, 1);
-	        this.state = 30;
-	        this.match(ArrayInitParser.PR);
-	        this.state = 31;
-	        this.match(ArrayInitParser.ID);
-	        this.state = 32;
-	        this.match(ArrayInitParser.T__3);
-	        this.state = 33;
-	        this.valores();
+	        this.state = 37;
+	        this._errHandler.sync(this);
+	        switch(this._input.LA(1)) {
+	        case 4:
+	            localctx = new DefinidoContext(this, localctx);
+	            this.enterOuterAlt(localctx, 1);
+	            this.state = 30;
+	            this.match(ArrayInitParser.PR);
+	            this.state = 31;
+	            this.match(ArrayInitParser.ID);
+	            this.state = 32;
+	            this.match(ArrayInitParser.IGUAL);
+	            this.state = 33;
+	            this.valores();
+	            break;
+	        case 8:
+	            localctx = new AsignacionContext(this, localctx);
+	            this.enterOuterAlt(localctx, 2);
+	            this.state = 34;
+	            this.match(ArrayInitParser.ID);
+	            this.state = 35;
+	            this.match(ArrayInitParser.IGUAL);
+	            this.state = 36;
+	            this.valores();
+	            break;
+	        default:
+	            throw new antlr4.error.NoViableAltException(this);
+	        }
 	    } catch (re) {
 	    	if(re instanceof antlr4.error.RecognitionException) {
 		        localctx.exception = re;
@@ -188,26 +209,32 @@ export default class ArrayInitParser extends antlr4.Parser {
 	    let localctx = new ValoresContext(this, this._ctx, this.state);
 	    this.enterRule(localctx, 8, ArrayInitParser.RULE_valores);
 	    try {
-	        this.state = 38;
+	        this.state = 43;
 	        this._errHandler.sync(this);
 	        switch(this._input.LA(1)) {
-	        case 10:
+	        case 9:
 	            localctx = new NumeroContext(this, localctx);
 	            this.enterOuterAlt(localctx, 1);
-	            this.state = 35;
+	            this.state = 39;
 	            this.match(ArrayInitParser.NUM);
 	            break;
-	        case 11:
+	        case 10:
 	            localctx = new DecimalContext(this, localctx);
 	            this.enterOuterAlt(localctx, 2);
-	            this.state = 36;
+	            this.state = 40;
 	            this.match(ArrayInitParser.DEC);
 	            break;
-	        case 9:
+	        case 8:
 	            localctx = new IdContext(this, localctx);
 	            this.enterOuterAlt(localctx, 3);
-	            this.state = 37;
+	            this.state = 41;
 	            this.match(ArrayInitParser.ID);
+	            break;
+	        case 11:
+	            localctx = new CadenasContext(this, localctx);
+	            this.enterOuterAlt(localctx, 4);
+	            this.state = 42;
+	            this.match(ArrayInitParser.CADENAS);
 	            break;
 	        default:
 	            throw new antlr4.error.NoViableAltException(this);
@@ -233,15 +260,16 @@ ArrayInitParser.EOF = antlr4.Token.EOF;
 ArrayInitParser.T__0 = 1;
 ArrayInitParser.T__1 = 2;
 ArrayInitParser.T__2 = 3;
-ArrayInitParser.T__3 = 4;
-ArrayInitParser.PR = 5;
-ArrayInitParser.INT = 6;
-ArrayInitParser.FLOAT = 7;
-ArrayInitParser.CHAR = 8;
-ArrayInitParser.ID = 9;
-ArrayInitParser.NUM = 10;
-ArrayInitParser.DEC = 11;
-ArrayInitParser.WS = 12;
+ArrayInitParser.PR = 4;
+ArrayInitParser.INT = 5;
+ArrayInitParser.FLOAT = 6;
+ArrayInitParser.CHAR = 7;
+ArrayInitParser.ID = 8;
+ArrayInitParser.NUM = 9;
+ArrayInitParser.DEC = 10;
+ArrayInitParser.CADENAS = 11;
+ArrayInitParser.IGUAL = 12;
+ArrayInitParser.WS = 13;
 
 ArrayInitParser.RULE_init = 0;
 ArrayInitParser.RULE_contenido = 1;
@@ -439,6 +467,38 @@ class AsignacionesContext extends antlr4.ParserRuleContext {
 }
 
 
+class AsignacionContext extends AsignacionesContext {
+
+    constructor(parser, ctx) {
+        super(parser);
+        super.copyFrom(ctx);
+    }
+
+	ID() {
+	    return this.getToken(ArrayInitParser.ID, 0);
+	};
+
+	IGUAL() {
+	    return this.getToken(ArrayInitParser.IGUAL, 0);
+	};
+
+	valores() {
+	    return this.getTypedRuleContext(ValoresContext,0);
+	};
+
+	accept(visitor) {
+	    if ( visitor instanceof ArrayInitVisitor ) {
+	        return visitor.visitAsignacion(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
+
+}
+
+ArrayInitParser.AsignacionContext = AsignacionContext;
+
 class DefinidoContext extends AsignacionesContext {
 
     constructor(parser, ctx) {
@@ -452,6 +512,10 @@ class DefinidoContext extends AsignacionesContext {
 
 	ID() {
 	    return this.getToken(ArrayInitParser.ID, 0);
+	};
+
+	IGUAL() {
+	    return this.getToken(ArrayInitParser.IGUAL, 0);
 	};
 
 	valores() {
@@ -565,6 +629,30 @@ class DecimalContext extends ValoresContext {
 }
 
 ArrayInitParser.DecimalContext = DecimalContext;
+
+class CadenasContext extends ValoresContext {
+
+    constructor(parser, ctx) {
+        super(parser);
+        super.copyFrom(ctx);
+    }
+
+	CADENAS() {
+	    return this.getToken(ArrayInitParser.CADENAS, 0);
+	};
+
+	accept(visitor) {
+	    if ( visitor instanceof ArrayInitVisitor ) {
+	        return visitor.visitCadenas(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
+
+}
+
+ArrayInitParser.CadenasContext = CadenasContext;
 
 
 ArrayInitParser.InitContext = InitContext; 

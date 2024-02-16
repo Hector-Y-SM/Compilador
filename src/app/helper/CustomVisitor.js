@@ -1,54 +1,56 @@
 // aqui se coloca
 import ArrayInitVisitor from "../../grammar/ArrayInitVisitor.js";
+import { variables } from "./memoria.js";
 
 export default class CustomVisitor extends ArrayInitVisitor{
-	constructor(variables){
-		super();
-		variables = new Map()
-		this.variables = variables;
-	}
-
 	// Visit a parse tree produced by ArrayInitParser#init.
 	visitInit(ctx) {
 		console.log('Aqui quiero llegar');
+		console.log(variables)
 		return this.visitChildren(ctx);
 	  }
-
-	// Visit a parse tree produced by ArrayInitParser#printAsignacion.
-	visitPrintAsignacion(ctx) {
-		return this.visitChildren(ctx);
-	}
   
   
 	// Visit a parse tree produced by ArrayInitParser#printDeclaraciones.
-	visitPrintDeclaraciones(ctx) {
-		console.log('declaracion');
-		console.log('esta es tu variable'+this.visit(ctx.declaraciones()));
-		const id = this.visit(ctx.declaraciones());
-		//const info = variables.get(id);
-		//console.log('mis variables')
-		//console.log(variables.get(id));
-		//console.log('soy la info.'+info)
-		//console.log('Este es el tipo '+info.tipo)
-		//console.log('Este es el valor '+info.valor)
-
-		//console.log('soy la variable: '+aux)
-
-		const declarado = ``;
-		return this.visitChildren(ctx);
+	visitPrintDeclaraciones(ctx) { //TODO si pongo que estos metodos retornen algo se rompe todo
+		console.log('declaracion PRINT');
+	  return this.visitChildren(ctx);
 	}
   
   
+	// Visit a parse tree produced by ArrayInitParser#printAsignacion.
+	visitPrintAsignacion(ctx) { //TODO si pongo que estos metodos retornen algo se rompe todo
+		console.log('asignaciones PRINT')
+	  return this.visitChildren(ctx);
+	}
+
+
 	// Visit a parse tree produced by ArrayInitParser#definido.
 	visitDefinido(ctx) {
 		console.log('variable definida');
 		const variable = ctx.ID().getText();
 		const tipoDato = ctx.PR().getText();
 		const valor = this.visit(ctx.valores(0));
-		
-		this.variables.set(variable, {tipo: tipoDato, valor: valor})
-		//console.log(variables)
-		return variable;
+
+		variables.has(variable)?
+			console.log('ya se declaro esta variable, usa una signaion para modificar su valor')
+			:
+			variables.set(variable, {tipo: tipoDato, valor: valor}) 
+	  return variable;
+	}
+
+	// Visit a parse tree produced by ArrayInitParser#asignacion.
+	visitAsignacion(ctx) {
+		console.log('asignacion')
+		const variable = ctx.ID().getText();
+		const nuevoValor = this.visit(ctx.valores(0));
+
+		if(variables.has(variable)){
+			let obj = variables.get(variable);
+			obj.valor = nuevoValor; 
+		} else {console.log('esta varible no existe') }
+
+	  return variable;
 	}
   
   
@@ -57,35 +59,30 @@ export default class CustomVisitor extends ArrayInitVisitor{
 		console.log('variable con valor undefined');
 		const variable = ctx.ID().getText();
 		const tipoDato = ctx.PR().getText();
-		const valor = tipoDato === 'char'? 'soy char' : 0;
-		this.variables.set(variable, {tipo: tipoDato, valor: valor}) 
-
-		
-		console.log(this.variables)
-		return variable;
+		const valor = tipoDato === 'char'? 'ponme algo xfa' : 0;
+		variables.set(variable, {tipo: tipoDato, valor: valor}) 
+	  return variable;
 	}
+
     
-  
+	// Visit a parse tree produced by ArrayInitParser#cadenas.
+	visitCadenas(ctx) {
+		console.log('cadenazo')
+		return ctx.getText();
+	  }
 	// Visit a parse tree produced by ArrayInitParser#id.
 	visitId(ctx) { //? texto
 		console.log('vistamos el ID');
 		return ctx.getText();
 	}
-  
-
-	    
 	// Visit a parse tree produced by ArrayInitParser#numero.
 	visitNumero(ctx) {
 		console.log('vistamos Enteros');
-		//console.log('Valor del entero: '+ctx.getText());
 		return Number(ctx.getText());
 	}
-
-
 	// Visit a parse tree produced by ArrayInitParser#decimal.
 	visitDecimal(ctx) {
 		console.log('vistamos decimales');
-		//console.log('Valor del decimal: '+ctx.getText());
 		return Number(ctx.getText());
 	}
 }

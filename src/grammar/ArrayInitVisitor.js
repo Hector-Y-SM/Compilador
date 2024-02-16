@@ -36,6 +36,12 @@ export default class ArrayInitVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
+	// Visit a parse tree produced by ArrayInitParser#asignacion.
+	visitAsignacion(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
 	// Visit a parse tree produced by ArrayInitParser#numero.
 	visitNumero(ctx) {
 	  return this.visitChildren(ctx);
@@ -50,6 +56,12 @@ export default class ArrayInitVisitor extends antlr4.tree.ParseTreeVisitor {
 
 	// Visit a parse tree produced by ArrayInitParser#id.
 	visitId(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by ArrayInitParser#cadenas.
+	visitCadenas(ctx) {
 	  return this.visitChildren(ctx);
 	}
 

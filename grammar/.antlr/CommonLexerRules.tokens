@@ -4,7 +4,10 @@ CHAR=3
 ID=4
 NUM=5
 DEC=6
-WS=7
+CADENAS=7
+IGUAL=8
+WS=9
 'int'=1
 'float'=2
 'char'=3
+'='=8
