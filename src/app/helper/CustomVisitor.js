@@ -6,24 +6,10 @@ export default class CustomVisitor extends ArrayInitVisitor{
 	// Visit a parse tree produced by ArrayInitParser#init.
 	visitInit(ctx) {
 		console.log('Aqui quiero llegar');
-		console.log(variables)
-		return this.visitChildren(ctx);
+		const resultados = this.visit(ctx.contenido());
+		return resultados;
 	  }
   
-  
-	// Visit a parse tree produced by ArrayInitParser#printDeclaraciones.
-	visitPrintDeclaraciones(ctx) { //TODO si pongo que estos metodos retornen algo se rompe todo
-		console.log('declaracion PRINT');
-	  return this.visitChildren(ctx);
-	}
-  
-  
-	// Visit a parse tree produced by ArrayInitParser#printAsignacion.
-	visitPrintAsignacion(ctx) { //TODO si pongo que estos metodos retornen algo se rompe todo
-		console.log('asignaciones PRINT')
-	  return this.visitChildren(ctx);
-	}
-
 
 	// Visit a parse tree produced by ArrayInitParser#definido.
 	visitDefinido(ctx) {
@@ -32,10 +18,11 @@ export default class CustomVisitor extends ArrayInitVisitor{
 		const tipoDato = ctx.PR().getText();
 		const valor = this.visit(ctx.valores(0));
 
-		variables.has(variable)?
-			console.log('ya se declaro esta variable, usa una signaion para modificar su valor')
-			:
-			variables.set(variable, {tipo: tipoDato, valor: valor}) 
+		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
+			return 'El nombre de la variable no es válido';
+		}
+		if(variables.has(variable)){ return 'esta variable ya fue declarada' }
+		variables.set(variable, {tipo: tipoDato, valor: valor}) 
 	  return variable;
 	}
 
@@ -45,10 +32,16 @@ export default class CustomVisitor extends ArrayInitVisitor{
 		const variable = ctx.ID().getText();
 		const nuevoValor = this.visit(ctx.valores(0));
 
+		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
+			return 'El nombre de la variable no es válido';
+		}
+
 		if(variables.has(variable)){
 			let obj = variables.get(variable);
 			obj.valor = nuevoValor; 
-		} else {console.log('esta varible no existe') }
+		} else {
+			return 'esta varible no existe';
+		}
 
 	  return variable;
 	}
@@ -60,7 +53,11 @@ export default class CustomVisitor extends ArrayInitVisitor{
 		const variable = ctx.ID().getText();
 		const tipoDato = ctx.PR().getText();
 		const valor = tipoDato === 'char'? 'ponme algo xfa' : 0;
-		variables.set(variable, {tipo: tipoDato, valor: valor}) 
+
+    	if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
+			return 'El nombre de la variable no es válido';
+		}
+		variables.set(variable, {tipo: tipoDato, valor: valor})
 	  return variable;
 	}
 

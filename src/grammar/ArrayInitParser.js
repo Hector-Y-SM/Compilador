@@ -85,7 +85,6 @@ export default class ArrayInitParser extends antlr4.Parser {
 	        var la_ = this._interp.adaptivePredict(this._input,2,this._ctx);
 	        switch(la_) {
 	        case 1:
-	            localctx = new PrintDeclaracionesContext(this, localctx);
 	            this.enterOuterAlt(localctx, 1);
 	            this.state = 16; 
 	            this._errHandler.sync(this);
@@ -100,7 +99,6 @@ export default class ArrayInitParser extends antlr4.Parser {
 	            break;
 
 	        case 2:
-	            localctx = new PrintAsignacionContext(this, localctx);
 	            this.enterOuterAlt(localctx, 2);
 	            this.state = 21; 
 	            this._errHandler.sync(this);
@@ -322,22 +320,6 @@ class ContenidoContext extends antlr4.ParserRuleContext {
         this.ruleIndex = ArrayInitParser.RULE_contenido;
     }
 
-
-	 
-		copyFrom(ctx) {
-			super.copyFrom(ctx);
-		}
-
-}
-
-
-class PrintDeclaracionesContext extends ContenidoContext {
-
-    constructor(parser, ctx) {
-        super(parser);
-        super.copyFrom(ctx);
-    }
-
 	declaraciones = function(i) {
 	    if(i===undefined) {
 	        i = null;
@@ -348,26 +330,6 @@ class PrintDeclaracionesContext extends ContenidoContext {
 	        return this.getTypedRuleContext(DeclaracionesContext,i);
 	    }
 	};
-
-	accept(visitor) {
-	    if ( visitor instanceof ArrayInitVisitor ) {
-	        return visitor.visitPrintDeclaraciones(this);
-	    } else {
-	        return visitor.visitChildren(this);
-	    }
-	}
-
-
-}
-
-ArrayInitParser.PrintDeclaracionesContext = PrintDeclaracionesContext;
-
-class PrintAsignacionContext extends ContenidoContext {
-
-    constructor(parser, ctx) {
-        super(parser);
-        super.copyFrom(ctx);
-    }
 
 	asignaciones = function(i) {
 	    if(i===undefined) {
@@ -382,7 +344,7 @@ class PrintAsignacionContext extends ContenidoContext {
 
 	accept(visitor) {
 	    if ( visitor instanceof ArrayInitVisitor ) {
-	        return visitor.visitPrintAsignacion(this);
+	        return visitor.visitContenido(this);
 	    } else {
 	        return visitor.visitChildren(this);
 	    }
@@ -391,7 +353,7 @@ class PrintAsignacionContext extends ContenidoContext {
 
 }
 
-ArrayInitParser.PrintAsignacionContext = PrintAsignacionContext;
+
 
 class DeclaracionesContext extends antlr4.ParserRuleContext {
 

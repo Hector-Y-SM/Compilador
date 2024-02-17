@@ -3,8 +3,8 @@ import CommonLexerRules;
 
 init: 'TPG' '{' contenido '}'; //regla de inicio por el momento
 
-contenido: declaraciones+   #printDeclaraciones
-         | asignaciones+    #printAsignacion
+contenido: declaraciones+  
+         | asignaciones+    
          ;
 
 declaraciones: PR ID        #indefinido

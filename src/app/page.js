@@ -4,10 +4,12 @@ import { analizar } from './module/generador.js'
 
 const HomePage = () => {
   const [txt, setTxt] = useState('');
+  const [resultado, setResultado] = useState('');
 
   const inter = () => {
     //console.log(txt)
     analizar(txt)
+    setResultado(analizar(txt));
   }
 
   return (
@@ -24,6 +26,9 @@ const HomePage = () => {
         onClick={inter}>
           Revisar
       </button>
+      <h1>
+        resultados: {resultado}
+      </h1>
     </div>
   )
 }

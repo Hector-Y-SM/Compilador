@@ -17,7 +17,7 @@ public class ArrayInitParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, PR=4, INT=5, FLOAT=6, CHAR=7, ID=8, NUM=9, DEC=10, 
-		CADENAS=11, IGUAL=12, WS=13;
+		CADENAS=11, IGUAL=12, OPERADORES=13, WS=14;
 	public static final int
 		RULE_init = 0, RULE_contenido = 1, RULE_declaraciones = 2, RULE_asignaciones = 3, 
 		RULE_valores = 4;
@@ -38,7 +38,7 @@ public class ArrayInitParser extends Parser {
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, null, "PR", "INT", "FLOAT", "CHAR", "ID", "NUM", "DEC", 
-			"CADENAS", "IGUAL", "WS"
+			"CADENAS", "IGUAL", "OPERADORES", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -132,35 +132,22 @@ public class ArrayInitParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ContenidoContext extends ParserRuleContext {
-		public ContenidoContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_contenido; }
-	 
-		public ContenidoContext() { }
-		public void copyFrom(ContenidoContext ctx) {
-			super.copyFrom(ctx);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class PrintDeclaracionesContext extends ContenidoContext {
 		public List<DeclaracionesContext> declaraciones() {
 			return getRuleContexts(DeclaracionesContext.class);
 		}
 		public DeclaracionesContext declaraciones(int i) {
 			return getRuleContext(DeclaracionesContext.class,i);
 		}
-		public PrintDeclaracionesContext(ContenidoContext ctx) { copyFrom(ctx); }
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class PrintAsignacionContext extends ContenidoContext {
 		public List<AsignacionesContext> asignaciones() {
 			return getRuleContexts(AsignacionesContext.class);
 		}
 		public AsignacionesContext asignaciones(int i) {
 			return getRuleContext(AsignacionesContext.class,i);
 		}
-		public PrintAsignacionContext(ContenidoContext ctx) { copyFrom(ctx); }
+		public ContenidoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_contenido; }
 	}
 
 	public final ContenidoContext contenido() throws RecognitionException {
@@ -172,7 +159,6 @@ public class ArrayInitParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
-				_localctx = new PrintDeclaracionesContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(16); 
@@ -192,7 +178,6 @@ public class ArrayInitParser extends Parser {
 				}
 				break;
 			case 2:
-				_localctx = new PrintAsignacionContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(21); 
@@ -435,7 +420,7 @@ public class ArrayInitParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\r.\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\u000e.\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0001"+
 		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0001\u0004"+
 		"\u0001\u0011\b\u0001\u000b\u0001\f\u0001\u0012\u0001\u0001\u0004\u0001"+

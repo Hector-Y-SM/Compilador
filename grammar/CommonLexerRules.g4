@@ -8,11 +8,11 @@ CHAR    : 'char';
 //PR      : INT | FLOAT | CHAR;
 
 // valores
-ID      : [a-zA-Z]+ ; // match identifiers
+ID      : [a-zA-Z0-9_*+-/]+; // match identifiers
 NUM     : [0-9]+;
 DEC     : [0-9]+.[0-9]+;
 CADENAS :  '"' .*? '"' ;
-//ID      : [a-zA-Z_][a-zA-Z0-9_];
+//ID    : [a-zA-Z_][a-zA-Z0-9_];
 
 //simbolos
 IGUAL: '=';
