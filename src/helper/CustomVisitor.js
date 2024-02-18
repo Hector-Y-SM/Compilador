@@ -1,5 +1,5 @@
 // aqui se coloca
-import ArrayInitVisitor from "../../grammar/ArrayInitVisitor.js";
+import ArrayInitVisitor from "../grammar/ArrayInitVisitor.js";
 import { variables } from "./memoria.js";
 
 export default class CustomVisitor extends ArrayInitVisitor{
@@ -7,9 +7,11 @@ export default class CustomVisitor extends ArrayInitVisitor{
 	visitInit(ctx) {
 		console.log('Aqui quiero llegar');
 		const resultados = this.visit(ctx.contenido());
-		return resultados;
-	  }
-  
+	  return resultados;
+	}
+	  
+	visitPrintDeclaraciones(ctx) { return this.visitChildren(ctx); } // Visit a parse tree produced by ArrayInitParser#printDeclaraciones.
+	visitPrintAsignaciones(ctx) { return this.visitChildren(ctx); } // Visit a parse tree produced by ArrayInitParser#printAsignaciones.
 
 	// Visit a parse tree produced by ArrayInitParser#definido.
 	visitDefinido(ctx) {
@@ -19,9 +21,11 @@ export default class CustomVisitor extends ArrayInitVisitor{
 		const valor = this.visit(ctx.valores(0));
 
 		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
-			return 'El nombre de la variable no es válido';
+			return `Error, El nombre de la variable: ${variable} no es válido`;
 		}
-		if(variables.has(variable)){ return 'esta variable ya fue declarada' }
+		if(variables.has(variable)){ 
+			return `Error, la variable: ${variable} ya habia sido registrada` 
+		}
 		variables.set(variable, {tipo: tipoDato, valor: valor}) 
 	  return variable;
 	}
@@ -33,19 +37,18 @@ export default class CustomVisitor extends ArrayInitVisitor{
 		const nuevoValor = this.visit(ctx.valores(0));
 
 		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
-			return 'El nombre de la variable no es válido';
+			return `Error, El nombre de la variable: ${variable} no es válido`;
 		}
 
 		if(variables.has(variable)){
 			let obj = variables.get(variable);
 			obj.valor = nuevoValor; 
 		} else {
-			return 'esta varible no existe';
+			return `Error, la variable ${variable} no ha sido declarada`;
 		}
 
 	  return variable;
 	}
-  
   
 	// Visit a parse tree produced by ArrayInitParser#indefinido.
 	visitIndefinido(ctx) {
@@ -55,31 +58,33 @@ export default class CustomVisitor extends ArrayInitVisitor{
 		const valor = tipoDato === 'char'? 'ponme algo xfa' : 0;
 
     	if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
-			return 'El nombre de la variable no es válido';
+			return `Error, El nombre de la variable: ${variable} no es válido`;
 		}
+		if(variables.has(variable)){ 
+			return `Error, la variable ${variable} ya fue registrada anteriormente`
+		}
+		
 		variables.set(variable, {tipo: tipoDato, valor: valor})
 	  return variable;
 	}
-
-    
-	// Visit a parse tree produced by ArrayInitParser#cadenas.
-	visitCadenas(ctx) {
+  
+	visitCadenas(ctx) { // Visit a parse tree produced by ArrayInitParser#cadenas.
 		console.log('cadenazo')
-		return ctx.getText();
-	  }
-	// Visit a parse tree produced by ArrayInitParser#id.
-	visitId(ctx) { //? texto
+	  return ctx.getText();
+	}
+	
+	visitId(ctx) { // Visit a parse tree produced by ArrayInitParser#id.
 		console.log('vistamos el ID');
-		return ctx.getText();
+	  return ctx.getText();
 	}
-	// Visit a parse tree produced by ArrayInitParser#numero.
-	visitNumero(ctx) {
+
+	visitNumero(ctx) {	// Visit a parse tree produced by ArrayInitParser#numero.
 		console.log('vistamos Enteros');
-		return Number(ctx.getText());
+	  return Number(ctx.getText());
 	}
-	// Visit a parse tree produced by ArrayInitParser#decimal.
-	visitDecimal(ctx) {
+
+	visitDecimal(ctx) { // Visit a parse tree produced by ArrayInitParser#decimal.
 		console.log('vistamos decimales');
-		return Number(ctx.getText());
+	  return Number(ctx.getText());
 	}
 }

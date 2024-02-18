@@ -3,15 +3,15 @@ import CommonLexerRules;
 
 init: 'TPG' '{' contenido '}'; //regla de inicio por el momento
 
-contenido: declaraciones+  
-         | asignaciones+    
+contenido: declaraciones*  #printDeclaraciones
+         | asignaciones*   #printAsignaciones
          ;
 
-declaraciones: PR ID        #indefinido
+declaraciones: PR ID SEMICOLON?     #indefinido
              ;
 
-asignaciones: PR ID '=' valores    #definido
-            | ID '=' valores       #asignacion
+asignaciones: PR ID '=' valores SEMICOLON?    #definido
+            | ID '=' valores SEMICOLON?       #asignacion
             ;
 
 valores: NUM     #numero

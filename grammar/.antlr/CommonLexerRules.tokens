@@ -6,8 +6,10 @@ NUM=5
 DEC=6
 CADENAS=7
 IGUAL=8
-WS=9
+SEMICOLON=9
+WS=10
 'int'=1
 'float'=2
 'char'=3
 '='=8
+';'=9

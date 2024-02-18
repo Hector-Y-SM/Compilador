@@ -5,7 +5,7 @@
 import antlr4 from "antlr4";
 import ArrayInitLexer from '../../grammar/ArrayInitLexer.js';
 import ArrayInitParser from "../../grammar/ArrayInitParser.js";
-import CustomVisitor from "../helper/CustomVisitor.js";
+import CustomVisitor from "../../helper/CustomVisitor.js";
 
 export const analizar = (input) => {
   const chars = new antlr4.InputStream(input);
