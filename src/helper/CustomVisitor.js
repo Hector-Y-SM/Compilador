@@ -1,18 +1,20 @@
 // aqui se coloca
-import ArrayInitVisitor from "../grammar/ArrayInitVisitor.js";
+import CompiladorVisitor from "../grammar/CompiladorVisitor.js";
 import { variables } from "./memoria.js";
 
-export default class CustomVisitor extends ArrayInitVisitor{
+export default class CustomVisitor extends CompiladorVisitor{
 	// Visit a parse tree produced by ArrayInitParser#init.
 	visitInit(ctx) {
 		console.log('Aqui quiero llegar');
 		const resultados = this.visit(ctx.contenido());
+		console.log(variables)
 	  return resultados;
 	}
 	  
-	visitPrintDeclaraciones(ctx) { return this.visitChildren(ctx); } // Visit a parse tree produced by ArrayInitParser#printDeclaraciones.
-	visitPrintAsignaciones(ctx) { return this.visitChildren(ctx); } // Visit a parse tree produced by ArrayInitParser#printAsignaciones.
-
+	visitPrintDeclaraciones(ctx) { return this.visitChildren(ctx);}
+	visitPrintAsignacionesDeclaradas(ctx) { return this.visitChildren(ctx); }
+	visitPrintAsignacionesInicializada(ctx) {return this.visitChildren(ctx);}
+	
 	// Visit a parse tree produced by ArrayInitParser#definido.
 	visitDefinido(ctx) {
 		console.log('variable definida');
@@ -39,10 +41,10 @@ export default class CustomVisitor extends ArrayInitVisitor{
 		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
 			return `Error, El nombre de la variable: ${variable} no es válido`;
 		}
-
 		if(variables.has(variable)){
 			let obj = variables.get(variable);
 			obj.valor = nuevoValor; 
+			
 		} else {
 			return `Error, la variable ${variable} no ha sido declarada`;
 		}
@@ -56,7 +58,7 @@ export default class CustomVisitor extends ArrayInitVisitor{
 		const variable = ctx.ID().getText();
 		const tipoDato = ctx.PR().getText();
 		const valor = tipoDato === 'char'? 'ponme algo xfa' : 0;
-
+		
     	if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
 			return `Error, El nombre de la variable: ${variable} no es válido`;
 		}

@@ -5,7 +5,6 @@ lexer grammar CommonLexerRules;
 INT     : 'int';
 FLOAT   : 'float';
 CHAR    : 'char';
-//PR      : INT | FLOAT | CHAR;
 
 // valores
 ID      : [a-zA-Z0-9_*+-/]+; // match identifiers

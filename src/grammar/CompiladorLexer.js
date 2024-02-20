@@ -1,4 +1,4 @@
-// Generated from ./grammar/ArrayInit.g4 by ANTLR 4.13.1
+// Generated from ./grammar/Compilador.g4 by ANTLR 4.13.1
 // jshint ignore: start
 import antlr4 from 'antlr4';
 
@@ -39,9 +39,9 @@ const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
 
 const decisionsToDFA = atn.decisionToState.map( (ds, index) => new antlr4.dfa.DFA(ds, index) );
 
-export default class ArrayInitLexer extends antlr4.Lexer {
+export default class CompiladorLexer extends antlr4.Lexer {
 
-    static grammarFileName = "ArrayInit.g4";
+    static grammarFileName = "Compilador.g4";
     static channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
 	static modeNames = [ "DEFAULT_MODE" ];
 	static literalNames = [ null, "'TPG'", "'{'", "'}'", null, "'int'", "'float'", 
@@ -59,21 +59,21 @@ export default class ArrayInitLexer extends antlr4.Lexer {
     }
 }
 
-ArrayInitLexer.EOF = antlr4.Token.EOF;
-ArrayInitLexer.T__0 = 1;
-ArrayInitLexer.T__1 = 2;
-ArrayInitLexer.T__2 = 3;
-ArrayInitLexer.PR = 4;
-ArrayInitLexer.INT = 5;
-ArrayInitLexer.FLOAT = 6;
-ArrayInitLexer.CHAR = 7;
-ArrayInitLexer.ID = 8;
-ArrayInitLexer.NUM = 9;
-ArrayInitLexer.DEC = 10;
-ArrayInitLexer.CADENAS = 11;
-ArrayInitLexer.IGUAL = 12;
-ArrayInitLexer.SEMICOLON = 13;
-ArrayInitLexer.WS = 14;
+CompiladorLexer.EOF = antlr4.Token.EOF;
+CompiladorLexer.T__0 = 1;
+CompiladorLexer.T__1 = 2;
+CompiladorLexer.T__2 = 3;
+CompiladorLexer.PR = 4;
+CompiladorLexer.INT = 5;
+CompiladorLexer.FLOAT = 6;
+CompiladorLexer.CHAR = 7;
+CompiladorLexer.ID = 8;
+CompiladorLexer.NUM = 9;
+CompiladorLexer.DEC = 10;
+CompiladorLexer.CADENAS = 11;
+CompiladorLexer.IGUAL = 12;
+CompiladorLexer.SEMICOLON = 13;
+CompiladorLexer.WS = 14;
 
 
 

@@ -1,4 +1,4 @@
-// Generated from /home/hertorprime/6to/automatas_2/antlr4/comp/ANTLR4_base/grammar/ArrayInit.g4 by ANTLR 4.13.1
+// Generated from /home/hertorprime/6to/automatas_2/antlr4/comp/ANTLR4_base/grammar/Compilador.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
-public class ArrayInitParser extends Parser {
+public class CompiladorParser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.13.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -77,7 +77,7 @@ public class ArrayInitParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "ArrayInit.g4"; }
+	public String getGrammarFileName() { return "Compilador.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -88,7 +88,7 @@ public class ArrayInitParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public ArrayInitParser(TokenStream input) {
+	public CompiladorParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -269,9 +269,9 @@ public class ArrayInitParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class IndefinidoContext extends DeclaracionesContext {
-		public TerminalNode PR() { return getToken(ArrayInitParser.PR, 0); }
-		public TerminalNode ID() { return getToken(ArrayInitParser.ID, 0); }
-		public TerminalNode SEMICOLON() { return getToken(ArrayInitParser.SEMICOLON, 0); }
+		public TerminalNode PR() { return getToken(CompiladorParser.PR, 0); }
+		public TerminalNode ID() { return getToken(CompiladorParser.ID, 0); }
+		public TerminalNode SEMICOLON() { return getToken(CompiladorParser.SEMICOLON, 0); }
 		public IndefinidoContext(DeclaracionesContext ctx) { copyFrom(ctx); }
 	}
 
@@ -324,13 +324,13 @@ public class ArrayInitParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class DefinidoContext extends AsignacionesDeclaradaContext {
-		public TerminalNode PR() { return getToken(ArrayInitParser.PR, 0); }
-		public TerminalNode ID() { return getToken(ArrayInitParser.ID, 0); }
-		public TerminalNode IGUAL() { return getToken(ArrayInitParser.IGUAL, 0); }
+		public TerminalNode PR() { return getToken(CompiladorParser.PR, 0); }
+		public TerminalNode ID() { return getToken(CompiladorParser.ID, 0); }
+		public TerminalNode IGUAL() { return getToken(CompiladorParser.IGUAL, 0); }
 		public ValoresContext valores() {
 			return getRuleContext(ValoresContext.class,0);
 		}
-		public TerminalNode SEMICOLON() { return getToken(ArrayInitParser.SEMICOLON, 0); }
+		public TerminalNode SEMICOLON() { return getToken(CompiladorParser.SEMICOLON, 0); }
 		public DefinidoContext(AsignacionesDeclaradaContext ctx) { copyFrom(ctx); }
 	}
 
@@ -387,12 +387,12 @@ public class ArrayInitParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class AsignacionContext extends AsignacionInicializadaContext {
-		public TerminalNode ID() { return getToken(ArrayInitParser.ID, 0); }
-		public TerminalNode IGUAL() { return getToken(ArrayInitParser.IGUAL, 0); }
+		public TerminalNode ID() { return getToken(CompiladorParser.ID, 0); }
+		public TerminalNode IGUAL() { return getToken(CompiladorParser.IGUAL, 0); }
 		public ValoresContext valores() {
 			return getRuleContext(ValoresContext.class,0);
 		}
-		public TerminalNode SEMICOLON() { return getToken(ArrayInitParser.SEMICOLON, 0); }
+		public TerminalNode SEMICOLON() { return getToken(CompiladorParser.SEMICOLON, 0); }
 		public AsignacionContext(AsignacionInicializadaContext ctx) { copyFrom(ctx); }
 	}
 
@@ -447,22 +447,22 @@ public class ArrayInitParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class NumeroContext extends ValoresContext {
-		public TerminalNode NUM() { return getToken(ArrayInitParser.NUM, 0); }
+		public TerminalNode NUM() { return getToken(CompiladorParser.NUM, 0); }
 		public NumeroContext(ValoresContext ctx) { copyFrom(ctx); }
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class IdContext extends ValoresContext {
-		public TerminalNode ID() { return getToken(ArrayInitParser.ID, 0); }
+		public TerminalNode ID() { return getToken(CompiladorParser.ID, 0); }
 		public IdContext(ValoresContext ctx) { copyFrom(ctx); }
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class DecimalContext extends ValoresContext {
-		public TerminalNode DEC() { return getToken(ArrayInitParser.DEC, 0); }
+		public TerminalNode DEC() { return getToken(CompiladorParser.DEC, 0); }
 		public DecimalContext(ValoresContext ctx) { copyFrom(ctx); }
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class CadenasContext extends ValoresContext {
-		public TerminalNode CADENAS() { return getToken(ArrayInitParser.CADENAS, 0); }
+		public TerminalNode CADENAS() { return getToken(CompiladorParser.CADENAS, 0); }
 		public CadenasContext(ValoresContext ctx) { copyFrom(ctx); }
 	}
 

@@ -1,18 +1,23 @@
-grammar ArrayInit;
+grammar Compilador;
 import CommonLexerRules;
 
 init: 'TPG' '{' contenido '}'; //regla de inicio por el momento
 
 contenido: declaraciones*  #printDeclaraciones
-         | asignaciones*   #printAsignaciones
+         | asignacionesDeclarada*   #printAsignacionesDeclaradas
+         | asignacionInicializada*  #printAsignacionesInicializada
          ;
 
 declaraciones: PR ID SEMICOLON?     #indefinido
              ;
 
-asignaciones: PR ID '=' valores SEMICOLON?    #definido
-            | ID '=' valores SEMICOLON?       #asignacion
-            ;
+asignacionesDeclarada: PR ID '=' valores SEMICOLON?    #definido
+                     ;
+
+asignacionInicializada: ID '=' valores SEMICOLON? #asignacion
+                      ;
+
+
 
 valores: NUM     #numero
        | DEC     #decimal

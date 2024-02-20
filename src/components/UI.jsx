@@ -11,7 +11,7 @@ const UI = ({titulo, funcionPrincipal, contenido, actualizar, resultados}) => {
         <main className="h-screen w-screen bg-gray-800 flex flex-col justify-between">
             <section className="w-screen mx-auto flex items-start px-3 pt-2 pb-3 border-b border-gray-400">
                 <div className="flex-grow">
-                    <h1 className="text-2xl lg:text-4xl text-white">{titulo}</h1>
+                    <h1 className="text-2xl lg:text-4xl text-white p-1">{titulo}</h1>
                 </div>
                 <div>
                     <button className="text-white bg-green-400 rounded px-4 py-2" 
@@ -29,11 +29,15 @@ const UI = ({titulo, funcionPrincipal, contenido, actualizar, resultados}) => {
                 >
                  </textarea>
             </div>
+            <button onClick={toggleMostrarResultados}
+                    className='text-white'
+            >
+            Abrir/cerrar</button>
             {mostrarResultados && (
                 <div className={`transition-all text-2xl duration-200 bg-black text-white p-3 overflow-hidden relative h-1/2`}>
-                    <button className="text-white  rounded px-4 py-2 absolute top-3 right-3" 
+                    <button className="text-white  rounded px-4 py-2 absolute top-3 right-3 hover:text-red-500" 
                             onClick={toggleMostrarResultados}>X</button>
-                    {resultados}
+                    Salida: {resultados}
                 </div>
             )}
         </main>

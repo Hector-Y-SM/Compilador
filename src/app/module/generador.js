@@ -3,15 +3,15 @@
  * se debe remplazar en las importaciones
  */
 import antlr4 from "antlr4";
-import ArrayInitLexer from '../../grammar/ArrayInitLexer.js';
-import ArrayInitParser from "../../grammar/ArrayInitParser.js";
+import CompiladorLexer from '../../grammar/CompiladorLexer.js';
+import CompiladorParser from "../../grammar/CompiladorParser.js";
 import CustomVisitor from "../../helper/CustomVisitor.js";
 
 export const analizar = (input) => {
   const chars = new antlr4.InputStream(input);
-  const lexer = new ArrayInitLexer(chars);
+  const lexer = new CompiladorLexer(chars);
   const tokens = new antlr4.CommonTokenStream(lexer);
-  const parser = new ArrayInitParser(tokens);
+  const parser = new CompiladorParser(tokens);
   parser.buildParseTrees = true;
 
   //se debe poner el parser en la regla que inicie
