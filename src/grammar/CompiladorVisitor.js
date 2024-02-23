@@ -12,20 +12,8 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
-	// Visit a parse tree produced by CompiladorParser#printDeclaraciones.
-	visitPrintDeclaraciones(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
-	// Visit a parse tree produced by CompiladorParser#printAsignacionesDeclaradas.
-	visitPrintAsignacionesDeclaradas(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
-	// Visit a parse tree produced by CompiladorParser#printAsignacionesInicializada.
-	visitPrintAsignacionesInicializada(ctx) {
+	// Visit a parse tree produced by CompiladorParser#contenido.
+	visitContenido(ctx) {
 	  return this.visitChildren(ctx);
 	}
 

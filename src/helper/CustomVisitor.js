@@ -7,8 +7,18 @@ export default class CustomVisitor extends CompiladorVisitor{
 	visitInit(ctx) {
 		console.log('Aqui quiero llegar');
 		const resultados = this.visit(ctx.contenido());
-		console.log(variables)
-	  return resultados;
+		//console.log(variables)
+		//console.log(resultados)
+
+		const primerError = resultados.find(element => element.includes('Error'));
+
+		if (primerError) {
+			//console.log('Error encontrado:', primerError);
+			return primerError;
+		} else {
+			//console.log('Compilado sin errores');
+			return 'compilado sin errores';
+		}
 	}
 	  
 	visitPrintDeclaraciones(ctx) { return this.visitChildren(ctx);}
@@ -29,7 +39,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 			return `Error, la variable: ${variable} ya habia sido registrada` 
 		}
 		variables.set(variable, {tipo: tipoDato, valor: valor}) 
-	  return variable;
+	  return this.visitChildren(ctx);
 	}
 
 	// Visit a parse tree produced by ArrayInitParser#asignacion.
@@ -49,7 +59,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 			return `Error, la variable ${variable} no ha sido declarada`;
 		}
 
-	  return variable;
+	  return this.visitChildren(ctx);
 	}
   
 	// Visit a parse tree produced by ArrayInitParser#indefinido.
@@ -67,26 +77,12 @@ export default class CustomVisitor extends CompiladorVisitor{
 		}
 		
 		variables.set(variable, {tipo: tipoDato, valor: valor})
-	  return variable;
+	  return this.visitChildren(ctx);
 	}
   
-	visitCadenas(ctx) { // Visit a parse tree produced by ArrayInitParser#cadenas.
-		console.log('cadenazo')
-	  return ctx.getText();
-	}
 	
-	visitId(ctx) { // Visit a parse tree produced by ArrayInitParser#id.
-		console.log('vistamos el ID');
-	  return ctx.getText();
-	}
-
-	visitNumero(ctx) {	// Visit a parse tree produced by ArrayInitParser#numero.
-		console.log('vistamos Enteros');
-	  return Number(ctx.getText());
-	}
-
-	visitDecimal(ctx) { // Visit a parse tree produced by ArrayInitParser#decimal.
-		console.log('vistamos decimales');
-	  return Number(ctx.getText());
-	}
+	visitCadenas(ctx) { return ctx.getText();}
+	visitId(ctx) { return ctx.getText(); }
+	visitNumero(ctx) { return Number(ctx.getText()); }
+	visitDecimal(ctx) { return Number(ctx.getText()); }
 }

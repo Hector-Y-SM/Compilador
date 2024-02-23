@@ -4,13 +4,13 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "proyecto base",
+  title: "Compilador",
   description: "proyecto a realizar",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es">
+    <html lang="es" className="bg-gray-800">
       <body className={inter.className}>{children}</body>
     </html>
   );
