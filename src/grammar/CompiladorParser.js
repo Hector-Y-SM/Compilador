@@ -3,7 +3,7 @@
 import antlr4 from 'antlr4';
 import CompiladorVisitor from './CompiladorVisitor.js';
 
-const serializedATN = [4,1,14,50,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,
+const serializedATN = [4,1,16,50,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,
 2,5,7,5,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,1,5,1,21,8,1,10,1,12,1,24,9,1,1,2,
 1,2,1,2,3,2,29,8,2,1,3,1,3,1,3,1,3,1,3,3,3,36,8,3,1,4,1,4,1,4,1,4,3,4,42,
 8,4,1,5,1,5,1,5,1,5,3,5,48,8,5,1,5,0,0,6,0,2,4,6,8,10,0,0,52,0,12,1,0,0,
@@ -29,12 +29,12 @@ const sharedContextCache = new antlr4.atn.PredictionContextCache();
 export default class CompiladorParser extends antlr4.Parser {
 
     static grammarFileName = "Compilador.g4";
-    static literalNames = [ null, "'TPG'", "'{'", "'}'", null, "'int'", 
-                            "'float'", "'char'", null, null, null, null, 
-                            "'='", "';'" ];
+    static literalNames = [ null, "'TPG'", "'{'", "'}'", null, "'nc'", "'im'", 
+                            "'jgl'", null, null, null, null, "'='", "';'", 
+                            "'\\u00BF'", "'?'" ];
     static symbolicNames = [ null, null, null, null, "PR", "INT", "FLOAT", 
                              "CHAR", "ID", "NUM", "DEC", "CADENAS", "IGUAL", 
-                             "SEMICOLON", "WS" ];
+                             "SEMICOLON", "APREGUNTA", "CPREGUNTA", "WS" ];
     static ruleNames = [ "init", "contenido", "declaraciones", "asignacionesDeclarada", 
                          "asignacionInicializada", "valores" ];
 
@@ -303,7 +303,9 @@ CompiladorParser.DEC = 10;
 CompiladorParser.CADENAS = 11;
 CompiladorParser.IGUAL = 12;
 CompiladorParser.SEMICOLON = 13;
-CompiladorParser.WS = 14;
+CompiladorParser.APREGUNTA = 14;
+CompiladorParser.CPREGUNTA = 15;
+CompiladorParser.WS = 16;
 
 CompiladorParser.RULE_init = 0;
 CompiladorParser.RULE_contenido = 1;

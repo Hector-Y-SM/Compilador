@@ -17,7 +17,7 @@ public class CompiladorParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, PR=4, INT=5, FLOAT=6, CHAR=7, ID=8, NUM=9, DEC=10, 
-		CADENAS=11, IGUAL=12, SEMICOLON=13, WS=14;
+		CADENAS=11, IGUAL=12, SEMICOLON=13, APREGUNTA=14, CPREGUNTA=15, WS=16;
 	public static final int
 		RULE_init = 0, RULE_contenido = 1, RULE_declaraciones = 2, RULE_asignacionesDeclarada = 3, 
 		RULE_asignacionInicializada = 4, RULE_valores = 5;
@@ -31,15 +31,15 @@ public class CompiladorParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'TPG'", "'{'", "'}'", null, "'int'", "'float'", "'char'", null, 
-			null, null, null, "'='", "';'"
+			null, "'TPG'", "'{'", "'}'", null, "'nc'", "'im'", "'jgl'", null, null, 
+			null, null, "'='", "';'", "'\\u00BF'", "'?'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, null, "PR", "INT", "FLOAT", "CHAR", "ID", "NUM", "DEC", 
-			"CADENAS", "IGUAL", "SEMICOLON", "WS"
+			"CADENAS", "IGUAL", "SEMICOLON", "APREGUNTA", "CPREGUNTA", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -475,7 +475,7 @@ public class CompiladorParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u000e2\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\u00102\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
 		"\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0005\u0001\u0015\b\u0001\n"+

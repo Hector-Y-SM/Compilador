@@ -17,10 +17,10 @@ asignacionesDeclarada: PR ID '=' valores SEMICOLON?    #definido
 asignacionInicializada: ID '=' valores SEMICOLON? #asignacion
                       ;
 
-valores: NUM     #numero
-       | DEC     #decimal
-       | ID      #id
-       | CADENAS #cadenas
+valores: NUM         #numero
+       | DEC         #decimal
+       | ID          #id
+       | CADENAS     #cadenas
        ;
 
 PR: INT

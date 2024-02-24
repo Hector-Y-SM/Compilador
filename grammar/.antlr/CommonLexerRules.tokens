@@ -7,9 +7,13 @@ DEC=6
 CADENAS=7
 IGUAL=8
 SEMICOLON=9
-WS=10
-'int'=1
-'float'=2
-'char'=3
+APREGUNTA=10
+CPREGUNTA=11
+WS=12
+'nc'=1
+'im'=2
+'jgl'=3
 '='=8
 ';'=9
+'¿'=10
+'?'=11

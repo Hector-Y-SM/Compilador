@@ -20,6 +20,6 @@ export const analizar = (input) => {
   const tree = parser.init(); //! el "".init" es donde empieza la gramatica, este cambiara dependiendo del proyecto
   const customVisitor = new CustomVisitor();
 
-  //console.log(tree.toStringTree(parser.ruleNames));
+  console.log(tree.toStringTree(parser.ruleNames));
   return customVisitor.visitInit(tree);
 };
