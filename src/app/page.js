@@ -12,7 +12,7 @@ const HomePage = () => {
     const sinComentarios = limpiarComentarios(txt);
     if(sinComentarios == 'Error en sintaxis de comentarios'){ return setResultado('Error en sintaxis de comentarios')}
 
-    const muestras = analizar(txt)
+    const muestras = analizar(sinComentarios)
     setResultado(muestras);
   }
 

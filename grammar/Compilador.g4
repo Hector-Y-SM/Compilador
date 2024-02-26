@@ -17,11 +17,17 @@ asignacionesDeclarada: PR ID '=' valores SEMICOLON?    #definido
 asignacionInicializada: ID '=' valores SEMICOLON? #asignacion
                       ;
 
-valores: NUM         #numero
-       | DEC         #decimal
-       | ID          #id
-       | CADENAS     #cadenas
+valores: operaciones  #printOperaciones
        ;
+
+operaciones: NUM                                          # numero
+           | ID                                           # id
+           | DEC                                          # decimal
+           | CADENAS                                      # cadenas 
+           | operaciones op=('*'|'/') operaciones         # MulDiv
+           | operaciones (op=(SUMA|RESTA)) operaciones    # AddSub
+           | '(' operaciones ')'                          # parens
+           ;
 
 PR: INT
   | FLOAT

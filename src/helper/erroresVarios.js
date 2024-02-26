@@ -1,13 +1,14 @@
 import { validarOperacionMatematica } from "./sintaxisMatematicas.js";
 
+/**
+ * funcion para prevenir errores repetitivos
+ * @param {*} valor 
+ * @param {*} variable 
+ * @returns errores
+ */
 export function prevenirErroresVarios(valor, variable){
     if(valor === undefined){
         return 'Error, ingresaste un simbolo desconocido'
-    }
-    if(/[a-zA-Z0-9+\-*/()\[\]]+/.test(valor)){
-        if(!validarOperacionMatematica(valor)){
-            return 'Error, el valor asignado no se puede calcular'
-        }
     }
     if(valor == null){
         return 'Error, se le debe asignar un valor a la variable'

@@ -7,7 +7,7 @@ FLOAT   : 'im';
 CHAR    : 'jgl';
 
 // valores
-ID      : [a-zA-Z0-9_*+-/)(?¿]+; // match identifiers
+ID      : [a-zA-Z0-9_]+; // match identifiers
 NUM     : [0-9]+;
 DEC     : [0-9]+.[0-9]+;
 CADENAS :  '"' .*? '"' ;
@@ -15,10 +15,10 @@ CADENAS :  '"' .*? '"' ;
 //simbolos
 IGUAL       : '=';
 SEMICOLON   : ';';
-//SUMA        : '+';
-//RESTA       : '-';
-//MULTIPLI    : '*';
-//DIVISION    : '/';
+SUMA        : '+';
+RESTA       : '-';
+MULTIPLI    : '*';
+DIVISION    : '/';
 //APRENTESIS  : '(';
 //CPARENTESIS : ')';
 //ACORCHETE   : '[';
@@ -28,4 +28,4 @@ CPREGUNTA   : '?';
 
 
 //ignorar
-WS : [ \t\n]+ -> skip ; // toss out whitespace
+WS : [ \t\n\r]+ -> skip ; // toss out whitespace
