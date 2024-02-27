@@ -5,12 +5,13 @@ import { variables } from "./memoria.js";
 import { operacionesBasicas } from "./operacionesBasicas.js";
 import { validarOperacionMatematica } from "./sintaxisMatematicas.js";
 
+
 export default class CustomVisitor extends CompiladorVisitor{
 	// Visit a parse tree produced by ArrayInitParser#init.
 	visitInit(ctx) {
 		console.log('Aqui quiero llegar');
 		const resultados = this.visit(ctx.contenido());
-		//console.log(variables)
+		console.log(variables)
 		//console.log(resultados)
 
 		if(resultados.includes(undefined)){
@@ -22,7 +23,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		if (primerError) {
 			return primerError;
 		} else {
-			return 'compilado sin errores';
+			return 'Todo bien pa';
 		}
 	}
 
@@ -31,7 +32,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('variable definida');
 		const variable = ctx.ID().getText();
 		const tipoDato = ctx.PR().getText();
-		const valor = this.visit(ctx.valores(0));
+		const valor = this.visit(ctx.valor(0));
 		console.log('ESTE ES EL VALOR ',valor)
 
 		if (typeof valor === 'string' && valor.includes('Error')) {
@@ -53,7 +54,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 	visitAsignacion(ctx) {
 		console.log('asignacion')
 		const variable = ctx.ID().getText();
-		const nuevoValor = this.visit(ctx.valores(0));
+		const nuevoValor = this.visit(ctx.valor(0));
 
 		const error = prevenirErroresVarios(nuevoValor, variable);
     	if (error) { return error; }
@@ -86,19 +87,12 @@ export default class CustomVisitor extends CompiladorVisitor{
 	  return variable;
 	}
   
-	// Visit a parse tree produced by CompiladorParser#printOperaciones.
-	visitPrintOperaciones(ctx) {
-		console.log('operativo')
-		//console.log('OPERATIVO ',this.visit(ctx.operaciones(0)))
-		return this.visit(ctx.operaciones(0));
-	}
-  
-	  	// Visit a parse tree produced by CompiladorParser#MulDiv.
+	// Visit a parse tree produced by CompiladorParser#MulDiv.
 	visitMulDiv(ctx) {
 		console.log('miltiplicacion o division')
-		const n1 = this.visit(ctx.operaciones(0));
-		const n2 = this.visit(ctx.operaciones(1));
-		const opt = 18;
+		const n1 = this.visit(ctx.valor(0));
+		const n2 = this.visit(ctx.valor(1));
+		const opt = 7;
 		const addSub = false;
 		const contexto = ctx.op.type;
 
@@ -106,13 +100,12 @@ export default class CustomVisitor extends CompiladorVisitor{
 		return resultado;
 	  }
   
-  
 	  // Visit a parse tree produced by CompiladorParser#AddSub.
 	  visitAddSub(ctx) {
 		console.log('suma o resta')
-		const n1 = this.visit(ctx.operaciones(0));
-		const n2 = this.visit(ctx.operaciones(1));
-		const opt = 16;
+		const n1 = this.visit(ctx.valor(0));
+		const n2 = this.visit(ctx.valor(1));
+		const opt = 9;
 		const addSub = true;
 		const contexto = ctx.op.type;
 
@@ -120,15 +113,16 @@ export default class CustomVisitor extends CompiladorVisitor{
 		return resultado;
 	  }
 
-	// Visit a parse tree produced by CompiladorParser#parens.
-	visitParens(ctx) {
-		console.log('parentesis')
+	// Visit a parse tree produced by CompiladorParser#implicito.
+	visitImplicito(ctx) {
 		const op = ctx.getText();
+		console.log(op)
 		const opCompleta = validarOperacionMatematica(op);
-		return opCompleta ? this.visit(ctx.operaciones()) 
-						  : 'Error, la sintaxis de la operacion esta mal'
+	  return opCompleta ? this.visit(ctx.valor()) 
+						: 'Error, se esperaba un operador'	
 	}
 
+	visitParens(ctx) {return this.visit(ctx.valor()) }
 	visitCadenas(ctx) { return ctx.getText(); }
 	visitId(ctx) { return ctx.getText(); }
 	visitNumero(ctx) { return ctx.getText(); }

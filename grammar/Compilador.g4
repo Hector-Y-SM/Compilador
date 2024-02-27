@@ -1,35 +1,31 @@
 grammar Compilador;
 import CommonLexerRules;
 
-init: 'TPG' '{' contenido '}'; //regla de inicio por el momento
+init: TPG ALLAVE contenido CLLAVE;
 
-contenido: (declaraciones 
-         | asignacionesDeclarada
-         | asignacionInicializada)* 
-         ;
+contenido: (inicializacion | declaracion | asignacion )*;
 
-declaraciones: PR ID SEMICOLON?     #indefinido
-             ;
+inicializacion: PR ID SEMI #indefinido
+              ;
 
-asignacionesDeclarada: PR ID '=' valores SEMICOLON?    #definido
-                     ;
-
-asignacionInicializada: ID '=' valores SEMICOLON? #asignacion
-                      ;
-
-valores: operaciones  #printOperaciones
-       ;
-
-operaciones: NUM                                          # numero
-           | ID                                           # id
-           | DEC                                          # decimal
-           | CADENAS                                      # cadenas 
-           | operaciones op=('*'|'/') operaciones         # MulDiv
-           | operaciones (op=(SUMA|RESTA)) operaciones    # AddSub
-           | '(' operaciones ')'                          # parens
+declaracion: PR ID ASIGNACION valor  #definido
            ;
 
-PR: INT
-  | FLOAT
+asignacion: ID ASIGNACION valor SEMI #asignado
+          ;
+
+valor: valor op=('*'|'/') valor          #MulDiv
+     | valor op=('+'|'-') valor          #AddSub
+     | NUM                               #numero
+     | DEC                               #decimal
+     | CADENA                            #cadenas
+     | ID                                #id
+     | '(' valor ')'                     #parens
+     | '(' valor ')''('valor')'          #implicito
+     ;
+
+PR: INT 
   | CHAR
+  | FLOAT
   ;
+

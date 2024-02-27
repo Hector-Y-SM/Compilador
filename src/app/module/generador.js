@@ -7,19 +7,33 @@ import CompiladorLexer from '../../grammar/CompiladorLexer.js';
 import CompiladorParser from "../../grammar/CompiladorParser.js";
 import CustomVisitor from "../../helper/CustomVisitor.js";
 import { variables } from "../../helper/memoria.js";
+import { ErrorSintaxis } from "../../helper/recuperarErrores.js";
+import { ErrorLexico } from "../../helper/recuperarErrores.js";
 
 export const analizar = (input) => {
-  variables.clear(); //eliminar los datos de la memoria, para evitar errores, como en los ides reales
+  variables.clear(); 
+
   const chars = new antlr4.InputStream(input);
   const lexer = new CompiladorLexer(chars);
   const tokens = new antlr4.CommonTokenStream(lexer);
   const parser = new CompiladorParser(tokens);
   parser.buildParseTrees = true;
 
-  //se debe poner el parser en la regla que inicie
-  const tree = parser.init(); //! el "".init" es donde empieza la gramatica, este cambiara dependiendo del proyecto
-  const customVisitor = new CustomVisitor();
+  //con esto se la estrategia de error por defecto
+  parser.removeErrorListeners(); 
+  lexer.removeErrorListeners();
 
-  console.log(tree.toStringTree(parser.ruleNames));
-  return customVisitor.visitInit(tree);
+  //agregar los mensajes predeterminados
+  parser.addErrorListener(new ErrorSintaxis()); 
+  lexer.addErrorListener(new ErrorLexico());
+
+  try {
+    const tree = parser.init(); 
+    const customVisitor = new CustomVisitor();
+    console.log(tree.toStringTree(parser.ruleNames));
+    return customVisitor.visitInit(tree);
+  } 
+    catch (error) {
+    return error.message;
+  }
 };

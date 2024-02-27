@@ -14,6 +14,9 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto){
     console.log('n1 ', n1)
     console.log('n2 ', n2)
     if(isNaN(n1)){
+        if(typeof n1 === 'string' && n1.includes('Error')){
+            return n1
+        }
         const datos = variables.get(n1)
         if(datos == undefined){
             return `Error, ${n1} no esta definido`
@@ -28,7 +31,11 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto){
       
     }
     if(isNaN(n2)){
+        if(typeof n2 === 'string' && n2.includes('Error')){
+            return n2
+        }
         const datos = variables.get(n2)
+        console.log('aqui ando ', datos.valor)
         if(datos === undefined){
             return `Error, ${n2} no esta definido`
         } 
@@ -44,12 +51,18 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto){
     }
     
     if(isNaN(n1) && isNaN(n2)){
+        if(typeof n1 === 'string' && n1.includes('Error')){
+            return n1
+        }
         const d1 = variables.get(n1)
-        if(datos === undefined){
+        if(d1 === undefined){
             return `Error, ${n1} no esta definido`
         }
+        if(typeof n2 === 'string' && n2.includes('Error')){
+            return n2
+        }
         const d2 = variables.get(n2)
-        if(datos === undefined){
+        if(d2 === undefined){
             return `Error, ${n2} no esta definido`
         }
         if(addSub){

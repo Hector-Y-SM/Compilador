@@ -1,31 +1,24 @@
 lexer grammar CommonLexerRules;
 
-//* tipos datos
-//! CAMBIAR NOMBRES DE LOS TIPOS DE DATOS PARA PERSONALIZAR
-INT     : 'nc';
-FLOAT   : 'im';
-CHAR    : 'jgl';
+INT      : 'nc';
+FLOAT    : 'im';
+CHAR     : 'jgl';
 
-// valores
-ID      : [a-zA-Z0-9_]+; // match identifiers
-NUM     : [0-9]+;
-DEC     : [0-9]+.[0-9]+;
-CADENAS :  '"' .*? '"' ;
+MUL : '*' ; // assigns token name to '*' used above in grammar
+DIV : '/' ;
+ADD : '+' ;
+SUB : '-' ;
 
-//simbolos
-IGUAL       : '=';
-SEMICOLON   : ';';
-SUMA        : '+';
-RESTA       : '-';
-MULTIPLI    : '*';
-DIVISION    : '/';
-//APRENTESIS  : '(';
-//CPARENTESIS : ')';
-//ACORCHETE   : '[';
-//CCORCHETE   : ']';
-APREGUNTA   : '¿';
-CPREGUNTA   : '?';
+TPG              : 'TPG';
+ASIGNACION       : '=';
+ALLAVE           : '{' ;
+CLLAVE           : '}' ;
+AADMIRACION      : '!';
 
+ID               : [a-zA-Z]+;
+NUM              : [0-9]+;
+CADENA           : [a-zA-Z]+;
+DEC              : [0-9]+'.'[0-9]+;
+SEMI             : ';';
 
-//ignorar
-WS : [ \t\n\r]+ -> skip ; // toss out whitespace
+WS: [ \t\r\n]+ -> skip; // Ignorar espacios en blanco, tabulaciones, retornos de carro y saltos de línea.
