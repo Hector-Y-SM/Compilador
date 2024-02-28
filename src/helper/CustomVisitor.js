@@ -5,7 +5,6 @@ import { variables } from "./memoria.js";
 import { operacionesBasicas } from "./operacionesBasicas.js";
 import { validarOperacionMatematica } from "./sintaxisMatematicas.js";
 
-
 export default class CustomVisitor extends CompiladorVisitor{
 	// Visit a parse tree produced by ArrayInitParser#init.
 	visitInit(ctx) {
@@ -15,7 +14,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		//console.log(resultados)
 
 		if(resultados.includes(undefined)){
-			return 'Error, las variables no pueden estar vacias'
+			return 'Error, las variables no se pueden declarar sin un tipo de dato'
 		}
 
 		const primerError = resultados.find(element => element.includes('Error'));
@@ -51,7 +50,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 	}
 
 	// Visit a parse tree produced by ArrayInitParser#asignacion.
-	visitAsignacion(ctx) {
+	visitAsignado(ctx) {
 		console.log('asignacion')
 		const variable = ctx.ID().getText();
 		const nuevoValor = this.visit(ctx.valor(0));
@@ -119,7 +118,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log(op)
 		const opCompleta = validarOperacionMatematica(op);
 	  return opCompleta ? this.visit(ctx.valor()) 
-						: 'Error, se esperaba un operador'	
+						: `Error, se esperaba un operador para ${op}`	
 	}
 
 	visitParens(ctx) {return this.visit(ctx.valor()) }

@@ -17,29 +17,28 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto){
         if(typeof n1 === 'string' && n1.includes('Error')){
             return n1
         }
-        const datos = variables.get(n1)
-        if(datos == undefined){
+        if(variables.get(n1) === undefined){
             return `Error, ${n1} no esta definido`
         }
-      if(addSub){
-        return contexto == opt? Number(datos.valor) + Number(n2) 
+        const datos = variables.get(n1)
+        if(addSub){
+            return contexto == opt? Number(datos.valor) + Number(n2) 
                                : Number(datos.valor) - Number(n2);
-      }else{
-        return contexto == opt? Number(datos.valor) * Number(n2) 
+        } else {
+            return contexto == opt? Number(datos.valor) * Number(n2) 
                                : Number(datos.valor) / Number(n2);
-      }    
+        }    
       
     }
     if(isNaN(n2)){
         if(typeof n2 === 'string' && n2.includes('Error')){
             return n2
         }
-        const datos = variables.get(n2)
-        console.log('aqui ando ', datos.valor)
-        if(datos === undefined){
+        if(variables.get(n2) === undefined){
             return `Error, ${n2} no esta definido`
         } 
-        
+        const datos = variables.get(n2)
+        console.log('aqui ando ', datos.valor)
         if(addSub){
             return contexto == opt? Number(n1) + Number(datos.valor) 
                                : Number(n1) - Number(datos.valor);
@@ -54,17 +53,18 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto){
         if(typeof n1 === 'string' && n1.includes('Error')){
             return n1
         }
-        const d1 = variables.get(n1)
-        if(d1 === undefined){
+        
+        if(variables.get(n1) === undefined){
             return `Error, ${n1} no esta definido`
         }
+        const d1 = variables.get(n1)
         if(typeof n2 === 'string' && n2.includes('Error')){
             return n2
         }
-        const d2 = variables.get(n2)
-        if(d2 === undefined){
+        if(variables.get(n2) === undefined){
             return `Error, ${n2} no esta definido`
         }
+        const d2 = variables.get(n2)
         if(addSub){
             return contexto == opt? Number(d1.valor) + Number(d2.valor) 
                                     : Number(d1.valor) - Number(d2.valor);

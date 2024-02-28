@@ -3,15 +3,15 @@ import CommonLexerRules;
 
 init: TPG ALLAVE contenido CLLAVE;
 
-contenido: (inicializacion | declaracion | asignacion )*;
+contenido: (inicializacion | declaracion | asignacion | ID)*;
 
-inicializacion: PR ID SEMI #indefinido
+inicializacion: PR ID SEMI? #indefinido
               ;
 
-declaracion: PR ID ASIGNACION valor  #definido
+declaracion: PR ID ASIGNACION valor SEMI?  #definido
            ;
 
-asignacion: ID ASIGNACION valor SEMI #asignado
+asignacion: ID ASIGNACION valor SEMI? #asignado
           ;
 
 valor: valor op=('*'|'/') valor          #MulDiv

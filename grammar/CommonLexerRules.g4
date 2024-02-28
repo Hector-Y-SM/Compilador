@@ -15,7 +15,7 @@ ALLAVE           : '{' ;
 CLLAVE           : '}' ;
 AADMIRACION      : '!';
 
-ID               : [a-zA-Z]+;
+ID               : [a-zA-Z0-9_]+;
 NUM              : [0-9]+;
 CADENA           : [a-zA-Z]+;
 DEC              : [0-9]+'.'[0-9]+;
