@@ -13,6 +13,35 @@ import { validarOperacionMatematica } from "./sintaxisMatematicas.js"
 export function operacionesBasicas(n1, n2, opt, addSub, contexto){
     console.log('n1 ', n1)
     console.log('n2 ', n2)
+
+    if(isNaN(n1) && isNaN(n2)){
+        if(typeof n1 === 'string' && n1.includes('Error')){
+            return n1
+        }
+        if(typeof n2 === 'string' && n2.includes('Error')){
+            return n2
+        }
+        if(variables.get(n1) === undefined){
+            return `Error, ${n1} no esta definido`
+        }
+        const d1 = variables.get(n1)
+        if(typeof n2 === 'string' && n2.includes('Error')){
+            return n2
+        }
+        if(variables.get(n2) === undefined){
+            return `Error, ${n2} no esta definido`
+        }
+        const d2 = variables.get(n2)
+        if(addSub){
+            return contexto == opt? Number(d1.valor) + Number(d2.valor) 
+                                    : Number(d1.valor) - Number(d2.valor);
+        }else{
+            return contexto == opt? Number(d1.valor) * Number(d2.valor) 
+                                    : Number(d1.valor) / Number(d2.valor);
+
+        }
+    }
+
     if(isNaN(n1)){
         if(typeof n1 === 'string' && n1.includes('Error')){
             return n1
@@ -47,32 +76,6 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto){
                                : Number(n1) / Number(datos.valor);
         }
         
-    }
-    
-    if(isNaN(n1) && isNaN(n2)){
-        if(typeof n1 === 'string' && n1.includes('Error')){
-            return n1
-        }
-        
-        if(variables.get(n1) === undefined){
-            return `Error, ${n1} no esta definido`
-        }
-        const d1 = variables.get(n1)
-        if(typeof n2 === 'string' && n2.includes('Error')){
-            return n2
-        }
-        if(variables.get(n2) === undefined){
-            return `Error, ${n2} no esta definido`
-        }
-        const d2 = variables.get(n2)
-        if(addSub){
-            return contexto == opt? Number(d1.valor) + Number(d2.valor) 
-                                    : Number(d1.valor) - Number(d2.valor);
-        }else{
-            return contexto == opt? Number(d1.valor) * Number(d2.valor) 
-                                    : Number(d1.valor) / Number(d2.valor);
-
-        }
     }
 
     let op1;

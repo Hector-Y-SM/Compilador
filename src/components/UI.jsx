@@ -60,7 +60,8 @@ const UI = ({ titulo, funcionPrincipal, contenido, actualizar, resultados }) => 
             </div>
             {mostrarTerminal && (
                 <div className={`transition-all text-2xl duration-200 bg-black text-white p-3 overflow-hidden fixed bottom-0 left-0 right-0 h-1/4`}>
-                    Salida: {resultados}
+                    Salida: <br/>
+                    {resultados}
                     <button className="text-white rounded px-4 py-2 absolute top-3 right-3 hover:text-red-500" 
                         onClick={cerrarTerminal}>
                         X
