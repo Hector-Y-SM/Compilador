@@ -17,7 +17,7 @@ public class CompiladorParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		PR=1, IMPRESION=2, INT=3, FLOAT=4, CHAR=5, MUL=6, DIV=7, ADD=8, SUB=9, 
-		TPG=10, ABLOQUE=11, CBLOQUE=12, ASIGNACION=13, ALLAVE=14, CLLAVE=15, APARENTESIS=16, 
+		ASIGNACION=10, TPG=11, ABLOQUE=12, CBLOQUE=13, ALLAVE=14, CLLAVE=15, APARENTESIS=16, 
 		CPARENTESIS=17, AADMIRACION=18, ID=19, NUM=20, CADENA=21, DEC=22, SEMI=23, 
 		WS=24;
 	public static final int
@@ -34,7 +34,7 @@ public class CompiladorParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, null, "'leak'", "'nc'", "'im'", "'jgl'", "'*'", "'/'", "'+'", "'-'", 
-			"'_W7HLM_'", "'>_'", "'_<'", "'='", "'{'", "'}'", "'('", "')'", "'!'", 
+			"'='", "'W7HLM'", "'>_'", "'_<'", "'{'", "'}'", "'('", "')'", "'!'", 
 			null, null, null, null, "';'"
 		};
 	}
@@ -42,7 +42,7 @@ public class CompiladorParser extends Parser {
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, "PR", "IMPRESION", "INT", "FLOAT", "CHAR", "MUL", "DIV", "ADD", 
-			"SUB", "TPG", "ABLOQUE", "CBLOQUE", "ASIGNACION", "ALLAVE", "CLLAVE", 
+			"SUB", "ASIGNACION", "TPG", "ABLOQUE", "CBLOQUE", "ALLAVE", "CLLAVE", 
 			"APARENTESIS", "CPARENTESIS", "AADMIRACION", "ID", "NUM", "CADENA", "DEC", 
 			"SEMI", "WS"
 		};
@@ -743,8 +743,8 @@ public class CompiladorParser extends Parser {
 		"W\u0000\u000e\u0001\u0000\u0000\u0000\u0002\u0019\u0001\u0000\u0000\u0000"+
 		"\u0004\u001c\u0001\u0000\u0000\u0000\u0006!\u0001\u0000\u0000\u0000\b"+
 		"(\u0001\u0000\u0000\u0000\n.\u0001\u0000\u0000\u0000\fC\u0001\u0000\u0000"+
-		"\u0000\u000e\u000f\u0005\n\u0000\u0000\u000f\u0010\u0005\u000b\u0000\u0000"+
-		"\u0010\u0011\u0003\u0002\u0001\u0000\u0011\u0012\u0005\f\u0000\u0000\u0012"+
+		"\u0000\u000e\u000f\u0005\u000b\u0000\u0000\u000f\u0010\u0005\f\u0000\u0000"+
+		"\u0010\u0011\u0003\u0002\u0001\u0000\u0011\u0012\u0005\r\u0000\u0000\u0012"+
 		"\u0001\u0001\u0000\u0000\u0000\u0013\u0018\u0003\u0004\u0002\u0000\u0014"+
 		"\u0018\u0003\u0006\u0003\u0000\u0015\u0018\u0003\b\u0004\u0000\u0016\u0018"+
 		"\u0003\n\u0005\u0000\u0017\u0013\u0001\u0000\u0000\u0000\u0017\u0014\u0001"+
@@ -755,9 +755,9 @@ public class CompiladorParser extends Parser {
 		"\u0001\u0000\u0000\u001d\u001f\u0005\u0013\u0000\u0000\u001e \u0005\u0017"+
 		"\u0000\u0000\u001f\u001e\u0001\u0000\u0000\u0000\u001f \u0001\u0000\u0000"+
 		"\u0000 \u0005\u0001\u0000\u0000\u0000!\"\u0005\u0001\u0000\u0000\"#\u0005"+
-		"\u0013\u0000\u0000#$\u0005\r\u0000\u0000$&\u0003\f\u0006\u0000%\'\u0005"+
+		"\u0013\u0000\u0000#$\u0005\n\u0000\u0000$&\u0003\f\u0006\u0000%\'\u0005"+
 		"\u0017\u0000\u0000&%\u0001\u0000\u0000\u0000&\'\u0001\u0000\u0000\u0000"+
-		"\'\u0007\u0001\u0000\u0000\u0000()\u0005\u0013\u0000\u0000)*\u0005\r\u0000"+
+		"\'\u0007\u0001\u0000\u0000\u0000()\u0005\u0013\u0000\u0000)*\u0005\n\u0000"+
 		"\u0000*,\u0003\f\u0006\u0000+-\u0005\u0017\u0000\u0000,+\u0001\u0000\u0000"+
 		"\u0000,-\u0001\u0000\u0000\u0000-\t\u0001\u0000\u0000\u0000./\u0005\u0002"+
 		"\u0000\u0000/0\u0005\u0010\u0000\u000001\u0003\f\u0006\u000012\u0005\u0011"+

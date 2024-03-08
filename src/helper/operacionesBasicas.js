@@ -10,26 +10,17 @@ import { validarOperacionMatematica } from "./sintaxisMatematicas.js"
  * @returns resultado de la operacion o error si la sintaxis esta mal 
  */
 
-export function operacionesBasicas(n1, n2, opt, addSub, contexto){
+export function operacionesBasicas(n1, n2, opt, addSub, contexto, err){
     console.log('n1 ', n1)
     console.log('n2 ', n2)
 
     if(isNaN(n1) && isNaN(n2)){
-        if(typeof n1 === 'string' && n1.includes('Error')){
-            return n1
-        }
-        if(typeof n2 === 'string' && n2.includes('Error')){
-            return n2
-        }
         if(variables.get(n1) === undefined){
-            return `Error, ${n1} no esta definido`
+            throw new Error(`Error en la linea ${err}, ${n1} no esta definido`)
         }
         const d1 = variables.get(n1)
-        if(typeof n2 === 'string' && n2.includes('Error')){
-            return n2
-        }
         if(variables.get(n2) === undefined){
-            return `Error, ${n2} no esta definido`
+            throw new Error(`Error en la linea ${err}, ${n2} no esta definido`)
         }
         const d2 = variables.get(n2)
         if(addSub){
@@ -43,11 +34,8 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto){
     }
 
     if(isNaN(n1)){
-        if(typeof n1 === 'string' && n1.includes('Error')){
-            return n1
-        }
         if(variables.get(n1) === undefined){
-            return `Error, ${n1} no esta definido`
+            throw new Error(`Error en la linea ${err}, ${n1} no esta definido`)
         }
         const datos = variables.get(n1)
         if(addSub){
@@ -60,11 +48,8 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto){
       
     }
     if(isNaN(n2)){
-        if(typeof n2 === 'string' && n2.includes('Error')){
-            return n2
-        }
         if(variables.get(n2) === undefined){
-            return `Error, ${n2} no esta definido`
+            throw new Error(`Error en la linea ${err}, ${n2} no esta definido`)
         } 
         const datos = variables.get(n2)
         console.log('aqui ando ', datos.valor)
@@ -93,26 +78,23 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto){
 
         if(addSub){
             if(n1 === null || n2 === null){
-                console.log('Error, la sintaxis de la operacion esta mal')
-                return 'Error, la sintaxis de la operacion esta mal'
+                throw new Error(`Error en la linea ${err}, la sintaxis de la operacion esta mal`);
             }
             const e1 = validarOperacionMatematica(op1);
             console.log('Estado 1: ',e1)
             if (!e1) { 
-                console.log('todo mal')
-              return 'Error, esta operacion no se puede realizar' 
+                throw new Error(`Error en la linea ${err}, esta operacion no se puede realizar`) 
             }
 
             return Number(n1) + Number(n2);
         }
         if(n1 === null || n2 === null){
-            console.log('Error, la sintaxis de la operacion esta mal')
-            return 'Error, la sintaxis de la operacion esta mal'
+            throw new Error(`Error en la linea ${err}, la sintaxis de la operacion esta mal`)
         }
         const e2 = validarOperacionMatematica(op1);
         console.log('Estado 2: ',e2)
         if (!e2) { 
-            return 'Error, esta operacion no se puede realizar' 
+            throw new Error(`Error en la linea ${err}, esta operacion no se puede realizar`) 
         }
 
         return Number(n1) * Number(n2);
@@ -120,26 +102,23 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto){
 
         if(addSub){
             if(n1 === null || n2 === null){
-                console.log('Error, la sintaxis de la operacion esta mal')
-                return 'Error, la sintaxis de la operacion esta mal'
+                throw new Error(`Error en la linea ${err}, la sintaxis de la operacion esta mal`)
             }
             const e1 = validarOperacionMatematica(op2);
             console.log('Estado 1: ',e1)
             if (!e1) { 
-                console.log('todo mal')
-              return 'Error, esta operacion no se puede realizar' 
+                throw new Error(`Error en la linea ${err}, esta operacion no se puede realizar`) 
             }
 
             return Number(n1) - Number(n2);
         }
         if(n1 === null || n2 === null){
-            console.log('Error, la sintaxis de la operacion esta mal')
-            return 'Error, la sintaxis de la operacion esta mal'
+            throw new Error(`Error en la linea ${err}, la sintaxis de la operacion esta mal`)
         }
         const e2 = validarOperacionMatematica(op2);
         console.log('Estado 2: ',e2)
         if (!e2) { 
-            return 'Error, esta operacion no se puede realizar' 
+            throw new Error(`Error en la linea ${err}, esta operacion no se puede realizar`) 
         }
 
         return Number(n1) / Number(n2);
