@@ -14,7 +14,7 @@ declaracion: PR ID ASIGNACION valor SEMI?  #definido
 asignacion: ID ASIGNACION valor SEMI? #asignado
           ;
 
-print : IMPRESION APARENTESIS valor CPARENTESIS   #printValor
+print : IMPRESION APARENTESIS valor CPARENTESIS SEMI?  #printValor
       ;          
 
 valor: valor op=('*'|'/') valor          #MulDiv
@@ -27,8 +27,8 @@ valor: valor op=('*'|'/') valor          #MulDiv
      | '(' valor ')''('valor')'          #implicito
      ;
 
+
 PR: INT 
   | CHAR
   | FLOAT
   ;
-

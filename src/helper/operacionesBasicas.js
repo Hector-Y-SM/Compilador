@@ -15,52 +15,87 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto, err){
     console.log('n2 ', n2)
 
     if(isNaN(n1) && isNaN(n2)){
-        if(variables.get(n1) === undefined){
+        if(variables.get(n1) === undefined && !n1.match(/"('\\"|.)*?"/g)){
             throw new Error(`Error en la linea ${err}, ${n1} no esta definido`)
         }
         const d1 = variables.get(n1)
-        if(variables.get(n2) === undefined){
+        if(variables.get(n2) === undefined && !n2.match(/"('\\"|.)*?"/g)){
             throw new Error(`Error en la linea ${err}, ${n2} no esta definido`)
         }
         const d2 = variables.get(n2)
         if(addSub){
+            if(n1.match(/"('\\"|.)*?"/g) && n2.match(/"('\\"|.)*?"/g)){
+                if(contexto == 9){
+                    return  n1.concat(n2)
+                } else {
+                    throw new Error('No se puede hacer este tipo de operacion con cadenas');
+                }
+            }
             return contexto == opt? Number(d1.valor) + Number(d2.valor) 
                                     : Number(d1.valor) - Number(d2.valor);
-        }else{
+        } else {
+            if(n1.match(/"('\\"|.)*?"/g) && n2.match(/"('\\"|.)*?"/g)){
+                if(contexto !== 9){
+                    throw new Error('No se puede hacer este tipo de operacion con cadenas');
+                } 
+            }
             return contexto == opt? Number(d1.valor) * Number(d2.valor) 
                                     : Number(d1.valor) / Number(d2.valor);
-
         }
     }
 
     if(isNaN(n1)){
-        if(variables.get(n1) === undefined){
+        if(variables.get(n1) === undefined && !n1.match(/"('\\"|.)*?"/g)){
+            console.log('no hay una cadena')
             throw new Error(`Error en la linea ${err}, ${n1} no esta definido`)
         }
         const datos = variables.get(n1)
         if(addSub){
+            if(n1.match(/"('\\"|.)*?"/g)){
+                if(contexto == 9){
+                    return  n1.concat(n2)
+                } else {
+                    throw new Error('No se puede hacer este tipo de operacion con cadenas');
+                }
+            }
             return contexto == opt? Number(datos.valor) + Number(n2) 
                                : Number(datos.valor) - Number(n2);
         } else {
+            if(n1.match(/"('\\"|.)*?"/g)){
+                if(contexto !== 9){
+                    throw new Error('No se puede hacer este tipo de operacion con cadenas');
+                } 
+            }
             return contexto == opt? Number(datos.valor) * Number(n2) 
                                : Number(datos.valor) / Number(n2);
         }    
-      
     }
+
     if(isNaN(n2)){
-        if(variables.get(n2) === undefined){
+        if(variables.get(n2) === undefined && !n2.match(/"('\\"|.)*?"/g)){
             throw new Error(`Error en la linea ${err}, ${n2} no esta definido`)
         } 
         const datos = variables.get(n2)
-        console.log('aqui ando ', datos.valor)
+        //console.log('aqui ando ', datos.valor)
         if(addSub){
+            if(n2.match(/"('\\"|.)*?"/g)){
+                if(contexto == 9){
+                    return  n1 + n2
+                } else {
+                    throw new Error('No se puede hacer este tipo de operacion con cadenas');
+                }
+            }
             return contexto == opt? Number(n1) + Number(datos.valor) 
                                : Number(n1) - Number(datos.valor);
-        }else {
+        } else {
+            if(n2.match(/"('\\"|.)*?"/g)){
+                if(contexto !== 9){
+                    throw new Error('No se puede hacer este tipo de operacion con cadenas');
+                } 
+            }
             return contexto == opt? Number(n1) * Number(datos.valor) 
                                : Number(n1) / Number(datos.valor);
         }
-        
     }
 
     let op1;
@@ -75,7 +110,6 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto, err){
 
     if(contexto == opt){
         console.log('esta es la operacion 1: ',op1)
-
         if(addSub){
             if(n1 === null || n2 === null){
                 throw new Error(`Error en la linea ${err}, la sintaxis de la operacion esta mal`);
@@ -85,7 +119,6 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto, err){
             if (!e1) { 
                 throw new Error(`Error en la linea ${err}, esta operacion no se puede realizar`) 
             }
-
             return Number(n1) + Number(n2);
         }
         if(n1 === null || n2 === null){
@@ -96,7 +129,6 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto, err){
         if (!e2) { 
             throw new Error(`Error en la linea ${err}, esta operacion no se puede realizar`) 
         }
-
         return Number(n1) * Number(n2);
         }
 
