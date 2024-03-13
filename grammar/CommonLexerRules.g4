@@ -15,11 +15,21 @@ DIV         : '/' ;
 ADD         : '+' ;
 SUB         : '-' ;
 ASIGNACION  : '=' ;
+MAYORQ      : '>' ;
+MENORQ      : '<' ;
+MAYOR_IGUAL : '>=';
+MENOR_IGUAL : '<=';
+IGUALDAD_BASE : '==';
+IGUALDAD_FUERTE: '===';
+
+//! Operadores logicos
+OR : '||';
+AND: '&&';
 
 //! Caparazon inicial
 TPG         : 'W7HLM' ;
 ABLOQUE     : '>_'    ;
-CBLOQUE     : '_<'    ;
+CBLOQUE     : '_<'    ; 
 
 //! Simbolos
 ALLAVE      : '{'  ;

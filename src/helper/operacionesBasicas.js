@@ -11,6 +11,15 @@ import { validarOperacionMatematica } from "./sintaxisMatematicas.js"
  */
 
 export function operacionesBasicas(n1, n2, opt, addSub, contexto, err){
+    let op1;
+    let op2;
+    if(addSub){
+        op1 = `${n1} + ${n2}`;
+        op2 = `${n1} - ${n2}`;
+    } else {
+        op1 = `${n1} * ${n2}`;
+        op2 = `${n1} / ${n2}`;
+    }
     console.log('n1 ', n1)
     console.log('n2 ', n2)
 
@@ -18,15 +27,17 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto, err){
         if(variables.get(n1) === undefined && !n1.match(/"('\\"|.)*?"/g)){
             throw new Error(`Error en la linea ${err}, ${n1} no esta definido`)
         }
-        const d1 = variables.get(n1)
         if(variables.get(n2) === undefined && !n2.match(/"('\\"|.)*?"/g)){
             throw new Error(`Error en la linea ${err}, ${n2} no esta definido`)
         }
         const d2 = variables.get(n2)
+        const d1 = variables.get(n1)
         if(addSub){
             if(n1.match(/"('\\"|.)*?"/g) && n2.match(/"('\\"|.)*?"/g)){
+                const a1 = n1.slice(1,-1)
+                const a2 = n2.slice(1,-1)
                 if(contexto == 9){
-                    return  n1.concat(n2)
+                    return  '"'+eval('a1 + a2')+'"'
                 } else {
                     throw new Error('No se puede hacer este tipo de operacion con cadenas');
                 }
@@ -52,8 +63,9 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto, err){
         const datos = variables.get(n1)
         if(addSub){
             if(n1.match(/"('\\"|.)*?"/g)){
+                const aux = n2.slice(1,-1)
                 if(contexto == 9){
-                    return  n1.concat(n2)
+                    return  '"'+eval('n1 + aux')+'"'
                 } else {
                     throw new Error('No se puede hacer este tipo de operacion con cadenas');
                 }
@@ -76,11 +88,11 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto, err){
             throw new Error(`Error en la linea ${err}, ${n2} no esta definido`)
         } 
         const datos = variables.get(n2)
-        //console.log('aqui ando ', datos.valor)
         if(addSub){
             if(n2.match(/"('\\"|.)*?"/g)){
+                const aux = n2.slice(1,-1)
                 if(contexto == 9){
-                    return  n1 + n2
+                    return  '"'+eval('n1 + aux')+'"'
                 } else {
                     throw new Error('No se puede hacer este tipo de operacion con cadenas');
                 }
@@ -96,16 +108,6 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto, err){
             return contexto == opt? Number(n1) * Number(datos.valor) 
                                : Number(n1) / Number(datos.valor);
         }
-    }
-
-    let op1;
-    let op2;
-    if(addSub){
-        op1 = `${n1} + ${n2}`;
-        op2 = `${n1} - ${n2}`;
-    } else {
-        op1 = `${n1} * ${n2}`;
-        op2 = `${n1} / ${n2}`;
     }
 
     if(contexto == opt){
