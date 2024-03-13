@@ -34,7 +34,8 @@ condiciones : valor des=(MAYORQ | MENORQ | MAYOR_IGUAL | MENOR_IGUAL) valor #con
             ;
 
 cbloque : CBLOQUE #auxScoope
-      ;
+        ;
+
 PR: INT 
   | CHAR
   | FLOAT

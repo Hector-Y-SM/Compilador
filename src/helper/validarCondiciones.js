@@ -9,11 +9,11 @@ export function argumentosValidos(argumento1, argumento2, err){
 		}
 }
 
-export function comparaciones(arg1, arg2, simbolo){
+export function comparaciones(arg1, arg2, simbolo, err){
     if(typeof arg1 !== 'number' && typeof arg2 !== 'number'){
         console.log('entre aqui')
         if(!variables.has(arg1) || !variables.has(arg2)){
-            throw new Error(`Error en la linea ${ctx.start.line}, argumento no validos`)
+            throw new Error(`Error en la linea ${err}, argumento no valido`)
         }
         const aux = variables.get(arg1)
         const aux2 = variables.get(arg2)
@@ -23,7 +23,7 @@ export function comparaciones(arg1, arg2, simbolo){
 
     if(typeof arg1 !== 'number'){
         if(!variables.has(arg1)){
-            throw new Error(`Error en la linea ${ctx.start.line}, argumento ${arg1} no validos`)
+            throw new Error(`Error en la linea ${err}, argumento ${arg1} no valido`)
         }
         const aux = variables.get(arg1)
         const variante1 = `${aux.valor} ${simbolo} ${arg2}`
@@ -33,7 +33,7 @@ export function comparaciones(arg1, arg2, simbolo){
     
     if(typeof arg2 !== 'number'){
         if(!variables.has(arg2)){
-            throw new Error(`Error en la linea ${ctx.start.line}, argumento ${arg2} no validos`)
+            throw new Error(`Error en la linea ${err}, argumento ${arg2} no valido`)
         }
         const aux = variables.get(arg2)
         const variante1 = `${arg1} ${simbolo} ${aux.valor}`
