@@ -19,8 +19,10 @@ MAYORQ      : '>' ;
 MENORQ      : '<' ;
 MAYOR_IGUAL : '>=';
 MENOR_IGUAL : '<=';
-IGUALDAD_BASE : '==';
-IGUALDAD_FUERTE: '===';
+IGUALDAD_DEBIL   : '==' ;
+IGUALDAD_FUERTE  : '===';
+DIF_DEBIL        : '!=' ;
+DIF_FUERTE       : '!==';
 
 //! Operadores logicos
 OR : '||';

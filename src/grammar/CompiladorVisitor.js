@@ -102,6 +102,24 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
+	// Visit a parse tree produced by CompiladorParser#logicas.
+	visitLogicas(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#condicionIgualDiferente.
+	visitCondicionIgualDiferente(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#trueOrFalse.
+	visitTrueOrFalse(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
 	// Visit a parse tree produced by CompiladorParser#auxScoope.
 	visitAuxScoope(ctx) {
 	  return this.visitChildren(ctx);

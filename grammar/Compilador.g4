@@ -30,7 +30,10 @@ valor: valor op=('*'|'/') valor          #MulDiv
      | '(' valor ')''('valor')'          #implicito
      ;
 
-condiciones : valor des=(MAYORQ | MENORQ | MAYOR_IGUAL | MENOR_IGUAL) valor #condicionComparaciones
+condiciones : condiciones des=(OR | AND) condiciones                                       #logicas
+            | valor                                                                        #trueOrFalse  
+            | valor des=(MAYORQ | MENORQ | MAYOR_IGUAL | MENOR_IGUAL) valor                #condicionComparaciones
+            | valor des=(IGUALDAD_DEBIL | IGUALDAD_FUERTE | DIF_DEBIL | DIF_FUERTE) valor  #condicionIgualDiferente
             ;
 
 cbloque : CBLOQUE #auxScoope

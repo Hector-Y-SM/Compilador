@@ -5,7 +5,6 @@ import { validarOperacionMatematica } from "./sintaxisMatematicas.js";
 import { argumentosValidos, comparaciones } from "./validarCondiciones.js";
 
 export default class CustomVisitor extends CompiladorVisitor{
-	
 	constructor(){
 		super();
 		this.impresiones = [];
@@ -19,8 +18,6 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('variables normales: ', variables)
 		console.log('variables con scoope: ',scoopeVariables)
 		console.log('estado bandera', this.bandera)
-		//console.log(this.impresiones)
-		//console.log(resultados)
 		if(this.impresiones.length >= 1){
 			return this.impresiones.join('\n');
 		}
@@ -36,19 +33,32 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const estado = this.bandera;
 
 		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
-			this.bandera = false
 			throw new Error(`Error en la linea ${ctx.start.line}, El nombre de la variable: ${variable} no es válido`);
 		}
 
 		if(estado){
+			if(typeof valor != 'number' && !valor.match(/"('\\"|.)*?"/g) && valor !== 'true' && valor !== 'false'){
+				if(!scoopeVariables.has(valor) && !variables.has(valor)){
+					throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${valor} no esta definido`)
+				}
+				const aux = variables.get(valor)
+				scoopeVariables.set(variable, {tipo: tipoDato, valor: aux.valor})
+				return	
+			}
 			if(scoopeVariables.has(variable) || variables.has(variable)){ 
-				this.bandera = false
 				throw new Error(`Error en la linea ${ctx.start.line}, la variable: ${variable} ya habia sido registrada`); 
 			}
 			scoopeVariables.set(variable, {tipo: tipoDato, valor:valor})
 			return
 		}
-
+		if(typeof valor != 'number' && !valor.match(/"('\\"|.)*?"/g) && valor !== 'true' && valor !== 'false'){
+			if(!variables.has(valor)){
+				throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${valor} no esta definido`)
+			}
+			const aux = variables.get(valor)
+			variables.set(variable, {tipo: tipoDato, valor: aux.valor})
+			return	
+		}
 		if(variables.has(variable)){ 
 			throw new Error(`Error en la linea ${ctx.start.line}, la variable: ${variable} ya habia sido registrada`); 
 		}
@@ -70,17 +80,40 @@ export default class CustomVisitor extends CompiladorVisitor{
 		}
 
 		if(estado) {
+			if(typeof nuevoValor != 'number' && !nuevoValor.match(/"('\\"|.)*?"/g) && nuevoValor !== 'true' && nuevoValor !== 'false'){
+				console.log('por aqui ando')
+				if(!variables.has(nuevoValor) && !scoopeVariables.has(nuevoValor)){
+					throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${nuevoValor} no esta definido`)
+				}
+				if(scoopeVariables.has(nuevoValor)){
+					let obj = scoopeVariables.get(nuevoValor)
+					scoopeVariables.set(variable, {tipoDato: obj.tipoDato, valor: obj.valor})
+					return
+				}
+				if(variables.has(nuevoValor)){
+					let obj = variables.get(nuevoValor)
+					scoopeVariables.set(variable, {tipoDato: obj.tipoDato, valor: obj.valor})
+					return
+				}
+			}
 			if(scoopeVariables.has(variable)){
+				console.log('por aqui tambien')
 				let obj = scoopeVariables.get(variable);
-				obj.valor = nuevoValor; 
+				obj.valor = nuevoValor;
+				return 
 			} if (variables.has(variable)) {
 				let obj = variables.get(variable);
 				obj.valor = nuevoValor; 
+				return
 			} 
-			else {
-				this.bandera = false
-				throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} no ha sido declarada`);
+		}
+		if(typeof nuevoValor != 'number' && !nuevoValor.match(/"('\\"|.)*?"/g) && nuevoValor !== 'true' && nuevoValor !== 'false'){
+			if(!variables.has(nuevoValor)){
+				throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${nuevoValor} no esta definido`)
 			}
+			const aux = variables.get(nuevoValor)
+			aux.valor = nuevoValor
+			return	
 		}
 		if(variables.has(variable)){
 			let obj = variables.get(variable);
@@ -100,12 +133,10 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const estado = this.bandera;
 
     	if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable) || variable == null) {
-			this.bandera = false
 			throw new Error( `Error en la linea ${ctx.start.line}, El nombre de la variable: ${variable} no es válido`);
 		}
 		if(estado){
 			if(scoopeVariables.has(variable) || variables.has(variable)){ 
-				this.bandera = false
 				throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} ya fue registrada anteriormente`);
 			}
 			scoopeVariables.set(variable, {tipo: tipoDato, valor:valor})
@@ -121,48 +152,39 @@ export default class CustomVisitor extends CompiladorVisitor{
 
 	//! Metodo para poder hacer impresiones, ya sea dentro de algun bloque o en el contenido
 	visitPrintValor(ctx) {
-		console.log('kiere imprimir')
+		console.log('kiere imprimir');
 		const valor = this.visit(ctx.valor(0));
-		const estado = this.bandera
-
-		if(estado){
-			if(typeof valor == 'string' && valor.match(/"('\\"|.)*?"/g) || typeof valor == 'number'){
+	
+		if (this.bandera) {
+			const string_numero = typeof valor === 'string' && valor.match(/"('\\"|.)*?"/g) || typeof valor === 'number';
+			if (string_numero) {
 				this.impresiones.push(valor);
-				return
+				return;
 			}
-			if(scoopeVariables.has(valor)){
-				const aux = scoopeVariables.get(valor);
+			
+			const variablesMap = scoopeVariables.has(valor) ? scoopeVariables : variables;
+			if (variablesMap.has(valor)) {
+				const aux = variablesMap.get(valor);
 				this.impresiones.push(aux.valor);
-				return
-			} 
-			if (variables.has(valor)){
-				const aux = variables.get(valor);
-				this.impresiones.push(aux.valor);
-				return
+				return;
 			}
-			if(!variables.has(valor) || !scoopeVariables.has(valor)){
-				console.log('entro aqui')
-				this.bandera = false;
-				throw new Error(`Error en la linea ${ctx.start.line}, la varible ${valor} no esta definida`);	
-			}
+		  throw new Error(`Error en la linea ${ctx.start.line}, la variable ${valor} no esta definida`);
 		}
-		if(typeof valor == 'string' && valor.match(/"('\\"|.)*?"/g) || typeof valor == 'number'){
+	
+		const string_numero = typeof valor === 'string' && valor.match(/"('\\"|.)*?"/g) || typeof valor === 'number';
+		if (string_numero) {
 			this.impresiones.push(valor);
-			return 
+			return;
 		}
-
-		if(variables.has(valor)){
+		if (variables.has(valor)) {
 			const aux = variables.get(valor);
 			this.impresiones.push(aux.valor);
-			return
+			return;
 		}
-		if(!variables.has(valor)){
-			throw new Error(`Error en la linea ${ctx.start.line}, la varible ${valor} no esta definida`);	
-		}
-		return this.visitChildren(ctx);
+	  throw new Error(`Error en la linea ${ctx.start.line}, la variable ${valor} no esta definida`);
 	}
 
-	// Visit a parse tree produced by CompiladorParser#if.
+	//! reconocer cuando estamos dentro o fuera del if
 	visitIf(ctx) {
 		console.log(this.visit(ctx.condiciones()));
 		const estado = this.visit(ctx.condiciones(0))
@@ -174,11 +196,11 @@ export default class CustomVisitor extends CompiladorVisitor{
 		return this.visitChildren(ctx);
 	}
 	  	  
-	//! validar algunas concidiciones comparativas del if
+	//! validar algunas concidiciones comparativas del if, (<,>,>=,<=)
 	visitCondicionComparaciones(ctx) {
 		const arg1 = this.visit(ctx.valor(0))
 		const arg2 = this.visit(ctx.valor(1))
-		argumentosValidos(arg1,arg2,ctx.start.line)
+		argumentosValidos(arg1, arg2, 0, ctx.start.line)
 		const simbolo = ctx.des.type; 
 
 		switch(simbolo){
@@ -203,7 +225,79 @@ export default class CustomVisitor extends CompiladorVisitor{
 		return this.bandera;
 	}
 
-	// Visit a parse tree produced by CompiladorParser#MulDiv.
+	//! Metodo para controlar el if con condicion simple, ejemplo: if(true)
+	visitTrueOrFalse(ctx) {
+		const argumento = this.visit(ctx.valor())
+		argumentosValidos(argumento, null, 1, ctx.start.line)
+		
+		switch(argumento){
+			case 'true':
+					this.bandera = true;
+				break;
+			case 'false':
+					this.bandera = false;
+				break;
+			default:
+				if(!variables.has(argumento)){
+					throw new Error(`Error en la linea ${ctx.start.line}, el argumento ${argumento} no esta definido`);
+				}
+				const aux = variables.get(argumento)
+				aux.valor !== 'true' ? this.bandera = false : this.bandera = true;
+				aux.valor !== 'false' ? this.bandera = true : this.bandera = false;
+				if(aux.valor !== 'true' && aux.valor !== 'false'){
+					throw new Error(`Error en la linea ${ctx.start.line}, no se puede evaluar esta condicion`)
+				}
+		}
+	  return this.bandera;
+	}
+
+	// Visit a parse tree produced by CompiladorParser#condicionIgualDiferente.
+	visitCondicionIgualDiferente(ctx) {
+		const primero = this.visit(ctx.valor(0));
+		const segundo = this.visit(ctx.valor(1));
+		const simbolo = ctx.des.type;
+		argumentosValidos(primero, segundo, 2, ctx.start.line)
+	
+		switch(simbolo){
+			case 16: //- ==
+				if(primero == segundo){ this.bandera = false; }
+				else{ this.bandera = true }
+			  break;
+			case 17: //- ===
+				if(primero === segundo){ this.bandera = false; }
+				else{ this.bandera = true }
+			  break;
+			case 18: //- !=
+				if(primero != segundo){ this.bandera = false; }
+				else{this.bandera = true }
+			  break;
+			case 19: //- !==
+				if(primero !== segundo){ this.bandera = false; }
+				else{this.bandera = true }
+			  break;
+			default: throw new Error(`Error en la linea ${ctx.start.line}, no se puede evaluar esta condicion`)
+		}
+	  return this.bandera;
+	}
+
+	// Visit a parse tree produced by CompiladorParser#logicas.
+	visitLogicas(ctx) {
+		const argumento1 = this.visit(ctx.condiciones(0));
+		const argumento2 = this.visit(ctx.condiciones(1));
+		const simbolo = ctx.des.type;
+
+		switch(simbolo){
+			case 20: // ||
+				argumento1 == false && argumento2 == false ? this.bandera = false : this.bandera = true;
+			  break;
+			case 21: // &&
+				argumento1 == false || argumento2 == false ? this.bandera = false : this.bandera = true;
+			  break;
+		}
+	  return this.bandera;
+	}
+
+	//! Trabajamos con una funcion auxiliar dentro de esta para poder controlar tanto multiplicacion como division
 	visitMulDiv(ctx) {
 		console.log('multiplicacion o division')
 		const n1 = this.visit(ctx.valor(0));
@@ -217,7 +311,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 	  return resultado;
 	}
   
-	// Visit a parse tree produced by CompiladorParser#AddSub.
+	//! Trabajamos con una funcion auxiliar dentro de esta para poder controlar tanto sumas o restas
 	visitAddSub(ctx) {
 		console.log('suma o resta')
 		const n1 = this.visit(ctx.valor(0));
@@ -231,7 +325,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 	  return resultado;
 	}
 
-	// Visit a parse tree produced by CompiladorParser#implicito.
+	//! Funcion para controlar como se ingresan las opciones con parentesis
 	visitImplicito(ctx) {
 		const op = ctx.getText();
 		const opCompleta = validarOperacionMatematica(op);
@@ -241,12 +335,13 @@ export default class CustomVisitor extends CompiladorVisitor{
 		throw new Error(`Error en la linea ${ctx.start.line}, se esperaba un operador para ${op}`)
 	}
 
-	// Visit a parse tree produced by CompiladorParser#cerramosBloque.
+	//! Esta funcion ayudara controlar cuando se acaba un bloque de codigo
 	visitAuxScoope(ctx) {
 		console.log('encontre el fin')
 		this.bandera = false
 		return this.visitChildren(ctx);
 	}
+
 	visitParens(ctx) {return this.visit(ctx.valor()) }
 	visitCadenas(ctx) {return ctx.getText(); }
 	visitId(ctx) { return isNaN(ctx.getText())? ctx.getText() : Number(ctx.getText()); }
