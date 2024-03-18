@@ -1,9 +1,9 @@
 grammar Compilador;
 import CommonLexerRules;
 
-init: TPG ABLOQUE contenido CBLOQUE;
+init: TPG ALLAVE contenido CLLAVE;
 
-contenido: (inicializacion | declaracion | asignacion | print | if_simple)*;
+contenido: (inicializacion | declaracion | asignacion | print | if_simple )*;
 
 inicializacion: PR ID SEMI? #indefinido
               ;
@@ -17,8 +17,12 @@ asignacion: ID ASIGNACION valor SEMI? #asignado
 print : IMPRESION APARENTESIS valor CPARENTESIS SEMI?  #printValor
       ;          
 
-if_simple : IF_BASICO APARENTESIS condiciones CPARENTESIS ABLOQUE contenido cbloque #if
+if_simple : IF_BASICO APARENTESIS condiciones CPARENTESIS abloque contenido cbloque if_else? #if 
           ;
+
+
+if_else: ELSE abloque contenido cbloque #ifElse
+    ;
 
 valor: valor op=('*'|'/') valor          #MulDiv
      | valor op=('+'|'-') valor          #AddSub
@@ -36,10 +40,13 @@ condiciones : condiciones des=(OR | AND) condiciones                            
             | valor des=(IGUALDAD_DEBIL | IGUALDAD_FUERTE | DIF_DEBIL | DIF_FUERTE) valor  #condicionIgualDiferente
             ;
 
-cbloque : CBLOQUE #auxScoope
+abloque: ALLAVE #auxScoopeDos
+       ;
+cbloque : CLLAVE #auxScoope
         ;
 
 PR: INT 
   | CHAR
   | FLOAT
   ;
+

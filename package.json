@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@lezer/highlight": "^1.2.0",
+    "@uiw/codemirror-themes": "^4.21.24",
+    "@uiw/react-codemirror": "^4.21.24",
     "antlr4": "^4.13.1-patch-1",
     "next": "14.1.0",
     "react": "^18",

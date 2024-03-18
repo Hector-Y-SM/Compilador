@@ -48,6 +48,12 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
+	// Visit a parse tree produced by CompiladorParser#ifElse.
+	visitIfElse(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
 	// Visit a parse tree produced by CompiladorParser#parens.
 	visitParens(ctx) {
 	  return this.visitChildren(ctx);
@@ -116,6 +122,12 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 
 	// Visit a parse tree produced by CompiladorParser#trueOrFalse.
 	visitTrueOrFalse(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#auxScoopeDos.
+	visitAuxScoopeDos(ctx) {
 	  return this.visitChildren(ctx);
 	}
 

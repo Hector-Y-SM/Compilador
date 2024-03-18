@@ -2,7 +2,8 @@ lexer grammar CommonLexerRules;
 
 //!Palabras reservadas
 IMPRESION   : 'leak';
-IF_BASICO   : 'if';
+IF_BASICO   : 'if'  ;
+ELSE        : 'else';
 
 //! Tipos de datos
 INT         : 'nc' ;
@@ -30,12 +31,10 @@ AND: '&&';
 
 //! Caparazon inicial
 TPG         : 'W7HLM' ;
-ABLOQUE     : '>_'    ;
-CBLOQUE     : '_<'    ; 
-
-//! Simbolos
 ALLAVE      : '{'  ;
 CLLAVE      : '}'  ;
+
+//! Simbolos
 APARENTESIS : '('  ;
 CPARENTESIS : ')'  ;
 AADMIRACION : '!'  ;

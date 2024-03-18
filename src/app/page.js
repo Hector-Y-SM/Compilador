@@ -9,6 +9,8 @@ const HomePage = () => {
   const [resultado, setResultado] = useState([]);
 
   const inter = () => {
+    console.log('esto tiene: ',txt)
+
     const sinComentarios = limpiarComentarios(txt);
     if(sinComentarios == 'Error en sintaxis de comentarios'){ return setResultado('Error en sintaxis de comentarios')}
 
@@ -17,12 +19,16 @@ const HomePage = () => {
       setResultado(muestras);
   }
 
+  const actualizarTexto = (nuevoTexto) => {
+    setTxt(nuevoTexto);
+  };
+
   return (
     <UI
-      titulo={'Compilador'}
+      titulo={'chucho.bt'}
       funcionPrincipal={inter}
       contenido={txt}
-      actualizar={(e)=>{setTxt(e.target.value)}}
+      actualizar={actualizarTexto}
       resultados={resultado}
     />
   )
