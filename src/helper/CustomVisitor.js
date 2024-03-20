@@ -1,5 +1,5 @@
 import CompiladorVisitor from "../grammar/CompiladorVisitor.js";
-import { scoopeVariables, variables } from "./memoria.js";
+import { variables } from "./memoria.js";
 import { operacionesBasicas } from "./operacionesBasicas.js";
 import { validarOperacionMatematica } from "./sintaxisMatematicas.js";
 import { argumentosValidos, comparaciones } from "./validarCondiciones.js";
@@ -8,6 +8,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 	constructor(){
 		super();
 		this.impresiones = [];
+		this.scoope;
 		this.bandera = false; 
 		this.controlador = false;
 	}
@@ -17,7 +18,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('Aqui quiero llegar');
 		const resultados = this.visit(ctx.contenido());
 		console.log('variables normales: ', variables)
-		console.log('variables con scoope: ',scoopeVariables)
+		console.log('variables con sccope: ', this.scoope)
 		console.log('estado bandera', this.bandera)
 		if(this.impresiones.length >= 1){
 			return this.impresiones.join('\n');
@@ -37,6 +38,16 @@ export default class CustomVisitor extends CompiladorVisitor{
 		}
 
 		if(typeof valor != 'number' && !valor.match(/"('\\"|.)*?"/g) && valor !== 'true' && valor !== 'false'){
+			if(this.bandera){
+				if(!variables.has(valor) && !this.scoope.has(valor)){
+					throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${valor} no esta definido`)
+				}
+
+				const aux = this.scoope.get(valor) || variables.get(valor)
+				this.scoope.set(variable, {tipo: tipoDato, valor: aux.valor})
+				return	
+			}
+			
 			if(!variables.has(valor)){
 				throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${valor} no esta definido`)
 			}
@@ -44,10 +55,13 @@ export default class CustomVisitor extends CompiladorVisitor{
 			variables.set(variable, {tipo: tipoDato, valor: aux.valor})
 			return	
 		}
-		if(variables.has(variable)){ 
+
+		const variacion = this.bandera? this.scoope : variables;
+		if(variacion.has(variable)){ 
 			throw new Error(`Error en la linea ${ctx.start.line}, la variable: ${variable} ya habia sido registrada`); 
 		}
-		variables.set(variable, {tipo: tipoDato, valor: valor}) 
+
+		variacion.set(variable, {tipo: tipoDato, valor: valor}) 
 	  return this.visitChildren(ctx);
 	}
 
@@ -60,7 +74,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
 			throw new Error(`Error en la linea ${ctx.start.line}, El nombre de la variable: ${variable} no es válido`);
 		}
-	
+		
 		if (typeof nuevoValor !== 'number' && !nuevoValor.match(/"('\\"|.)*?"/g) && nuevoValor !== 'true' && nuevoValor !== 'false') {
 			if (!variables.has(nuevoValor)) {
 				throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${nuevoValor} no esta definido`);
@@ -87,11 +101,18 @@ export default class CustomVisitor extends CompiladorVisitor{
 			throw new Error( `Error en la linea ${ctx.start.line}, El nombre de la variable: ${variable} no es válido`);
 		}
 		
+		if(this.bandera){
+			if(variables.has(variable) || this.scoope.has(variable)){ 
+				throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} ya fue registrada anteriormente`);
+			}
+		}
+
 		if(variables.has(variable)){ 
 			throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} ya fue registrada anteriormente`);
 		}
 		
-		variables.set(variable, {tipo: tipoDato, valor: valor})
+		const variacion = this.bandera? this.scoope : variables;
+		variacion.set(variable, {tipo: tipoDato, valor: valor})
 	  return this.visitChildren(ctx);
 	}
 
@@ -99,12 +120,24 @@ export default class CustomVisitor extends CompiladorVisitor{
 	visitPrintValor(ctx) {
 		console.log('kiere imprimir');
 		const valor = this.visit(ctx.valor(0));
+		console.log(valor)
+		console.log(this.scoope)
 	
-		const string_numero = typeof valor === 'string' && valor.match(/"('\\"|.)*?"/g) || typeof valor === 'number' || Boolean(valor);
-		if (string_numero) {
+		if (typeof valor === 'string' && valor.match(/"('\\"|.)*?"/g) || typeof valor === 'number' || valor == 'true' || valor == 'false') {
 			this.impresiones.push(valor);
 			return;
 		}
+
+		if(this.bandera){
+			const variacion = variables.has(valor)? variables : this.scoope ; 
+			if(variacion.has(valor)){
+				const aux = variacion.get(valor);
+				this.impresiones.push(aux.valor);
+				return;
+			}
+		  throw new Error(`Error en la linea ${ctx.start.line}, la variable ${valor} no esta definida`);
+		}
+
 		if (variables.has(valor)) {
 			const aux = variables.get(valor);
 			this.impresiones.push(aux.valor);
@@ -146,6 +179,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 
 		if(condicion){
 			this.controlador = true
+			this.scoope = new Map();
 			return this.visitChildren(ctx);
 		}
 	}
@@ -158,6 +192,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		if(this.controlador){ return }
 		if(condicion){
 			this.controlador = true;
+			this.scoope = new Map();
 			return this.visitChildren(ctx);
 		}
 	}
@@ -166,6 +201,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 	visitElsePuro(ctx) {
 		console.log('else')
 		if(this.controlador) { return }
+		this.scoope = new Map();
 	  return this.visitChildren(ctx);
 	}
 
@@ -174,7 +210,6 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const arg1 = this.visit(ctx.valor(0))
 		const arg2 = this.visit(ctx.valor(1))
 		const simbolo = ctx.des.type; 
-		console.log('simbolo ',simbolo)
 
 		switch(simbolo){
 			case 14:
