@@ -1,5 +1,5 @@
 import CompiladorVisitor from "../grammar/CompiladorVisitor.js";
-import { manejarEstados, scoopeVariables, variables } from "./memoria.js";
+import { scoopeVariables, variables } from "./memoria.js";
 import { operacionesBasicas } from "./operacionesBasicas.js";
 import { validarOperacionMatematica } from "./sintaxisMatematicas.js";
 import { argumentosValidos, comparaciones } from "./validarCondiciones.js";
@@ -8,8 +8,8 @@ export default class CustomVisitor extends CompiladorVisitor{
 	constructor(){
 		super();
 		this.impresiones = [];
-		this.estadoIf = false;
-		this.bandera = false;
+		this.bandera = false; 
+		this.controlador = false;
 	}
 
 	// Visit a parse tree produced by ArrayInitParser#init.
@@ -31,27 +31,11 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const variable = ctx.ID().getText();
 		const tipoDato = ctx.PR().getText();
 		const valor = this.visit(ctx.valor(0));
-		const estado = this.bandera;
-
+		
 		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
 			throw new Error(`Error en la linea ${ctx.start.line}, El nombre de la variable: ${variable} no es válido`);
 		}
 
-		if(estado){
-			if(typeof valor != 'number' && !valor.match(/"('\\"|.)*?"/g) && valor !== 'true' && valor !== 'false'){
-				if(!scoopeVariables.has(valor) && !variables.has(valor)){
-					throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${valor} no esta definido`)
-				}
-				const aux = variables.get(valor)
-				scoopeVariables.set(variable, {tipo: tipoDato, valor: aux.valor})
-				return	
-			}
-			if(scoopeVariables.has(variable) || variables.has(variable)){ 
-				throw new Error(`Error en la linea ${ctx.start.line}, la variable: ${variable} ya habia sido registrada`); 
-			}
-			scoopeVariables.set(variable, {tipo: tipoDato, valor:valor})
-			return
-		}
 		if(typeof valor != 'number' && !valor.match(/"('\\"|.)*?"/g) && valor !== 'true' && valor !== 'false'){
 			if(!variables.has(valor)){
 				throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${valor} no esta definido`)
@@ -72,27 +56,9 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('asignacion');
 		const variable = ctx.ID().getText();
 		const nuevoValor = this.visit(ctx.valor(0));
-		const estado = this.bandera;
-		console.log('estado actual ', estado);
 	
 		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
 			throw new Error(`Error en la linea ${ctx.start.line}, El nombre de la variable: ${variable} no es válido`);
-		}
-	
-		if (estado) {
-			if (typeof nuevoValor !== 'number' && !nuevoValor.match(/"('\\"|.)*?"/g) && nuevoValor !== 'true' && nuevoValor !== 'false') {
-				if (!variables.has(nuevoValor) && !scoopeVariables.has(nuevoValor)) {
-					throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${nuevoValor} no esta definido`);
-				}
-				const obj = scoopeVariables.has(nuevoValor) ? scoopeVariables.get(nuevoValor) : variables.get(nuevoValor);
-				scoopeVariables.set(variable, { tipoDato: obj.tipoDato, valor: obj.valor });
-				return;
-			}
-			if (scoopeVariables.has(variable) || variables.has(variable)) {
-				const obj = scoopeVariables.has(variable) ? scoopeVariables.get(variable) : variables.get(variable);
-				obj.valor = nuevoValor;
-				return;
-			}
 		}
 	
 		if (typeof nuevoValor !== 'number' && !nuevoValor.match(/"('\\"|.)*?"/g) && nuevoValor !== 'true' && nuevoValor !== 'false') {
@@ -116,18 +82,11 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const variable = ctx.ID().getText();
 		const tipoDato = ctx.PR().getText();
 		const valor = tipoDato === 'char'? 'ponme algo xfa' : 0;
-		const estado = this.bandera;
 
     	if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable) || variable == null) {
 			throw new Error( `Error en la linea ${ctx.start.line}, El nombre de la variable: ${variable} no es válido`);
 		}
-		if(estado){
-			if(scoopeVariables.has(variable) || variables.has(variable)){ 
-				throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} ya fue registrada anteriormente`);
-			}
-			scoopeVariables.set(variable, {tipo: tipoDato, valor:valor})
-			return
-		}
+		
 		if(variables.has(variable)){ 
 			throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} ya fue registrada anteriormente`);
 		}
@@ -141,23 +100,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('kiere imprimir');
 		const valor = this.visit(ctx.valor(0));
 	
-		if (this.bandera) {
-			const string_numero = typeof valor === 'string' && valor.match(/"('\\"|.)*?"/g) || typeof valor === 'number';
-			if (string_numero) {
-				this.impresiones.push(valor);
-				return;
-			}
-			
-			const variablesMap = scoopeVariables.has(valor) ? scoopeVariables : variables;
-			if (variablesMap.has(valor)) {
-				const aux = variablesMap.get(valor);
-				this.impresiones.push(aux.valor);
-				return;
-			}
-		  throw new Error(`Error en la linea ${ctx.start.line}, la variable ${valor} no esta definida`);
-		}
-	
-		const string_numero = typeof valor === 'string' && valor.match(/"('\\"|.)*?"/g) || typeof valor === 'number';
+		const string_numero = typeof valor === 'string' && valor.match(/"('\\"|.)*?"/g) || typeof valor === 'number' || Boolean(valor);
 		if (string_numero) {
 			this.impresiones.push(valor);
 			return;
@@ -170,60 +113,102 @@ export default class CustomVisitor extends CompiladorVisitor{
 	  throw new Error(`Error en la linea ${ctx.start.line}, la variable ${valor} no esta definida`);
 	}
 
-	// Visit a parse tree produced by CompiladorParser#ifElse.
-	visitIfElse(ctx) {
-		if (this.estadoIf) {
-			//console.log('El bloque if ya se ejecutó, no se ejecuta el bloque else');
-			return;
-		} else {
-			//console.log('La condición del if es falsa, ejecutando el bloque else');
-			return this.visitChildren(ctx);
-		}
+	// Visit a parse tree produced by CompiladorParser#generarError.
+	visitGenerarError(ctx) {
+		throw new Error(`Error en la linea ${ctx.start.line}, No se le puede anidar esto a una instruccion else`)
 	  }
 
-	//! reconocer cuando estamos dentro o fuera del if o else (si tiene)
-	visitIf(ctx) {
-		console.log('haye un if', ctx.getText())
-    	this.estadoIf = this.visit(ctx.condiciones(0)); 
+	//! combinaciones de las estructuras de if
+	visitIfTradicional(ctx) {
+		console.log('if normal')
+	  return this.visitChildren(ctx);
+	}
+  
+	visitIfConElse(ctx) {
+		console.log('if con else')
+	  return this.visitChildren(ctx);
+	}
+  
+	visitIfConElseIf(ctx) {
+		console.log('if con else if')
+	  return this.visitChildren(ctx);
+	}
+  
+	visitIfElseIf_Else(ctx) {
+		console.log('if con else if y else')
+	  return this.visitChildren(ctx);
+	}
+  
+	//! Bloque if
+	visitIfPuro(ctx) {
+		console.log('if')
+		const condicion = this. visit(ctx.condiciones(0))
 
-    	if (this.estadoIf) {
-			//console.log('La condición del if es verdadera, ejecutando el bloque if');
+		if(condicion){
+			this.controlador = true
 			return this.visitChildren(ctx);
-		} else {
-			//console.log('La condición del if es falsa, saliendo del bloque if');
-			const bloqueElse = ctx.if_else();
-			if (bloqueElse) {
-				return this.visit(bloqueElse);
-			} else {
-				return null; // No hay bloque else
-			}
 		}
 	}
-	  	  
-	//! validar algunas concidiciones comparativas del if, (<,>,>=,<=)
+  
+	//! Bloque else if
+	visitElseIfPuro(ctx) {
+		console.log('else if')
+		const condicion = this.visit(ctx.condiciones(0))
+
+		if(this.controlador){ return }
+		if(condicion){
+			this.controlador = true;
+			return this.visitChildren(ctx);
+		}
+	}
+  
+	//! Bloque else
+	visitElsePuro(ctx) {
+		console.log('else')
+		if(this.controlador) { return }
+	  return this.visitChildren(ctx);
+	}
+
+	//! validar algunas concidiciones comparativas del if
 	visitCondicionComparaciones(ctx) {
 		const arg1 = this.visit(ctx.valor(0))
 		const arg2 = this.visit(ctx.valor(1))
-		argumentosValidos(arg1, arg2, 0, ctx.start.line)
 		const simbolo = ctx.des.type; 
+		console.log('simbolo ',simbolo)
 
 		switch(simbolo){
-			case 12:
-				const aux = comparaciones(arg1, arg2, '>', ctx.start.line);
-				this.bandera = aux;
-				break;
-			case 13:
-				const aux1 = comparaciones(arg1, arg2, '<', ctx.start.line);
-				this.bandera = aux1;
-				break;
 			case 14:
-				const aux2 = comparaciones(arg1, arg2, '>=', ctx.start.line);
-				this.bandera = aux2;
+				argumentosValidos(arg1, arg2, 0, ctx.start.line)
+				this.bandera = comparaciones(arg1, arg2, '>', ctx.start.line);
 				break;
 			case 15:
-				const aux3 = comparaciones(arg1, arg2, '<=', ctx.start.line);
-				this.bandera = aux3;
-				break;
+				argumentosValidos(arg1, arg2, 0, ctx.start.line)
+				this.bandera = comparaciones(arg1, arg2, '<', ctx.start.line);
+			  break;
+			case 16:
+				argumentosValidos(arg1, arg2, 0, ctx.start.line)
+				this.bandera = comparaciones(arg1, arg2, '>=', ctx.start.line);
+			  break;
+			case 17:
+				argumentosValidos(arg1, arg2, 0, ctx.start.line)
+				this.bandera = comparaciones(arg1, arg2, '<=', ctx.start.line);
+			  break;
+			case 18: //- ==
+				argumentosValidos(arg1, arg2, 2, ctx.start.line)
+				arg1 == arg2? this.bandera = false : this.bandera = true;
+			  break;
+			case 19: //- ===
+				argumentosValidos(arg1, arg2, 2, ctx.start.line)
+				arg1 === arg2? this.bandera = false : this.bandera = true
+			  break;
+			case 20: //- !=
+				argumentosValidos(arg1, arg2, 2, ctx.start.line)
+				arg1 != arg2 ? this.bandera = false : this.bandera = true
+			  break;
+			case 21: //- !==
+				argumentosValidos(arg1, arg2, 2, ctx.start.line)
+				arg1 !== arg2 ? this.bandera = false : this.bandera = true;
+			  break;
 			default : throw new Error('Este simbolo no existe pa');
 		}
 		return this.bandera;
@@ -255,35 +240,6 @@ export default class CustomVisitor extends CompiladorVisitor{
 	  return this.bandera;
 	}
 
-	// Visit a parse tree produced by CompiladorParser#condicionIgualDiferente.
-	visitCondicionIgualDiferente(ctx) {
-		const primero = this.visit(ctx.valor(0));
-		const segundo = this.visit(ctx.valor(1));
-		const simbolo = ctx.des.type;
-		argumentosValidos(primero, segundo, 2, ctx.start.line)
-	
-		switch(simbolo){
-			case 16: //- ==
-				if(primero == segundo){ this.bandera = false; }
-				else{ this.bandera = true }
-			  break;
-			case 17: //- ===
-				if(primero === segundo){ this.bandera = false; }
-				else{ this.bandera = true }
-			  break;
-			case 18: //- !=
-				if(primero != segundo){ this.bandera = false; }
-				else{this.bandera = true }
-			  break;
-			case 19: //- !==
-				if(primero !== segundo){ this.bandera = false; }
-				else{this.bandera = true }
-			  break;
-			default: throw new Error(`Error en la linea ${ctx.start.line}, no se puede evaluar esta condicion`)
-		}
-	  return this.bandera;
-	}
-
 	// Visit a parse tree produced by CompiladorParser#logicas.
 	visitLogicas(ctx) {
 		const argumento1 = this.visit(ctx.condiciones(0));
@@ -291,10 +247,10 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const simbolo = ctx.des.type;
 
 		switch(simbolo){
-			case 20: // ||
+			case 22: // ||
 				argumento1 == false && argumento2 == false ? this.bandera = false : this.bandera = true;
 			  break;
-			case 21: // &&
+			case 23: // &&
 				argumento1 == false || argumento2 == false ? this.bandera = false : this.bandera = true;
 			  break;
 		}
@@ -306,7 +262,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('multiplicacion o division')
 		const n1 = this.visit(ctx.valor(0));
 		const n2 = this.visit(ctx.valor(1));
-		const opt = 7;
+		const opt = 9;
 		const addSub = false;
 		const contexto = ctx.op.type;
 		const lineaError = ctx.start.line;
@@ -320,7 +276,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('suma o resta')
 		const n1 = this.visit(ctx.valor(0));
 		const n2 = this.visit(ctx.valor(1));
-		const opt = 9;
+		const opt = 11;
 		const addSub = true;
 		const contexto = ctx.op.type;
 		const lineaError = ctx.start.line;
@@ -347,10 +303,8 @@ export default class CustomVisitor extends CompiladorVisitor{
 
 	// Visit a parse tree produced by CompiladorParser#auxScoopeDos.
 	visitAuxScoopeDos(ctx) {
-		console.log('pusierpn un else')
 		this.bandera = true
-		return this.visitChildren(ctx);
-	
+	  return this.visitChildren(ctx);
 	}
   
 	visitParens(ctx) {return this.visit(ctx.valor()) }

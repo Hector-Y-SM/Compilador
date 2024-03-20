@@ -3,7 +3,7 @@ import CommonLexerRules;
 
 init: TPG ALLAVE contenido CLLAVE;
 
-contenido: (inicializacion | declaracion | asignacion | print | if_simple )*;
+contenido: (inicializacion | declaracion | asignacion | print | if_estructuras)*;
 
 inicializacion: PR ID SEMI? #indefinido
               ;
@@ -17,12 +17,23 @@ asignacion: ID ASIGNACION valor SEMI? #asignado
 print : IMPRESION APARENTESIS valor CPARENTESIS SEMI?  #printValor
       ;          
 
-if_simple : IF_BASICO APARENTESIS condiciones CPARENTESIS abloque contenido cbloque if_else? #if 
-          ;
+if_estructuras: if #ifTradicional
+              | if else #ifConElse
+              | if (else_if)* #ifConElseIf
+              | if (else_if)* else  #ifElseIf_Else
+              | else else_if        #generarError
+              ;
 
+//* Estructuras reutilizables
+if: IF_BASICO APARENTESIS condiciones CPARENTESIS abloque contenido cbloque  #ifPuro
+  ;
 
-if_else: ELSE abloque contenido cbloque #ifElse
+else_if: ELSE_IF APARENTESIS condiciones CPARENTESIS abloque contenido cbloque  #elseIfPuro 
+       ;
+
+else: ELSE abloque contenido cbloque  #elsePuro
     ;
+//* Estructuras reutilizables
 
 valor: valor op=('*'|'/') valor          #MulDiv
      | valor op=('+'|'-') valor          #AddSub
@@ -34,10 +45,9 @@ valor: valor op=('*'|'/') valor          #MulDiv
      | '(' valor ')''('valor')'          #implicito
      ;
 
-condiciones : condiciones des=(OR | AND) condiciones                                       #logicas
-            | valor                                                                        #trueOrFalse  
-            | valor des=(MAYORQ | MENORQ | MAYOR_IGUAL | MENOR_IGUAL) valor                #condicionComparaciones
-            | valor des=(IGUALDAD_DEBIL | IGUALDAD_FUERTE | DIF_DEBIL | DIF_FUERTE) valor  #condicionIgualDiferente
+condiciones : condiciones des=(OR | AND) condiciones             #logicas
+            | valor                                              #trueOrFalse  
+            | valor des=(MAYORQ | MENORQ | MAYOR_IGUAL | MENOR_IGUAL | IGUALDAD_DEBIL | IGUALDAD_FUERTE | DIF_DEBIL | DIF_FUERTE) valor      #condicionComparaciones
             ;
 
 abloque: ALLAVE #auxScoopeDos
@@ -49,4 +59,3 @@ PR: INT
   | CHAR
   | FLOAT
   ;
-

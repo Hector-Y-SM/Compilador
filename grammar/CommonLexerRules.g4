@@ -4,6 +4,7 @@ lexer grammar CommonLexerRules;
 IMPRESION   : 'leak';
 IF_BASICO   : 'if'  ;
 ELSE        : 'else';
+ELSE_IF     : 'else if';
 
 //! Tipos de datos
 INT         : 'nc' ;
