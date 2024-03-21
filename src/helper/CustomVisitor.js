@@ -26,7 +26,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		return 'todo bien pa'
 	}
 
-	// Visit a parse tree produced by ArrayInitParser#definido.
+	//! Manejar declaracion de variables (tipo-dato ID = valor)
 	visitDefinido(ctx) {
 		console.log('variable definida');
 		const variable = ctx.ID().getText();
@@ -36,36 +36,44 @@ export default class CustomVisitor extends CompiladorVisitor{
 		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
 			throw new Error(`Error en la linea ${ctx.start.line}, El nombre de la variable: ${variable} no es válido`);
 		}
-
-		if(typeof valor != 'number' && !valor.match(/"('\\"|.)*?"/g) && valor !== 'true' && valor !== 'false'){
-			if(this.bandera){
-				if(!variables.has(valor) && !this.scoope.has(valor)){
-					throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${valor} no esta definido`)
+		
+		if(this.bandera){
+			if(typeof valor == 'number' || valor.match(/"('\\"|.)*?"/g) || valor == 'true' || valor == 'false'){
+				this.scoope.set(variable, {tipo: tipoDato, valor: valor})
+				if(variables.has(variable) && this.scoope.has(variable)){ 
+					throw new Error(`Error en la linea ${ctx.start.line}, la variable: ${variable} ya habia sido registrada`); 
 				}
-
-				const aux = this.scoope.get(valor) || variables.get(valor)
-				this.scoope.set(variable, {tipo: tipoDato, valor: aux.valor})
-				return	
+				return
 			}
-			
-			if(!variables.has(valor)){
+
+			if(!variables.has(valor) && typeof valor !== 'number' && !valor.match(/"('\\"|.)*?"/g) && valor !== 'true' && valor !== 'false'){
 				throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${valor} no esta definido`)
 			}
-			const aux = variables.get(valor)
-			variables.set(variable, {tipo: tipoDato, valor: aux.valor})
-			return	
+	
+			const aux = variacion.get(valor)
+			this.scoope.set(variable, {tipo: tipoDato, valor: aux.valor})
+			return;
 		}
-
-		const variacion = this.bandera? this.scoope : variables;
-		if(variacion.has(variable)){ 
+		
+		if(variables.has(variable)){ 
 			throw new Error(`Error en la linea ${ctx.start.line}, la variable: ${variable} ya habia sido registrada`); 
 		}
 
-		variacion.set(variable, {tipo: tipoDato, valor: valor}) 
+		if(!variables.has(valor) && typeof valor !== 'number' && !valor.match(/"('\\"|.)*?"/g) && valor !== 'true' && valor !== 'false'){
+			throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${valor} no esta definido`)
+		}
+
+		if(typeof valor == 'number' || valor.match(/"('\\"|.)*?"/g) || valor == 'true' || valor == 'false'){
+			variables.set(variable, {tipo: tipoDato, valor: valor})
+			return;
+		}
+
+		const aux = variables.get(valor)
+		variables.set(variable, {tipo: tipoDato, valor: aux.valor})
 	  return this.visitChildren(ctx);
 	}
 
-	// Visit a parse tree produced by ArrayInitParser#asignacion.
+	//! Manejar la asignacion de variables (ID = valor)
 	visitAsignado(ctx) {
 		console.log('asignacion');
 		const variable = ctx.ID().getText();
@@ -74,23 +82,53 @@ export default class CustomVisitor extends CompiladorVisitor{
 		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
 			throw new Error(`Error en la linea ${ctx.start.line}, El nombre de la variable: ${variable} no es válido`);
 		}
-		
-		if (typeof nuevoValor !== 'number' && !nuevoValor.match(/"('\\"|.)*?"/g) && nuevoValor !== 'true' && nuevoValor !== 'false') {
-			if (!variables.has(nuevoValor)) {
+
+		if(this.bandera){
+			if (!this.scoope.has(nuevoValor) && !variables.has(nuevoValor) && typeof nuevoValor != 'number' && !nuevoValor.match(/"('\\"|.)*?"/g && nuevoValor !== 'true' && nuevoValor !== 'false')) {
 				throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${nuevoValor} no esta definido`);
 			}
-			variables.get(nuevoValor).valor = nuevoValor;
-			return;
+
+			if(typeof nuevoValor == 'number' || nuevoValor.match(/"('\\"|.)*?"/g) || nuevoValor == 'true' || nuevoValor == 'false'){
+				if(variables.has(variable)){
+					const aux = variables.get(variable)
+					aux.valor = nuevoValor;
+					return
+				}
+				const aux = this.scoope.get(variable)
+				aux.valor = nuevoValor
+				return
+			}
+			
+			if (variables.has(variable) || this.scoope.has(variable)) {
+				const variacion = variables.has(nuevoValor) ?  variables : this.scoope;
+				if(this.scoope.has(variable)){
+					const aux = this.scoope.get(variable)
+					aux.valor = variacion.get(nuevoValor).valor;
+					return
+				}
+				return;
+			}
+			throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} no ha sido declarada`);
 		}
-	
-		if (variables.has(variable)) {
+
+		if(typeof nuevoValor == 'number' || nuevoValor.match(/"('\\"|.)*?"/g) || nuevoValor == 'true' || nuevoValor == 'false'){
 			variables.get(variable).valor = nuevoValor;
+			return
+		}
+
+		if (!variables.has(nuevoValor) && typeof nuevoValor != 'number' && !nuevoValor.match(/"('\\"|.)*?"/g && nuevoValor !== 'true' && nuevoValor !== 'false')) {
+			throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${nuevoValor} no esta definido`);
+		}
+
+		if (variables.has(variable)) {
+			const aux = variables.get(nuevoValor);
+			variables.get(variable).valor = aux.valor;
 			return;
 		}
 	  throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} no ha sido declarada`);
 	}
   
-	// Visit a parse tree produced by ArrayInitParser#indefinido.
+	//! Manejar la definicion de variables (tipoDato ID;)
 	visitIndefinido(ctx) {
 		console.log('variable con valor undefined');
 		const variable = ctx.ID().getText();
@@ -120,8 +158,6 @@ export default class CustomVisitor extends CompiladorVisitor{
 	visitPrintValor(ctx) {
 		console.log('kiere imprimir');
 		const valor = this.visit(ctx.valor(0));
-		console.log(valor)
-		console.log(this.scoope)
 	
 		if (typeof valor === 'string' && valor.match(/"('\\"|.)*?"/g) || typeof valor === 'number' || valor == 'true' || valor == 'false') {
 			this.impresiones.push(valor);
@@ -149,7 +185,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 	// Visit a parse tree produced by CompiladorParser#generarError.
 	visitGenerarError(ctx) {
 		throw new Error(`Error en la linea ${ctx.start.line}, No se le puede anidar esto a una instruccion else`)
-	  }
+	}
 
 	//! combinaciones de las estructuras de if
 	visitIfTradicional(ctx) {
