@@ -58,7 +58,10 @@ const UI = ({ titulo, funcionPrincipal, contenido, actualizar, resultados }) => 
         {mostrarTerminal && (
             <div className="transition-all text-gray-100 p-3 fixed bottom-0 left-0 right-0 h-1/4 md:h-1/3 lg:h-1/4 rounded-t-xl bg-gray-700">
                 Salida: <br />
-                {resultados}
+                <textarea className='bg-transparent resize-none w-full h-full mt-3 mb-10'
+                    value = {resultados}
+                    readOnly={true}
+                />
                 <button 
                     className="text-gray-100 rounded px-4 py-2 absolute top-3 right-3 hover:text-red-500" 
                     onClick={cerrarTerminal}

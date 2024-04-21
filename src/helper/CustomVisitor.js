@@ -185,16 +185,44 @@ export default class CustomVisitor extends CompiladorVisitor{
 	  throw new Error(`Error en la linea ${ctx.start.line}, la variable ${valor} no esta definida`);
 	}
 
-	// Visit a parse tree produced by CompiladorParser#reglaWhile.
-	visitReglaWhile(ctx) {
-		console.log('ANALIZAR', ctx);
-
+	//! Manejar el contenido del ciclo
+	visitReglaDoWhile(ctx) {
+		console.log('primero aqui');
 		if(this.ciclado == 1){
-			const condicion = this.visit(ctx.condiciones(0));
-			console.log('cond', condicion)
+			const condicion = this.visit(ctx.condiciones(0))
 			if(!condicion){
+				this.ciclado = 0;
 				return
 			}
+			this.visitCicloDoWhile(ctx)
+			return
+		}
+	  return this.visitChildren(ctx);
+	}
+
+	//! una vuelta si o si, luego damos vueltas
+	visitCicloDoWhile(ctx) {
+		const condicion = this.visit(ctx.condiciones(0));
+		console.log('aqui se hace la chambax2 ', condicion)
+		this.bandera ? this.scope = new Map() : '';
+
+		this.ciclado = 1;
+		this.visitChildren(ctx);
+		if(condicion){
+			this.visitReglaDoWhile(ctx);
+			return
+		}
+	}
+
+	//! manejar el contenido dentro del ciclo
+	visitReglaWhile(ctx) {
+		console.log('ANALIZAR', ctx);
+		if(this.ciclado == 1){
+			const condicion = this.visit(ctx.condiciones(0));
+			console.log('cond ', condicion)
+			if(!condicion){ 
+				this.ciclado = 0; //! OJOOOOOO
+				return }
 			if(condicion){
 				this.visitCicloWhile(ctx)
 				return;
@@ -204,7 +232,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 	}
 	
 	
-	// Visit a parse tree produced by CompiladorParser#cicloWhile.
+	//! Manejar las vueltas del ciclo while
 	visitCicloWhile(ctx) {
 		const condicion = this.visit(ctx.condiciones(0));
 		console.log('aqui se hace la chamba ', condicion)
@@ -219,7 +247,31 @@ export default class CustomVisitor extends CompiladorVisitor{
 		}
 	}
 
-	// Visit a parse tree produced by CompiladorParser#generarError.
+	//! Manejar incremento 
+	visitIncrementar(ctx) {
+		const variable = ctx.ID().getText();
+		if(!isNaN(variable)){
+			throw new Error(`Error en la linea ${ctx.start.line}, no se puede aplicar un incremento a esto`) 
+		}
+
+		if(this.bandera){
+			if(this.scope.has(variable) || variables.has(variable)){
+				const eleccion = this.scope.has(variable)? this.scope : variables;
+				const val = eleccion.get(variable);
+				val.valor = val.valor + 1;
+				return
+			}
+			throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} no esta definida`) 
+		}
+		if(variables.has(variable)){
+			const val  = variables.get(variable);
+			val.valor = val.valor + 1;
+			return
+		}
+		throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} no esta definida`) 
+	  }
+
+	//! Generar un error
 	visitGenerarError(ctx) {
 		throw new Error(`Error en la linea ${ctx.start.line}, No se le puede anidar esto a una instruccion else`)
 	}
@@ -285,35 +337,35 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const simbolo = ctx.des.type; 
 
 		switch(simbolo){
-			case 15:
+			case 18:
 				argumentosValidos(arg1, arg2, 0, ctx.start.line)
 				this.bandera = comparaciones(arg1, arg2, '>', ctx.start.line);
 				break;
-			case 16:
+			case 19:
 				argumentosValidos(arg1, arg2, 0, ctx.start.line)
 				this.bandera = comparaciones(arg1, arg2, '<', ctx.start.line);
 			  break;
-			case 17:
+			case 20:
 				argumentosValidos(arg1, arg2, 0, ctx.start.line)
 				this.bandera = comparaciones(arg1, arg2, '>=', ctx.start.line);
 			  break;
-			case 18:
+			case 21:
 				argumentosValidos(arg1, arg2, 0, ctx.start.line)
 				this.bandera = comparaciones(arg1, arg2, '<=', ctx.start.line);
 			  break;
-			case 19: //- ==
+			case 22: //- ==
 				argumentosValidos(arg1, arg2, 2, ctx.start.line)
 				arg1 == arg2? this.bandera = false : this.bandera = true;
 			  break;
-			case 20: //- ===
+			case 23: //- ===
 				argumentosValidos(arg1, arg2, 2, ctx.start.line)
 				arg1 === arg2? this.bandera = false : this.bandera = true
 			  break;
-			case 21: //- !=
+			case 24: //- !=
 				argumentosValidos(arg1, arg2, 2, ctx.start.line)
 				arg1 != arg2 ? this.bandera = false : this.bandera = true
 			  break;
-			case 22: //- !==
+			case 25: //- !==
 				argumentosValidos(arg1, arg2, 2, ctx.start.line)
 				arg1 !== arg2 ? this.bandera = false : this.bandera = true;
 			  break;
@@ -355,10 +407,10 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const simbolo = ctx.des.type;
 
 		switch(simbolo){
-			case 23: // ||
+			case 26: // ||
 				argumento1 == false && argumento2 == false ? this.bandera = false : this.bandera = true;
 			  break;
-			case 24: // &&
+			case 27: // &&
 				argumento1 == false || argumento2 == false ? this.bandera = false : this.bandera = true;
 			  break;
 		}
@@ -370,7 +422,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('multiplicacion o division')
 		const n1 = this.visit(ctx.valor(0));
 		const n2 = this.visit(ctx.valor(1));
-		const opt = 10;
+		const opt = 13;
 		const addSub = false;
 		const contexto = ctx.op.type;
 		const lineaError = ctx.start.line;
@@ -384,7 +436,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('suma o resta')
 		const n1 = this.visit(ctx.valor(0));
 		const n2 = this.visit(ctx.valor(1));
-		const opt = 12;
+		const opt = 15;
 		const addSub = true;
 		const contexto = ctx.op.type;
 		const lineaError = ctx.start.line;

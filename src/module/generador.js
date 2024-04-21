@@ -21,22 +21,22 @@ export const analizar = (input) => {
   parser.buildParseTrees = true;
 
   //con esto se la estrategia de error por defecto
-  //parser.removeErrorListeners(); 
-  //lexer.removeErrorListeners();
+  parser.removeErrorListeners(); 
+  lexer.removeErrorListeners();
 
   //agregar los mensajes predeterminados
-  //parser.addErrorListener(new ErrorSintaxis()); 
-  //lexer.addErrorListener(new ErrorLexico())
+  parser.addErrorListener(new ErrorSintaxis()); 
+  lexer.addErrorListener(new ErrorLexico())
 
-  //try {
+  try {
     const tree = parser.init(); 
     const customVisitor = new CustomVisitor();
     console.log(tree.toStringTree(parser.ruleNames));
     return customVisitor.visitInit(tree);
-  //} 
-  ////  catch (error) {
-  ////  return error.message;
-  //}
+  } 
+    catch (error) {
+    return error.message;
+  }
 };
 
 export const traducir = (input) => {
