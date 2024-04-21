@@ -3,7 +3,7 @@ import CommonLexerRules;
 
 init: TPG ALLAVE contenido CLLAVE;
 
-contenido: (inicializacion | declaracion | asignacion | print | if_estructuras)*;
+contenido: (inicializacion | declaracion | asignacion | print | if_estructuras | ciclos)*;
 
 inicializacion: PR ID SEMI? #indefinido
               ;

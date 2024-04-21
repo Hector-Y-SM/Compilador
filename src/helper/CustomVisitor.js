@@ -8,8 +8,9 @@ export default class CustomVisitor extends CompiladorVisitor{
 	constructor(){
 		super();
 		this.impresiones = [];
-		this.scoope;
+		this.scope;
 		this.bandera = false; 
+		this.ciclado;
 		this.controlador = false;
 	}
 
@@ -18,7 +19,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('Aqui quiero llegar');
 		const resultados = this.visit(ctx.contenido());
 		console.log('variables normales: ', variables)
-		console.log('variables con sccope: ', this.scoope)
+		console.log('variables con sccope: ', this.scope)
 		console.log('estado bandera', this.bandera)
 		if(this.impresiones.length >= 1){
 			return this.impresiones.join('\n');
@@ -39,8 +40,9 @@ export default class CustomVisitor extends CompiladorVisitor{
 		
 		if(this.bandera){
 			if(typeof valor == 'number' || valor.match(/"('\\"|.)*?"/g) || valor == 'true' || valor == 'false'){
-				this.scoope.set(variable, {tipo: tipoDato, valor: valor})
-				if(variables.has(variable) && this.scoope.has(variable)){ 
+
+				this.scope.set(variable, {tipo: tipoDato, valor: valor})
+				if(variables.has(variable) && this.scope.has(variable)){ 
 					throw new Error(`Error en la linea ${ctx.start.line}, la variable: ${variable} ya habia sido registrada`); 
 				}
 				return
@@ -51,7 +53,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 			}
 	
 			const aux = variacion.get(valor)
-			this.scoope.set(variable, {tipo: tipoDato, valor: aux.valor})
+			this.scope.set(variable, {tipo: tipoDato, valor: aux.valor})
 			return;
 		}
 		
@@ -84,7 +86,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		}
 
 		if(this.bandera){
-			if (!this.scoope.has(nuevoValor) && !variables.has(nuevoValor) && typeof nuevoValor != 'number' && !nuevoValor.match(/"('\\"|.)*?"/g && nuevoValor !== 'true' && nuevoValor !== 'false')) {
+			if (!this.scope.has(nuevoValor) && !variables.has(nuevoValor) && typeof nuevoValor != 'number' && !nuevoValor.match(/"('\\"|.)*?"/g && nuevoValor !== 'true' && nuevoValor !== 'false')) {
 				throw new Error(`Error en la linea ${ctx.start.line}, no se puede asignar este valor: ${nuevoValor} no esta definido`);
 			}
 
@@ -94,15 +96,15 @@ export default class CustomVisitor extends CompiladorVisitor{
 					aux.valor = nuevoValor;
 					return
 				}
-				const aux = this.scoope.get(variable)
+				const aux = this.scope.get(variable)
 				aux.valor = nuevoValor
 				return
 			}
 			
-			if (variables.has(variable) || this.scoope.has(variable)) {
-				const variacion = variables.has(nuevoValor) ?  variables : this.scoope;
-				if(this.scoope.has(variable)){
-					const aux = this.scoope.get(variable)
+			if (variables.has(variable) || this.scope.has(variable)) {
+				const variacion = variables.has(nuevoValor) ?  variables : this.scope;
+				if(this.scope.has(variable)){
+					const aux = this.scope.get(variable)
 					aux.valor = variacion.get(nuevoValor).valor;
 					return
 				}
@@ -141,7 +143,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		}
 		
 		if(this.bandera){
-			if(variables.has(variable) || this.scoope.has(variable)){ 
+			if(variables.has(variable) || this.scope.has(variable)){ 
 				throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} ya fue registrada anteriormente`);
 			}
 		}
@@ -150,7 +152,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 			throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} ya fue registrada anteriormente`);
 		}
 		
-		const variacion = this.bandera? this.scoope : variables;
+		const variacion = this.bandera? this.scope : variables;
 		variacion.set(variable, {tipo: tipoDato, valor: valor})
 	  return this.visitChildren(ctx);
 	}
@@ -166,7 +168,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		}
 
 		if(this.bandera){
-			const variacion = variables.has(valor)? variables : this.scoope ; 
+			const variacion = variables.has(valor)? variables : this.scope ; 
 			if(variacion.has(valor)){
 				const aux = variacion.get(valor);
 				this.impresiones.push(aux.valor);
@@ -181,6 +183,40 @@ export default class CustomVisitor extends CompiladorVisitor{
 			return;
 		}
 	  throw new Error(`Error en la linea ${ctx.start.line}, la variable ${valor} no esta definida`);
+	}
+
+	// Visit a parse tree produced by CompiladorParser#reglaWhile.
+	visitReglaWhile(ctx) {
+		console.log('ANALIZAR', ctx);
+
+		if(this.ciclado == 1){
+			const condicion = this.visit(ctx.condiciones(0));
+			console.log('cond', condicion)
+			if(!condicion){
+				return
+			}
+			if(condicion){
+				this.visitCicloWhile(ctx)
+				return;
+			}	
+		}
+		return this.visitChildren(ctx);
+	}
+	
+	
+	// Visit a parse tree produced by CompiladorParser#cicloWhile.
+	visitCicloWhile(ctx) {
+		const condicion = this.visit(ctx.condiciones(0));
+		console.log('aqui se hace la chamba ', condicion)
+		this.bandera ? this.scope = new Map() : '';
+		
+		if(condicion){
+			console.log('dentro ', condicion)
+			this.ciclado = 1;
+			this.visitChildren(ctx);
+			this.visitReglaWhile(ctx)
+			return
+		}
 	}
 
 	// Visit a parse tree produced by CompiladorParser#generarError.
@@ -216,7 +252,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 
 		if(condicion){
 			this.controlador = true
-			this.scoope = new Map();
+			this.scope = new Map();
 			return this.visitChildren(ctx);
 		}
 	}
@@ -229,7 +265,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		if(this.controlador){ return }
 		if(condicion){
 			this.controlador = true;
-			this.scoope = new Map();
+			this.scope = new Map();
 			return this.visitChildren(ctx);
 		}
 	}
@@ -238,7 +274,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 	visitElsePuro(ctx) {
 		console.log('else')
 		if(this.controlador) { return }
-		this.scoope = new Map();
+		this.scope = new Map();
 	  return this.visitChildren(ctx);
 	}
 
@@ -249,35 +285,35 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const simbolo = ctx.des.type; 
 
 		switch(simbolo){
-			case 14:
+			case 15:
 				argumentosValidos(arg1, arg2, 0, ctx.start.line)
 				this.bandera = comparaciones(arg1, arg2, '>', ctx.start.line);
 				break;
-			case 15:
+			case 16:
 				argumentosValidos(arg1, arg2, 0, ctx.start.line)
 				this.bandera = comparaciones(arg1, arg2, '<', ctx.start.line);
 			  break;
-			case 16:
+			case 17:
 				argumentosValidos(arg1, arg2, 0, ctx.start.line)
 				this.bandera = comparaciones(arg1, arg2, '>=', ctx.start.line);
 			  break;
-			case 17:
+			case 18:
 				argumentosValidos(arg1, arg2, 0, ctx.start.line)
 				this.bandera = comparaciones(arg1, arg2, '<=', ctx.start.line);
 			  break;
-			case 18: //- ==
+			case 19: //- ==
 				argumentosValidos(arg1, arg2, 2, ctx.start.line)
 				arg1 == arg2? this.bandera = false : this.bandera = true;
 			  break;
-			case 19: //- ===
+			case 20: //- ===
 				argumentosValidos(arg1, arg2, 2, ctx.start.line)
 				arg1 === arg2? this.bandera = false : this.bandera = true
 			  break;
-			case 20: //- !=
+			case 21: //- !=
 				argumentosValidos(arg1, arg2, 2, ctx.start.line)
 				arg1 != arg2 ? this.bandera = false : this.bandera = true
 			  break;
-			case 21: //- !==
+			case 22: //- !==
 				argumentosValidos(arg1, arg2, 2, ctx.start.line)
 				arg1 !== arg2 ? this.bandera = false : this.bandera = true;
 			  break;
@@ -319,10 +355,10 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const simbolo = ctx.des.type;
 
 		switch(simbolo){
-			case 22: // ||
+			case 23: // ||
 				argumento1 == false && argumento2 == false ? this.bandera = false : this.bandera = true;
 			  break;
-			case 23: // &&
+			case 24: // &&
 				argumento1 == false || argumento2 == false ? this.bandera = false : this.bandera = true;
 			  break;
 		}
@@ -368,13 +404,13 @@ export default class CustomVisitor extends CompiladorVisitor{
 	}
 	
 	//! Esta funcion ayudara controlar cuando se acaba un bloque de codigo
-	visitAuxScoope(ctx) {
+	visitAuxScope(ctx) {
 		this.bandera = false
 	  return this.visitChildren(ctx);
 	}
 
 	//! Esta funcion indicara cuando se inicia un bloque de codigo
-	visitAuxScoopeDos(ctx) {
+	visitAuxScopeDos(ctx) {
 		this.bandera = true
 	  return this.visitChildren(ctx);
 	}

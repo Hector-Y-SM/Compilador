@@ -85,7 +85,3 @@ export function comparaciones(arg1, arg2, simbolo, err){
     const condicion = `${arg1} ${simbolo} ${arg2}`
     return Boolean(eval(condicion))
 }
-
-export function igualDiferente(){
-
-}
