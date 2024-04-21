@@ -1,6 +1,5 @@
 import ReactCodeMirror from '@uiw/react-codemirror';
 import { createTheme } from '@uiw/codemirror-themes';
-import { tags as t } from '@lezer/highlight';
 import { useState } from 'react';
 
 const UI = ({ titulo, funcionPrincipal, contenido, actualizar, resultados }) => {
@@ -21,7 +20,7 @@ const UI = ({ titulo, funcionPrincipal, contenido, actualizar, resultados }) => 
           gutterForeground: '#fff',
           gutterBorder: 'transparent',
         },
-      });
+    });
 
     return (
         <main className="min-h-screen w-full flex flex-col relative " style={{ backgroundColor: '#1E212D' }}>

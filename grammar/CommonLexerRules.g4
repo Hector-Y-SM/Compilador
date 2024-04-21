@@ -2,9 +2,9 @@ lexer grammar CommonLexerRules;
 
 //!Palabras reservadas
 IMPRESION   : 'leak';
-IF_BASICO   : 'if'  ;
+IF_BASICO   : 'si'  ;
 ELSE        : 'else';
-ELSE_IF     : 'else if';
+ELSE_IF     : 'elfito';
 
 //! Tipos de datos
 INT         : 'nc' ;

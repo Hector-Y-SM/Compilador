@@ -2,6 +2,7 @@ import { ErrorListener } from "antlr4";
 
 export class ErrorSintaxis extends ErrorListener {
     syntaxError(lexer, char, linea, column, msg, e) {
+        console.log(lexer)
         throw new Error(`Error de sintaxis en la linea ${linea}`);
       }
   }

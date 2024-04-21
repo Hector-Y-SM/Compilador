@@ -24,7 +24,7 @@ if_estructuras: if #ifTradicional
               | else else_if        #generarError
               ;
 
-//* Estructuras reutilizables
+//* Reglas para armar las estructuras del if
 if: IF_BASICO APARENTESIS condiciones CPARENTESIS abloque contenido cbloque  #ifPuro
   ;
 
@@ -33,7 +33,7 @@ else_if: ELSE_IF APARENTESIS condiciones CPARENTESIS abloque contenido cbloque  
 
 else: ELSE abloque contenido cbloque  #elsePuro
     ;
-//* Estructuras reutilizables
+//* Reglas para armar las estructuras del if
 
 valor: valor op=('*'|'/') valor          #MulDiv
      | valor op=('+'|'-') valor          #AddSub
@@ -46,8 +46,8 @@ valor: valor op=('*'|'/') valor          #MulDiv
      ;
 
 condiciones : condiciones des=(OR | AND) condiciones             #logicas
-            | valor                                              #trueOrFalse  
-            | valor des=(MAYORQ | MENORQ | MAYOR_IGUAL | MENOR_IGUAL | IGUALDAD_DEBIL | IGUALDAD_FUERTE | DIF_DEBIL | DIF_FUERTE) valor      #condicionComparaciones
+            | '('*? valor ')'*?                                             #trueOrFalse  
+            | '('*? valor des=(MAYORQ | MENORQ | MAYOR_IGUAL | MENOR_IGUAL | IGUALDAD_DEBIL | IGUALDAD_FUERTE | DIF_DEBIL | DIF_FUERTE) valor ')'*?      #condicionComparaciones
             ;
 
 abloque: ALLAVE #auxScoopeDos

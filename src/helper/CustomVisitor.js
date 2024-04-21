@@ -111,6 +111,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 			throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} no ha sido declarada`);
 		}
 
+		if(!variables.has(variable)){ throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} no ha sido declarada`) }
 		if(typeof nuevoValor == 'number' || nuevoValor.match(/"('\\"|.)*?"/g) || nuevoValor == 'true' || nuevoValor == 'false'){
 			variables.get(variable).valor = nuevoValor;
 			return
@@ -372,7 +373,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 	  return this.visitChildren(ctx);
 	}
 
-	// Visit a parse tree produced by CompiladorParser#auxScoopeDos.
+	//! Esta funcion indicara cuando se inicia un bloque de codigo
 	visitAuxScoopeDos(ctx) {
 		this.bandera = true
 	  return this.visitChildren(ctx);

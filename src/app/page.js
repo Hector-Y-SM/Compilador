@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { analizar } from './module/generador.js'
 import { limpiarComentarios } from '../helper/comentarios.js';
 import UI from '../components/UI.jsx';
+import Traductor from '@/components/Traductor.jsx';
+import Link from 'next/link.js';
 
 const HomePage = () => {
   const [txt, setTxt] = useState('');
@@ -24,13 +26,14 @@ const HomePage = () => {
   };
 
   return (
-    <UI
-      titulo={'chucho.bt'}
-      funcionPrincipal={inter}
-      contenido={txt}
-      actualizar={actualizarTexto}
-      resultados={resultado}
-    />
+    <Traductor />
+    // <UI
+    //  titulo={'chucho.bt'}
+    //  funcionPrincipal={inter}
+    //  contenido={txt}
+    //  actualizar={actualizarTexto}
+    //  resultados={resultado}
+    // />
   )
 }
 
