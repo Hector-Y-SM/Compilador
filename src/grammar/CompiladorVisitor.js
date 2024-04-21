@@ -90,6 +90,18 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
+	// Visit a parse tree produced by CompiladorParser#reglaWhile.
+	visitReglaWhile(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#cicloWhile.
+	visitCicloWhile(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
 	// Visit a parse tree produced by CompiladorParser#parens.
 	visitParens(ctx) {
 	  return this.visitChildren(ctx);

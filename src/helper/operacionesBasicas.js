@@ -24,7 +24,6 @@ export function operacionesBasicas(n1, n2, opt, addSub, contexto, err){
     console.log('n2 ', n2)
 
     if(isNaN(n1) && isNaN(n2)){
-        console.log('aki')
         if(variables.get(n1) === undefined && !n1.match(/"('\\"|.)*?"/g)){
             throw new Error(`Error en la linea ${err}, ${n1} no esta definido`)
         }

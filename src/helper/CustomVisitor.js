@@ -334,7 +334,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('multiplicacion o division')
 		const n1 = this.visit(ctx.valor(0));
 		const n2 = this.visit(ctx.valor(1));
-		const opt = 9;
+		const opt = 10;
 		const addSub = false;
 		const contexto = ctx.op.type;
 		const lineaError = ctx.start.line;
@@ -348,7 +348,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('suma o resta')
 		const n1 = this.visit(ctx.valor(0));
 		const n2 = this.visit(ctx.valor(1));
-		const opt = 11;
+		const opt = 12;
 		const addSub = true;
 		const contexto = ctx.op.type;
 		const lineaError = ctx.start.line;

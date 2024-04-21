@@ -35,6 +35,13 @@ else: ELSE abloque contenido cbloque  #elsePuro
     ;
 //* Reglas para armar las estructuras del if
 
+
+ciclos: while #reglaWhile
+      ;
+
+while: WHILE APARENTESIS condiciones CPARENTESIS abloque contenido cbloque   #cicloWhile
+     ;
+
 valor: valor op=('*'|'/') valor          #MulDiv
      | valor op=('+'|'-') valor          #AddSub
      | NUM                               #numero
