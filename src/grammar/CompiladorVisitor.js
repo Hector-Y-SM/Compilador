@@ -42,50 +42,8 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
-	// Visit a parse tree produced by CompiladorParser#ifTradicional.
-	visitIfTradicional(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
-	// Visit a parse tree produced by CompiladorParser#ifConElse.
-	visitIfConElse(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
-	// Visit a parse tree produced by CompiladorParser#ifConElseIf.
-	visitIfConElseIf(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
-	// Visit a parse tree produced by CompiladorParser#ifElseIf_Else.
-	visitIfElseIf_Else(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
-	// Visit a parse tree produced by CompiladorParser#generarError.
-	visitGenerarError(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
-	// Visit a parse tree produced by CompiladorParser#ifPuro.
-	visitIfPuro(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
-	// Visit a parse tree produced by CompiladorParser#elseIfPuro.
-	visitElseIfPuro(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
-	// Visit a parse tree produced by CompiladorParser#elsePuro.
-	visitElsePuro(ctx) {
+	// Visit a parse tree produced by CompiladorParser#superIf.
+	visitSuperIf(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
@@ -102,6 +60,12 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
+	// Visit a parse tree produced by CompiladorParser#reglaFor.
+	visitReglaFor(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
 	// Visit a parse tree produced by CompiladorParser#cicloWhile.
 	visitCicloWhile(ctx) {
 	  return this.visitChildren(ctx);
@@ -110,6 +74,12 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 
 	// Visit a parse tree produced by CompiladorParser#cicloDoWhile.
 	visitCicloDoWhile(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#cicloFor.
+	visitCicloFor(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
@@ -182,6 +152,12 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 
 	// Visit a parse tree produced by CompiladorParser#incrementar.
 	visitIncrementar(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#decrementar.
+	visitDecrementar(ctx) {
 	  return this.visitChildren(ctx);
 	}
 

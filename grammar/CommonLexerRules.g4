@@ -5,9 +5,9 @@ IMPRESION   : 'leak';
 IF_BASICO   : 'si'  ;
 ELSE        : 'else';
 ELSE_IF     : 'elfito';
-DO          : 'do';
-WHILE       : 'while'; 
-FOR         : 'for';     
+DO          : 'toDo';
+WHILE       : 'lewhi'; 
+FOR         : 'fofo';     
 
 //! Tipos de datos
 INT         : 'nc' ;

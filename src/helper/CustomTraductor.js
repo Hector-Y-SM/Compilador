@@ -36,5 +36,4 @@ export default class CustomTraductor extends TraductorVisitor {
     
         return txt;
     }
-    
 }
