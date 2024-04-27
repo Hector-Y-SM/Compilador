@@ -17,8 +17,17 @@ asignacion: ID ASIGNACION valor SEMI? #asignado
 print : IMPRESION APARENTESIS valor CPARENTESIS SEMI?  #printValor
       ;          
 
-if_estructuras: IF_BASICO APARENTESIS condiciones CPARENTESIS abloque contenido* cbloque (ELSE_IF APARENTESIS condiciones CPARENTESIS abloque contenido* cbloque)*? (ELSE abloque contenido* cbloque)? #superIf   
-              ; 
+if_estructuras: if (else_if)* (else)? #estructuraIf
+              ;
+
+if: IF_BASICO APARENTESIS condiciones CPARENTESIS abloque contenido* cbloque  #ifPuro
+  ;
+
+else_if: ELSE_IF APARENTESIS condiciones CPARENTESIS abloque contenido* cbloque  #elseIfPuro 
+       ;
+
+else: ELSE abloque contenido* cbloque  #elsePuro
+      ;
 
 ciclos: while     #reglaWhile
       | doWhile   #reglaDoWhile

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Traductor from "../../components/Traductor"
 import { createTheme } from '@uiw/codemirror-themes';
 import { analizar, traducir } from "../../../module/generador.js";
+import { limpiarComentarios } from "@/helper/comentarios";
 
 const Page  = ()=>{
     const [entrada, setEntrada] = useState('');
@@ -32,7 +33,8 @@ const Page  = ()=>{
     
     const actualizarTexto = (nuevoTexto) => { setEntrada(nuevoTexto); };
     const ejecutar = () => {
-        const txt = analizar(salida);
+        const limpio = limpiarComentarios(salida)
+        const txt = analizar(limpio);
         setResultadoAnalisis(txt);
         setMostrarTerminal(true);
     };

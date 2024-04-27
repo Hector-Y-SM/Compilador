@@ -42,8 +42,26 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
-	// Visit a parse tree produced by CompiladorParser#superIf.
-	visitSuperIf(ctx) {
+	// Visit a parse tree produced by CompiladorParser#estructuraIf.
+	visitEstructuraIf(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#ifPuro.
+	visitIfPuro(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#elseIfPuro.
+	visitElseIfPuro(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#elsePuro.
+	visitElsePuro(ctx) {
 	  return this.visitChildren(ctx);
 	}
 

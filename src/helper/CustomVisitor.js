@@ -329,35 +329,42 @@ export default class CustomVisitor extends CompiladorVisitor{
 	 
 	  }
 
-
-	//! Manejar las estrucuturas del if
-	visitSuperIf(ctx) {
-		const ifCondicion = this.visit(ctx.condiciones(0));
-	
-		if (ifCondicion) {
-			this.visit(ctx.contenido(0));
-		} else {
-			if (ctx.ELSE_IF()) {
-				for(let i = 1; i <= ctx.ELSE_IF().length; i++){
-					console.log('vuelta ', i)
-					if (this.visit(ctx.condiciones(i))) {
-						this.visit(ctx.contenido(i));
-						console.log('encontre un true')
-						return; 
-					}
-				}
-			}
-			if (ctx.ELSE()) {
-				this.visit(ctx.contenido(ctx.contenido().length - 1)); //el ultimo contenido es lo q tiene else
-				return;
-			}
+	  visitEstructuraIf(ctx) {
+		return this.visitChildren(ctx);
+	  }
+	  
+	  visitIfPuro(ctx) {
+		console.log('if')
+		const condicion = this. visit(ctx.condiciones(0))
+		if(condicion){
+			this.controlador = true
+			this.scope = new Map();
+			return this.visitChildren(ctx);
 		}
-	} 
+	}
+
+	visitElseIfPuro(ctx) {
+		console.log('else if')
+		const condicion = this.visit(ctx.condiciones(0))
+		if(this.controlador){ return }
+		if(condicion){
+			this.controlador = true;
+			this.scope = new Map();
+			return this.visitChildren(ctx);
+		}
+	}
+
+	visitElsePuro(ctx) {
+		console.log('else')
+		if(this.controlador) { return }
+		this.scope = new Map();
+	  return this.visitChildren(ctx);
+	}
 
 	//! validar algunas concidiciones comparativas del if
 	visitCondicionComparaciones(ctx) {
-		const arg1 = this.visit(ctx.valor(0))
-		const arg2 = this.visit(ctx.valor(1))
+		const arg1 = this.visit(ctx.valor(0));
+		const arg2 = this.visit(ctx.valor(1));
 		const simbolo = ctx.des.type; 
 		switch(simbolo){
 			case 19: // >
@@ -445,7 +452,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('multiplicacion o division')
 		const n1 = this.visit(ctx.valor(0));
 		const n2 = this.visit(ctx.valor(1));
-		const opt = 13;
+		const opt = 14;
 		const addSub = false;
 		const contexto = ctx.op.type;
 		const lineaError = ctx.start.line;
@@ -459,7 +466,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('suma o resta')
 		const n1 = this.visit(ctx.valor(0));
 		const n2 = this.visit(ctx.valor(1));
-		const opt = 15;
+		const opt = 16;
 		const addSub = true;
 		const contexto = ctx.op.type;
 		const lineaError = ctx.start.line;

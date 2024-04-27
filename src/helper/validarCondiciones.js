@@ -55,31 +55,23 @@ export function argumentosValidos(arg1, arg2, mapaExtra, err){
     }
 }
 
-export function comparaciones(arg1, arg2, mapaExtra, err, simbolo){
-    if(typeof arg1 != 'number'){
-        if(!arg1.match(/"('\\"|.)*?"/g)){
-            if(!variables.has(arg1) && !mapaExtra.has(arg1)){
-                throw new Error(`Error en la linea ${err}, el argumento ${argumento1} no esta definido`);
+export function comparaciones(arg1, arg2, mapaExtra, err, simbolo) {
+    function obtenerValor(arg) {
+        if (typeof arg !== 'number') {
+            if (!arg.match(/"('\\"|.)*?"/g)) {
+                if (!variables.has(arg) && !mapaExtra.has(arg)) {
+                    throw new Error(`Error en la línea ${err}, el argumento ${arg} no está definido`);
+                }
+                const aux = variables.get(arg) ? variables : mapaExtra;
+                return aux.get(arg).valor;
             }
-            const aux = variables.get(arg1) ? variables : mapaExtra;
-            const ext = aux.get(arg1).valor
-            const cadena = `${ext} ${simbolo} ${arg2}`
-            return Boolean(eval(cadena));
         }
+        return arg;
     }
 
-    if(typeof arg2 != 'number'){
-        if(!arg2.match(/"('\\"|.)*?"/g)){
-            if(!variables.has(arg2) && !mapaExtra.has(arg2)){
-                throw new Error(`Error en la linea ${err}, el argumento ${argumento1} no esta definido`);
-            }
-            const aux = variables.get(arg2) ? variables : mapaExtra;
-            const ext = aux.get(arg2).valor
-            const cadena = `${arg1} ${simbolo} ${ext}`
-            return Boolean(eval(cadena));
-        }
-    }
+    const valor1 = obtenerValor(arg1);
+    const valor2 = obtenerValor(arg2);
 
-    const simple = `${arg1} ${simbolo} ${arg2}`
-    return Boolean(eval(simple))
+    const cadena = `${valor1} ${simbolo} ${valor2}`;
+    return Boolean(eval(cadena));
 }
