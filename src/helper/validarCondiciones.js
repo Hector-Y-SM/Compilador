@@ -63,6 +63,7 @@ export function comparaciones(arg1, arg2, mapaExtra, err, simbolo) {
                     throw new Error(`Error en la línea ${err}, el argumento ${arg} no está definido`);
                 }
                 const aux = variables.get(arg) ? variables : mapaExtra;
+                console.log('inspeccion de ', arg, 'valor es: ', aux.get(arg).valor)
                 return aux.get(arg).valor;
             }
         }
@@ -73,5 +74,6 @@ export function comparaciones(arg1, arg2, mapaExtra, err, simbolo) {
     const valor2 = obtenerValor(arg2);
 
     const cadena = `${valor1} ${simbolo} ${valor2}`;
+    console.log('condicion a evaluar ', cadena, 'resultado: ', Boolean(eval(cadena)))
     return Boolean(eval(cadena));
 }

@@ -31,7 +31,6 @@ else: ELSE abloque contenido* cbloque  #elsePuro
 
 ciclos: while     #reglaWhile
       | doWhile   #reglaDoWhile
-      | for       #reglaFor
       ;
 
 while: WHILE APARENTESIS condiciones CPARENTESIS abloque contenido* cbloque   #cicloWhile
@@ -40,8 +39,6 @@ while: WHILE APARENTESIS condiciones CPARENTESIS abloque contenido* cbloque   #c
 doWhile: DO abloque contenido* cbloque WHILE APARENTESIS condiciones CPARENTESIS #cicloDoWhile
        ;
 
-for: FOR APARENTESIS (declaracion) SEMI (condiciones) SEMI (incremento) CPARENTESIS abloque contenido* cbloque #cicloFor
-   ;
 
 valor: valor op=('*'|'/') valor          #MulDiv
      | valor op=('+'|'-') valor          #AddSub
@@ -53,10 +50,11 @@ valor: valor op=('*'|'/') valor          #MulDiv
      | '(' valor ')''('valor')'          #implicito
      ;
 
-condiciones : condiciones des=(OR | AND) condiciones             #logicas
-            | '('*? valor ')'*?                                             #trueOrFalse  
-            | '('*? valor des=(MAYORQ | MENORQ | MAYOR_IGUAL | MENOR_IGUAL | IGUALDAD_DEBIL | IGUALDAD_FUERTE | DIF_DEBIL | DIF_FUERTE) valor ')'*?      #condicionComparaciones
+condiciones : condiciones des=( OR | AND ) condiciones               #logicas
+            | '('* valor ')'*                                             #trueOrFalse  
+            | '('* valor ')'* des=(MAYORQ | MENORQ | MAYOR_IGUAL | MENOR_IGUAL | IGUALDAD_DEBIL | IGUALDAD_FUERTE | DIF_DEBIL | DIF_FUERTE) '('* valor ')'*      #condicionComparaciones
             ;
+
 
 incremento: ID '++' SEMI? #incrementar
           ;

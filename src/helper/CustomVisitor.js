@@ -249,36 +249,6 @@ export default class CustomVisitor extends CompiladorVisitor{
 		}
 	}
 
-	// Visit a parse tree produced by CompiladorParser#reglaFor.
-	visitReglaFor(ctx) {
-		this.variableTemporal = 1;
-		this.scope = new Map();
-		console.log('regla for mi pa')
-
-		return this.visitChildren(ctx);
-	  }
-
-	// Visit a parse tree produced by CompiladorParser#cicloFor.
-	visitCicloFor(ctx) {
-		const variable = ctx.declaracion().ID().getText(); //variable del for
-
-		//! Argumentos para validar la condicion
-		const primerArgumento = ctx.condiciones(0).valor(0).getText(); //primer argumento de la conficion del for
-		const segundoArgumento = ctx.condiciones(0).valor(1).getText();
-		const simboloCondicional = ctx.condiciones(0).des.type;  //token del simbolo del if, en este caso seria ">"
-
-		const condicion = ctx.condiciones(0).getText() //condicion del for, por ejemplo a > 10
-		const simbolo = ctx.incremento().getText().slice(-2) //!esto es para indicarnos si es un incremento a decremento
-
-		console.log('Variable del for:', valor);
-		console.log('Primer argumento de la condición:', primerArgumento);
-		console.log('Segundo argumento de la condición:', segundoArgumento);
-		console.log('Símbolo condicional:', simboloCondicional);
-		console.log('Condición del for:', condicion);
-		console.log('Simbolo (incremento/decremento):', simbolo);
-		return this.visitChildren(ctx);
-	  }
-
 	//! Manejar incremento 
 	visitIncrementar(ctx) {
 		const variable = ctx.ID().getText();
@@ -335,7 +305,9 @@ export default class CustomVisitor extends CompiladorVisitor{
 	  
 	  visitIfPuro(ctx) {
 		console.log('if')
-		const condicion = this. visit(ctx.condiciones(0))
+		const condicion = this. visit(ctx.condiciones(0));
+		console.log('condicion del if ', condicion)
+		if(!condicion){return }
 		if(condicion){
 			this.controlador = true
 			this.scope = new Map();
@@ -363,41 +335,42 @@ export default class CustomVisitor extends CompiladorVisitor{
 
 	//! validar algunas concidiciones comparativas del if
 	visitCondicionComparaciones(ctx) {
+		console.log('TODAS LAS CONDICIONES ', this.visit(ctx.valor()))
 		const arg1 = this.visit(ctx.valor(0));
 		const arg2 = this.visit(ctx.valor(1));
 		const simbolo = ctx.des.type; 
 		switch(simbolo){
 			case 19: // >
-				noCadenasNiBoolean(arg1, arg2, this.scope, ctx.start.line)
+				noCadenasNiBoolean(arg1, arg2, this.scope, ctx.start.line);
 				this.bandera = comparaciones(arg1, arg2, this.scope, ctx.start.line, '>');
 				break;
 			case 20: // <
-				noCadenasNiBoolean(arg1, arg2, this.scope, ctx.start.line)
+				noCadenasNiBoolean(arg1, arg2, this.scope, ctx.start.line);
 				this.bandera = comparaciones(arg1, arg2, this.scope, ctx.start.line, '<');
 			  break;
 			case 21: // >=
-				noCadenasNiBoolean(arg1, arg2, this.scope, ctx.start.line)
+				noCadenasNiBoolean(arg1, arg2, this.scope, ctx.start.line);
 				this.bandera = comparaciones(arg1, arg2, this.scope, ctx.start.line, '>=');
 			  break;
 			case 22: // <=
-				noCadenasNiBoolean(arg1, arg2, this.scope, ctx.start.line)
+				noCadenasNiBoolean(arg1, arg2, this.scope, ctx.start.line);
 				this.bandera = comparaciones(arg1, arg2, this.scope, ctx.start.line, '<=');
 			  break;
 			case 23: //- ==
-				argumentosValidos(arg1, arg2, this.scope, ctx.start.line)
-				arg1 == arg2? this.bandera = false : this.bandera = true;
+				argumentosValidos(arg1, arg2, this.scope, ctx.start.line);
+				this.bandera = comparaciones(arg1, arg2, this.scope, ctx.start.line, '==');
 			  break;
 			case 24: //- ===
-				argumentosValidos(arg1, arg2, this.scope, ctx.start.line)
-				arg1 === arg2? this.bandera = false : this.bandera = true
+				argumentosValidos(arg1, arg2, this.scope, ctx.start.line);
+				this.bandera = comparaciones(arg1, arg2, this.scope, ctx.start.line, '===');
 			  break;
 			case 25: //- !=
-				argumentosValidos(arg1, arg2, this.scope, ctx.start.line)
-				arg1 != arg2 ? this.bandera = false : this.bandera = true
+				argumentosValidos(arg1, arg2, this.scope, ctx.start.line);
+				this.bandera = comparaciones(arg1, arg2, this.scope, ctx.start.line, '!=');
 			  break;
 			case 26: //- !==
 				argumentosValidos(arg1, arg2, this.scope, ctx.start.line)
-				arg1 !== arg2 ? this.bandera = false : this.bandera = true;
+				this.bandera = comparaciones(arg1, arg2, this.scope, ctx.start.line, '!==');
 			  break;
 			default : throw new Error('Este simbolo no existe pa');
 		}
@@ -406,7 +379,8 @@ export default class CustomVisitor extends CompiladorVisitor{
 
 	//! Metodo para controlar el if con condicion simple, ejemplo: if(true)
 	visitTrueOrFalse(ctx) {
-		const argumento = this.visit(ctx.valor())
+		const argumento = this.visit(ctx.valor(0))
+		console.log('argumento unico ', argumento)
 		if(argumento.match(/"('\\"|.)*?"/g) || typeof argumento == 'number'){ throw new Error(`Error en la linea ${ctx.start.line}, el argumento ${argumento} no esta definido`); }
 		
 		switch(argumento){
@@ -439,10 +413,13 @@ export default class CustomVisitor extends CompiladorVisitor{
 		switch(simbolo){
 			case 27: // ||
 				argumento1 == false && argumento2 == false ? this.bandera = false : this.bandera = true;
-			  break;
-			case 28: // &&
+				break;
+	  		case 28: // &&
+			  	console.log('en las logicas 1 ', argumento1)
+			  	console.log('en las logicas 2 ', argumento2)
 				argumento1 == false || argumento2 == false ? this.bandera = false : this.bandera = true;
-			  break;
+			break;
+			default : throw new Error('Este simbolo no existe pa');
 		}
 	  return this.bandera;
 	}

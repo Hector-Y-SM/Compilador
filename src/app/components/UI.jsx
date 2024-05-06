@@ -56,9 +56,9 @@ const UI = ({ titulo, funcionPrincipal, contenido, actualizar, resultados }) => 
                 />
             </div>
         {mostrarTerminal && (
-            <div className="transition-all text-gray-100 p-3 fixed bottom-0 left-0 right-0 h-1/4 md:h-1/3 lg:h-1/4 rounded-t-xl bg-gray-700">
+            <div className="transition-all text-gray-100 p-3 fixed bottom-0 left-0 right-0 h-1/4 lg:h-1/2 rounded-t-xl bg-gray-700">
                 Salida: <br />
-                <textarea className='bg-transparent resize-none w-full h-full mt-3 mb-10'
+                <textarea className='bg-transparent resize-none w-full h-3/4 mt-3 pb-2'
                     value = {resultados}
                     readOnly={true}
                 />
