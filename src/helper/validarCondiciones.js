@@ -1,70 +1,54 @@
 import { variables } from "./memoria.js"
 
-export function noCadenasNiBoolean(arg1, arg2, mapaExtra, err){
+export function noCadenasNiBoolean(arg1, arg2, err) {
     console.log('arg1 ',arg1)
     console.log('arg2 ',arg2)
 
-    if(typeof arg1 != 'number'){
-        if(arg1.match(/"('\\"|.)*?"/g) || arg1 == 'true' || arg1 == 'false'){ throw new Error(`Error en la linea ${err}, argumentos no validos`); }
-    }
-    
-    if(typeof arg2 != 'number'){
-        if(arg2.match(/"('\\"|.)*?"/g) || arg2 == 'true' || arg2 == 'false'){ throw new Error(`Error en la linea ${err}, argumentos no validos`); }
-    }
-
-    if(typeof arg1 != 'number'){
-    if(variables.has(arg1) || mapaExtra.has(arg1)){
-        const aux = variables.get(arg1) ? variables : mapaExtra;
-        const ext = aux.get(arg1).valor;
-        if(typeof ext != 'number'){
-            if(ext.match(/"('\\"|.)*?"/g) || ext == 'true' || ext == 'false'){ // TODO: CUIDADO
-                throw new Error(`Error en la linea ${err}, argumentos no validos`);
+    function evitarProblemas(arg) {
+        if(typeof arg != 'number'){
+            if(arg.match(/"('\\"|.)*?"/g) || arg == 'true' || arg == 'false') { 
+                throw new Error(`Error en la linea ${err}, argumentos no validos`); 
             }
-        }
-      }
-    }
 
-    if(typeof arg2 != 'number'){
-    if(variables.has(arg2) || mapaExtra.has(arg2)){
-        const aux = variables.get(arg2) ? variables : mapaExtra;
-        const ext = aux.get(arg2).valor
-        if(typeof ext != 'number'){
-            if(ext.match(/"('\\"|.)*?"/g) || ext == 'true' || ext == 'false'){ // TODO: CUIDADO
-                throw new Error(`Error en la linea ${err}, argumentos no validos`);
-            }
+            if(variables.has(arg)){
+                const aux = variables.get(arg);
+                const ext = aux.valor;
+                if(typeof ext != 'number'){
+                    if(ext.match(/"('\\"|.)*?"/g) || ext == 'true' || ext == 'false') { 
+                        throw new Error(`Error en la linea ${err}, argumentos no validos`);
+                    }
+                }
+              }
         }
     }
-}
+
+    evitarProblemas(arg1);
+    evitarProblemas(arg2);
 }
 
-export function argumentosValidos(arg1, arg2, mapaExtra, err){
-    if(typeof arg1 != 'number'){
-        if(!arg1.match(/"('\\"|.)*?"/g)){
-            if(!variables.has(arg1) && !mapaExtra.has(arg1)){
-                throw new Error(`Error en la linea ${err}, el argumento ${argumento1} no esta definido`);
+export function argumentosValidos(arg1, arg2, err){
+    function verificarArgumento(arg){
+        if(typeof arg != 'number'){
+            if(!arg.match(/"('\\"|.)*?"/g)){
+                if(!variables.has(arg)){
+                    throw new Error(`Error en la linea ${err}, el argumento ${arg} no esta definido`);
+                }
             }
         }
     }
 
-    if(typeof arg2 != 'number'){
-        if(!arg2.match(/"('\\"|.)*?"/g)){
-            if(!variables.has(arg2) && !mapaExtra.has(arg2)){
-                throw new Error(`Error en la linea ${err}, el argumento ${argumento1} no esta definido`);
-            }
-        }
-    }
+    verificarArgumento(arg1);
+    verificarArgumento(arg2);
 }
 
-export function comparaciones(arg1, arg2, mapaExtra, err, simbolo) {
+export function comparaciones(arg1, arg2, err, simbolo) {
     function obtenerValor(arg) {
         if (typeof arg !== 'number') {
             if (!arg.match(/"('\\"|.)*?"/g)) {
-                if (!variables.has(arg) && !mapaExtra.has(arg)) {
+                if (!variables.has(arg)) {
                     throw new Error(`Error en la línea ${err}, el argumento ${arg} no está definido`);
                 }
-                const aux = variables.get(arg) ? variables : mapaExtra;
-                console.log('inspeccion de ', arg, 'valor es: ', aux.get(arg).valor)
-                return aux.get(arg).valor;
+                return variables.get(arg).valor;
             }
         }
         return arg;

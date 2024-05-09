@@ -90,8 +90,14 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
-	// Visit a parse tree produced by CompiladorParser#parens.
-	visitParens(ctx) {
+	// Visit a parse tree produced by CompiladorParser#residuo.
+	visitResiduo(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#Comparacion.
+	visitComparacion(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
@@ -114,8 +120,20 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
-	// Visit a parse tree produced by CompiladorParser#implicito.
-	visitImplicito(ctx) {
+	// Visit a parse tree produced by CompiladorParser#Parentesis.
+	visitParentesis(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#trueFalse.
+	visitTrueFalse(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by CompiladorParser#logicas.
+	visitLogicas(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
@@ -138,18 +156,6 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
-	// Visit a parse tree produced by CompiladorParser#condicionComparaciones.
-	visitCondicionComparaciones(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
-	// Visit a parse tree produced by CompiladorParser#logicas.
-	visitLogicas(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
 	// Visit a parse tree produced by CompiladorParser#trueOrFalse.
 	visitTrueOrFalse(ctx) {
 	  return this.visitChildren(ctx);
@@ -168,14 +174,14 @@ export default class CompiladorVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
-	// Visit a parse tree produced by CompiladorParser#auxScoopeDos.
-	visitAuxScoopeDos(ctx) {
+	// Visit a parse tree produced by CompiladorParser#auxScopeDos.
+	visitAuxScopeDos(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
 
-	// Visit a parse tree produced by CompiladorParser#auxScoope.
-	visitAuxScoope(ctx) {
+	// Visit a parse tree produced by CompiladorParser#auxScope.
+	visitAuxScope(ctx) {
 	  return this.visitChildren(ctx);
 	}
 

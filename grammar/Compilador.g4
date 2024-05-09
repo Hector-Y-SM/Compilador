@@ -42,19 +42,19 @@ doWhile: DO abloque contenido* cbloque WHILE APARENTESIS condiciones CPARENTESIS
 
 valor: valor op=('*'|'/') valor          #MulDiv
      | valor op=('+'|'-') valor          #AddSub
+     | valor RESIDUO valor               #residuo 
+     | valor op=(MAYORQ | MENORQ | MAYOR_IGUAL | MENOR_IGUAL | IGUALDAD_DEBIL | IGUALDAD_FUERTE | DIF_DEBIL | DIF_FUERTE)  valor              #Comparacion
+     | valor op=(OR | AND)  valor        #logicas
+     | APARENTESIS valor CPARENTESIS     #Parentesis
+     | (TRUE | FALSE)                    #trueFalse 
      | NUM                               #numero
      | DEC                               #decimal
      | CADENA                            #cadenas
      | ID                                #id
-     | '(' valor ')'                     #parens
-     | '(' valor ')''('valor')'          #implicito
      ;
 
-condiciones : condiciones des=( OR | AND ) condiciones               #logicas
-            | '('* valor ')'*                                             #trueOrFalse  
-            | '('* valor ')'* des=(MAYORQ | MENORQ | MAYOR_IGUAL | MENOR_IGUAL | IGUALDAD_DEBIL | IGUALDAD_FUERTE | DIF_DEBIL | DIF_FUERTE) '('* valor ')'*      #condicionComparaciones
+condiciones :  valor                                            #trueOrFalse  
             ;
-
 
 incremento: ID '++' SEMI? #incrementar
           ;
@@ -62,9 +62,9 @@ incremento: ID '++' SEMI? #incrementar
 decremento: ID '--' SEMI? #decrementar
           ;
 
-abloque: ALLAVE #auxScoopeDos
+abloque: ALLAVE #auxScopeDos
        ;
-cbloque : CLLAVE #auxScoope
+cbloque : CLLAVE #auxScope
         ;
 
 PR: INT 

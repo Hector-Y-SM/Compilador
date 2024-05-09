@@ -8,6 +8,8 @@ ELSE_IF     : 'elfito';
 DO          : 'toDo';
 WHILE       : 'lewhi'; 
 FOR         : 'fofo';     
+TRUE        : 'true';
+FALSE       : 'false';
 
 //! Tipos de datos
 INT         : 'nc' ;
@@ -28,6 +30,7 @@ IGUALDAD_DEBIL   : '==' ;
 IGUALDAD_FUERTE  : '===';
 DIF_DEBIL        : '!=' ;
 DIF_FUERTE       : '!==';
+RESIDUO          : '%';
 
 //! Operadores logicos
 OR : '||';
@@ -49,5 +52,6 @@ NUM         : '-'? [0-9]+      ;
 CADENA      : '"' .*? '"'      ;
 DEC         : [0-9]+'.'[0-9]+  ;
 SEMI        : ';'              ;
+COMA        : ','              ;
 
 WS: [ \t\r\n]+ -> skip; // Ignorar espacios en blanco, tabulaciones, retornos de carro y saltos de línea.
