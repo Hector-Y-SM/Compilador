@@ -56,7 +56,7 @@ export function validarOperacionMatematica(expresion) {
     }
   
     // Verificar multiplicación implícita
-    const regexMultiplicacionImplicita = /\)[\d(]|\][\d(]/g; // Busca ')' seguido de número o '(' o ']' seguido de número o '('
+    const regexMultiplicacionImplicita = /\)[\d(]|\][\d(]/g; 
     if (expresion.match(regexMultiplicacionImplicita)) {
         return false; 
     }

@@ -16,16 +16,13 @@ public class TraductorParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		MAIN=1, AUTO=2, BREAK=3, CASE=4, CHAR=5, CONST=6, CONTINUE=7, DEFAULT=8, 
-		DO=9, DOUBLE=10, ELSE_IF=11, ELSE=12, ENUM=13, EXTERN=14, FLOAT=15, FOR=16, 
-		GOTO=17, IF=18, INT=19, LONG=20, REGISTER=21, RETURN=22, SHORT=23, SIGNED=24, 
-		SIZEOF=25, STATIC=26, STRUCT=27, SWITCH=28, TYPEDEF=29, UNION=30, UNSIGNED=31, 
-		VOID=32, VOLATILE=33, WHILE=34, INCLUDE=35, PRINTF=36, SCANF=37, FPRINTF=38, 
-		FSCANF=39, SPRINTF=40, FSEEK=41, FOPEN=42, FCLOSE=43, GETCH=44, VOID_MAIN=45, 
-		ID=46, NUM=47, CADENA=48, DEC=49, SEMI=50, ALLAVE=51, CLLAVE=52, APARENTESIS=53, 
-		CPARENTESIS=54, AADMIRACION=55, MUL=56, DIV=57, ADD=58, SUB=59, ASIGNACION=60, 
-		MAYORQ=61, MENORQ=62, MAYOR_IGUAL=63, MENOR_IGUAL=64, IGUALDAD_DEBIL=65, 
-		IGUALDAD_FUERTE=66, DIF_DEBIL=67, DIF_FUERTE=68, OR=69, AND=70, WS=71;
+		MAIN=1, BREAK=2, CASE=3, CHAR=4, CONST=5, DO=6, DOUBLE=7, ELSE_IF=8, ELSE=9, 
+		FLOAT=10, FOR=11, IF=12, INT=13, SWITCH=14, UNSIGNED=15, VOID=16, WHILE=17, 
+		PRINTF=18, VOID_MAIN=19, TRUE=20, FALSE=21, ID=22, NUM=23, CADENA=24, 
+		DEC=25, SEMI=26, COMA=27, ALLAVE=28, CLLAVE=29, APARENTESIS=30, CPARENTESIS=31, 
+		AADMIRACION=32, MUL=33, DIV=34, ADD=35, SUB=36, ASIGNACION=37, MAYORQ=38, 
+		MENORQ=39, MAYOR_IGUAL=40, MENOR_IGUAL=41, IGUALDAD_DEBIL=42, IGUALDAD_FUERTE=43, 
+		DIF_DEBIL=44, DIF_FUERTE=45, RESIDUO=46, OR=47, AND=48, WS=49;
 	public static final int
 		RULE_contenido = 0, RULE_pr = 1, RULE_varios = 2;
 	private static String[] makeRuleNames() {
@@ -37,31 +34,24 @@ public class TraductorParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'main'", "'auto'", "'break'", "'case'", "'char'", "'const'", "'continue'", 
-			"'default'", "'do'", "'double'", "'else if'", "'else'", "'enum'", "'extern'", 
-			"'float'", "'for'", "'goto'", "'if'", "'int'", "'long'", "'register'", 
-			"'return'", "'short'", "'signed'", "'sizeof'", "'static'", "'struct'", 
-			"'switch'", "'typedef'", "'union'", "'unsigned'", "'void'", "'volatile'", 
-			"'while'", "'include'", "'printf'", "'scanf'", "'fprintf'", "'fscanf'", 
-			"'sprintf'", "'fseek'", "'fopen'", "'fclose'", "'getch'", "'void main()'", 
-			null, null, null, null, "';'", "'{'", "'}'", "'('", "')'", "'!'", "'*'", 
-			"'/'", "'+'", "'-'", "'='", "'>'", "'<'", "'>='", "'<='", "'=='", "'==='", 
-			"'!='", "'!=='", "'||'", "'&&'"
+			null, "'main'", "'break'", "'case'", "'char'", "'const'", "'do'", "'double'", 
+			"'else if'", "'else'", "'float'", "'for'", "'if'", "'int'", "'switch'", 
+			"'unsigned'", "'void'", "'while'", "'printf'", "'void main()'", "'true'", 
+			"'false'", null, null, null, null, "';'", "','", "'{'", "'}'", "'('", 
+			"')'", "'!'", "'*'", "'/'", "'+'", "'-'", "'='", "'>'", "'<'", "'>='", 
+			"'<='", "'=='", "'==='", "'!='", "'!=='", "'%'", "'||'", "'&&'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "MAIN", "AUTO", "BREAK", "CASE", "CHAR", "CONST", "CONTINUE", "DEFAULT", 
-			"DO", "DOUBLE", "ELSE_IF", "ELSE", "ENUM", "EXTERN", "FLOAT", "FOR", 
-			"GOTO", "IF", "INT", "LONG", "REGISTER", "RETURN", "SHORT", "SIGNED", 
-			"SIZEOF", "STATIC", "STRUCT", "SWITCH", "TYPEDEF", "UNION", "UNSIGNED", 
-			"VOID", "VOLATILE", "WHILE", "INCLUDE", "PRINTF", "SCANF", "FPRINTF", 
-			"FSCANF", "SPRINTF", "FSEEK", "FOPEN", "FCLOSE", "GETCH", "VOID_MAIN", 
-			"ID", "NUM", "CADENA", "DEC", "SEMI", "ALLAVE", "CLLAVE", "APARENTESIS", 
-			"CPARENTESIS", "AADMIRACION", "MUL", "DIV", "ADD", "SUB", "ASIGNACION", 
-			"MAYORQ", "MENORQ", "MAYOR_IGUAL", "MENOR_IGUAL", "IGUALDAD_DEBIL", "IGUALDAD_FUERTE", 
-			"DIF_DEBIL", "DIF_FUERTE", "OR", "AND", "WS"
+			null, "MAIN", "BREAK", "CASE", "CHAR", "CONST", "DO", "DOUBLE", "ELSE_IF", 
+			"ELSE", "FLOAT", "FOR", "IF", "INT", "SWITCH", "UNSIGNED", "VOID", "WHILE", 
+			"PRINTF", "VOID_MAIN", "TRUE", "FALSE", "ID", "NUM", "CADENA", "DEC", 
+			"SEMI", "COMA", "ALLAVE", "CLLAVE", "APARENTESIS", "CPARENTESIS", "AADMIRACION", 
+			"MUL", "DIV", "ADD", "SUB", "ASIGNACION", "MAYORQ", "MENORQ", "MAYOR_IGUAL", 
+			"MENOR_IGUAL", "IGUALDAD_DEBIL", "IGUALDAD_FUERTE", "DIF_DEBIL", "DIF_FUERTE", 
+			"RESIDUO", "OR", "AND", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -152,7 +142,6 @@ public class TraductorParser extends Parser {
 					_errHandler.sync(this);
 					switch (_input.LA(1)) {
 					case MAIN:
-					case AUTO:
 					case BREAK:
 					case CASE:
 					case CHAR:
@@ -164,7 +153,6 @@ public class TraductorParser extends Parser {
 					case FOR:
 					case IF:
 					case INT:
-					case RETURN:
 					case SWITCH:
 					case VOID:
 					case WHILE:
@@ -231,7 +219,6 @@ public class TraductorParser extends Parser {
 	public static class PrContext extends ParserRuleContext {
 		public TerminalNode VOID_MAIN() { return getToken(TraductorParser.VOID_MAIN, 0); }
 		public TerminalNode MAIN() { return getToken(TraductorParser.MAIN, 0); }
-		public TerminalNode AUTO() { return getToken(TraductorParser.AUTO, 0); }
 		public TerminalNode BREAK() { return getToken(TraductorParser.BREAK, 0); }
 		public TerminalNode CASE() { return getToken(TraductorParser.CASE, 0); }
 		public TerminalNode CHAR() { return getToken(TraductorParser.CHAR, 0); }
@@ -243,7 +230,6 @@ public class TraductorParser extends Parser {
 		public TerminalNode FOR() { return getToken(TraductorParser.FOR, 0); }
 		public TerminalNode IF() { return getToken(TraductorParser.IF, 0); }
 		public TerminalNode INT() { return getToken(TraductorParser.INT, 0); }
-		public TerminalNode RETURN() { return getToken(TraductorParser.RETURN, 0); }
 		public TerminalNode SWITCH() { return getToken(TraductorParser.SWITCH, 0); }
 		public TerminalNode VOID() { return getToken(TraductorParser.VOID, 0); }
 		public TerminalNode WHILE() { return getToken(TraductorParser.WHILE, 0); }
@@ -263,7 +249,7 @@ public class TraductorParser extends Parser {
 			{
 			setState(13);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 35274839924286L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 1015774L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -326,7 +312,7 @@ public class TraductorParser extends Parser {
 			{
 			setState(15);
 			_la = _input.LA(1);
-			if ( !(((((_la - 46)) & ~0x3f) == 0 && ((1L << (_la - 46)) & 33554431L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 492581070831616L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -348,19 +334,19 @@ public class TraductorParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001G\u0012\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u00011\u0012\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0001\u0000\u0001\u0000\u0005\u0000\t\b\u0000\n\u0000"+
 		"\f\u0000\f\t\u0000\u0001\u0001\u0001\u0001\u0001\u0002\u0001\u0002\u0001"+
-		"\u0002\u0001\n\u0000\u0003\u0000\u0002\u0004\u0000\u0002\n\u0000\u0001"+
-		"\u0005\t\f\u000f\u0010\u0012\u0013\u0016\u0016\u001c\u001c  \"\"$$--\u0001"+
-		"\u0000.F\u0010\u0000\n\u0001\u0000\u0000\u0000\u0002\r\u0001\u0000\u0000"+
-		"\u0000\u0004\u000f\u0001\u0000\u0000\u0000\u0006\t\u0003\u0002\u0001\u0000"+
-		"\u0007\t\u0003\u0004\u0002\u0000\b\u0006\u0001\u0000\u0000\u0000\b\u0007"+
-		"\u0001\u0000\u0000\u0000\t\f\u0001\u0000\u0000\u0000\n\u000b\u0001\u0000"+
-		"\u0000\u0000\n\b\u0001\u0000\u0000\u0000\u000b\u0001\u0001\u0000\u0000"+
-		"\u0000\f\n\u0001\u0000\u0000\u0000\r\u000e\u0007\u0000\u0000\u0000\u000e"+
-		"\u0003\u0001\u0000\u0000\u0000\u000f\u0010\u0007\u0001\u0000\u0000\u0010"+
-		"\u0005\u0001\u0000\u0000\u0000\u0002\b\n";
+		"\u0002\u0001\n\u0000\u0003\u0000\u0002\u0004\u0000\u0002\u0003\u0000\u0001"+
+		"\u0004\u0006\u000e\u0010\u0013\u0003\u0000\u0016\u001a\u001c-/0\u0010"+
+		"\u0000\n\u0001\u0000\u0000\u0000\u0002\r\u0001\u0000\u0000\u0000\u0004"+
+		"\u000f\u0001\u0000\u0000\u0000\u0006\t\u0003\u0002\u0001\u0000\u0007\t"+
+		"\u0003\u0004\u0002\u0000\b\u0006\u0001\u0000\u0000\u0000\b\u0007\u0001"+
+		"\u0000\u0000\u0000\t\f\u0001\u0000\u0000\u0000\n\u000b\u0001\u0000\u0000"+
+		"\u0000\n\b\u0001\u0000\u0000\u0000\u000b\u0001\u0001\u0000\u0000\u0000"+
+		"\f\n\u0001\u0000\u0000\u0000\r\u000e\u0007\u0000\u0000\u0000\u000e\u0003"+
+		"\u0001\u0000\u0000\u0000\u000f\u0010\u0007\u0001\u0000\u0000\u0010\u0005"+
+		"\u0001\u0000\u0000\u0000\u0002\b\n";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

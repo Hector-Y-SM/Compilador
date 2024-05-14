@@ -3,12 +3,12 @@
 import antlr4 from 'antlr4';
 import TraductorVisitor from './TraductorVisitor.js';
 
-const serializedATN = [4,1,71,18,2,0,7,0,2,1,7,1,2,2,7,2,1,0,1,0,5,0,9,8,
-0,10,0,12,0,12,9,0,1,1,1,1,1,2,1,2,1,2,1,10,0,3,0,2,4,0,2,10,0,1,5,9,12,
-15,16,18,19,22,22,28,28,32,32,34,34,36,36,45,45,1,0,46,70,16,0,10,1,0,0,
-0,2,13,1,0,0,0,4,15,1,0,0,0,6,9,3,2,1,0,7,9,3,4,2,0,8,6,1,0,0,0,8,7,1,0,
-0,0,9,12,1,0,0,0,10,11,1,0,0,0,10,8,1,0,0,0,11,1,1,0,0,0,12,10,1,0,0,0,13,
-14,7,0,0,0,14,3,1,0,0,0,15,16,7,1,0,0,16,5,1,0,0,0,2,8,10];
+const serializedATN = [4,1,49,18,2,0,7,0,2,1,7,1,2,2,7,2,1,0,1,0,5,0,9,8,
+0,10,0,12,0,12,9,0,1,1,1,1,1,2,1,2,1,2,1,10,0,3,0,2,4,0,2,3,0,1,4,6,14,16,
+19,3,0,22,26,28,45,47,48,16,0,10,1,0,0,0,2,13,1,0,0,0,4,15,1,0,0,0,6,9,3,
+2,1,0,7,9,3,4,2,0,8,6,1,0,0,0,8,7,1,0,0,0,9,12,1,0,0,0,10,11,1,0,0,0,10,
+8,1,0,0,0,11,1,1,0,0,0,12,10,1,0,0,0,13,14,7,0,0,0,14,3,1,0,0,0,15,16,7,
+1,0,0,16,5,1,0,0,0,2,8,10];
 
 
 const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -20,36 +20,27 @@ const sharedContextCache = new antlr4.atn.PredictionContextCache();
 export default class TraductorParser extends antlr4.Parser {
 
     static grammarFileName = "Traductor.g4";
-    static literalNames = [ null, "'main'", "'auto'", "'break'", "'case'", 
-                            "'char'", "'const'", "'continue'", "'default'", 
-                            "'do'", "'double'", "'else if'", "'else'", "'enum'", 
-                            "'extern'", "'float'", "'for'", "'goto'", "'if'", 
-                            "'int'", "'long'", "'register'", "'return'", 
-                            "'short'", "'signed'", "'sizeof'", "'static'", 
-                            "'struct'", "'switch'", "'typedef'", "'union'", 
-                            "'unsigned'", "'void'", "'volatile'", "'while'", 
-                            "'include'", "'printf'", "'scanf'", "'fprintf'", 
-                            "'fscanf'", "'sprintf'", "'fseek'", "'fopen'", 
-                            "'fclose'", "'getch'", "'void main()'", null, 
-                            null, null, null, "';'", "'{'", "'}'", "'('", 
-                            "')'", "'!'", "'*'", "'/'", "'+'", "'-'", "'='", 
-                            "'>'", "'<'", "'>='", "'<='", "'=='", "'==='", 
-                            "'!='", "'!=='", "'||'", "'&&'" ];
-    static symbolicNames = [ null, "MAIN", "AUTO", "BREAK", "CASE", "CHAR", 
-                             "CONST", "CONTINUE", "DEFAULT", "DO", "DOUBLE", 
-                             "ELSE_IF", "ELSE", "ENUM", "EXTERN", "FLOAT", 
-                             "FOR", "GOTO", "IF", "INT", "LONG", "REGISTER", 
-                             "RETURN", "SHORT", "SIGNED", "SIZEOF", "STATIC", 
-                             "STRUCT", "SWITCH", "TYPEDEF", "UNION", "UNSIGNED", 
-                             "VOID", "VOLATILE", "WHILE", "INCLUDE", "PRINTF", 
-                             "SCANF", "FPRINTF", "FSCANF", "SPRINTF", "FSEEK", 
-                             "FOPEN", "FCLOSE", "GETCH", "VOID_MAIN", "ID", 
-                             "NUM", "CADENA", "DEC", "SEMI", "ALLAVE", "CLLAVE", 
-                             "APARENTESIS", "CPARENTESIS", "AADMIRACION", 
-                             "MUL", "DIV", "ADD", "SUB", "ASIGNACION", "MAYORQ", 
-                             "MENORQ", "MAYOR_IGUAL", "MENOR_IGUAL", "IGUALDAD_DEBIL", 
-                             "IGUALDAD_FUERTE", "DIF_DEBIL", "DIF_FUERTE", 
-                             "OR", "AND", "WS" ];
+    static literalNames = [ null, "'main'", "'break'", "'case'", "'char'", 
+                            "'const'", "'do'", "'double'", "'else if'", 
+                            "'else'", "'float'", "'for'", "'if'", "'int'", 
+                            "'switch'", "'unsigned'", "'void'", "'while'", 
+                            "'printf'", "'void main()'", "'true'", "'false'", 
+                            null, null, null, null, "';'", "','", "'{'", 
+                            "'}'", "'('", "')'", "'!'", "'*'", "'/'", "'+'", 
+                            "'-'", "'='", "'>'", "'<'", "'>='", "'<='", 
+                            "'=='", "'==='", "'!='", "'!=='", "'%'", "'||'", 
+                            "'&&'" ];
+    static symbolicNames = [ null, "MAIN", "BREAK", "CASE", "CHAR", "CONST", 
+                             "DO", "DOUBLE", "ELSE_IF", "ELSE", "FLOAT", 
+                             "FOR", "IF", "INT", "SWITCH", "UNSIGNED", "VOID", 
+                             "WHILE", "PRINTF", "VOID_MAIN", "TRUE", "FALSE", 
+                             "ID", "NUM", "CADENA", "DEC", "SEMI", "COMA", 
+                             "ALLAVE", "CLLAVE", "APARENTESIS", "CPARENTESIS", 
+                             "AADMIRACION", "MUL", "DIV", "ADD", "SUB", 
+                             "ASIGNACION", "MAYORQ", "MENORQ", "MAYOR_IGUAL", 
+                             "MENOR_IGUAL", "IGUALDAD_DEBIL", "IGUALDAD_FUERTE", 
+                             "DIF_DEBIL", "DIF_FUERTE", "RESIDUO", "OR", 
+                             "AND", "WS" ];
     static ruleNames = [ "contenido", "pr", "varios" ];
 
     constructor(input) {
@@ -79,49 +70,47 @@ export default class TraductorParser extends antlr4.Parser {
 	                case 2:
 	                case 3:
 	                case 4:
-	                case 5:
+	                case 6:
+	                case 7:
+	                case 8:
 	                case 9:
 	                case 10:
 	                case 11:
 	                case 12:
-	                case 15:
+	                case 13:
+	                case 14:
 	                case 16:
+	                case 17:
 	                case 18:
 	                case 19:
-	                case 22:
-	                case 28:
-	                case 32:
-	                case 34:
-	                case 36:
-	                case 45:
 	                    this.state = 6;
 	                    this.pr();
 	                    break;
-	                case 46:
+	                case 22:
+	                case 23:
+	                case 24:
+	                case 25:
+	                case 26:
+	                case 28:
+	                case 29:
+	                case 30:
+	                case 31:
+	                case 32:
+	                case 33:
+	                case 34:
+	                case 35:
+	                case 36:
+	                case 37:
+	                case 38:
+	                case 39:
+	                case 40:
+	                case 41:
+	                case 42:
+	                case 43:
+	                case 44:
+	                case 45:
 	                case 47:
 	                case 48:
-	                case 49:
-	                case 50:
-	                case 51:
-	                case 52:
-	                case 53:
-	                case 54:
-	                case 55:
-	                case 56:
-	                case 57:
-	                case 58:
-	                case 59:
-	                case 60:
-	                case 61:
-	                case 62:
-	                case 63:
-	                case 64:
-	                case 65:
-	                case 66:
-	                case 67:
-	                case 68:
-	                case 69:
-	                case 70:
 	                    this.state = 7;
 	                    this.varios();
 	                    break;
@@ -158,7 +147,7 @@ export default class TraductorParser extends antlr4.Parser {
 	        this.enterOuterAlt(localctx, 1);
 	        this.state = 13;
 	        _la = this._input.LA(1);
-	        if(!((((_la) & ~0x1f) === 0 && ((1 << _la) & 273522238) !== 0) || ((((_la - 32)) & ~0x1f) === 0 && ((1 << (_la - 32)) & 8213) !== 0))) {
+	        if(!((((_la) & ~0x1f) === 0 && ((1 << _la) & 1015774) !== 0))) {
 	        this._errHandler.recoverInline(this);
 	        }
 	        else {
@@ -189,7 +178,7 @@ export default class TraductorParser extends antlr4.Parser {
 	        this.enterOuterAlt(localctx, 1);
 	        this.state = 15;
 	        _la = this._input.LA(1);
-	        if(!(((((_la - 46)) & ~0x1f) === 0 && ((1 << (_la - 46)) & 33554431) !== 0))) {
+	        if(!(((((_la - 22)) & ~0x1f) === 0 && ((1 << (_la - 22)) & 117440479) !== 0))) {
 	        this._errHandler.recoverInline(this);
 	        }
 	        else {
@@ -215,76 +204,54 @@ export default class TraductorParser extends antlr4.Parser {
 
 TraductorParser.EOF = antlr4.Token.EOF;
 TraductorParser.MAIN = 1;
-TraductorParser.AUTO = 2;
-TraductorParser.BREAK = 3;
-TraductorParser.CASE = 4;
-TraductorParser.CHAR = 5;
-TraductorParser.CONST = 6;
-TraductorParser.CONTINUE = 7;
-TraductorParser.DEFAULT = 8;
-TraductorParser.DO = 9;
-TraductorParser.DOUBLE = 10;
-TraductorParser.ELSE_IF = 11;
-TraductorParser.ELSE = 12;
-TraductorParser.ENUM = 13;
-TraductorParser.EXTERN = 14;
-TraductorParser.FLOAT = 15;
-TraductorParser.FOR = 16;
-TraductorParser.GOTO = 17;
-TraductorParser.IF = 18;
-TraductorParser.INT = 19;
-TraductorParser.LONG = 20;
-TraductorParser.REGISTER = 21;
-TraductorParser.RETURN = 22;
-TraductorParser.SHORT = 23;
-TraductorParser.SIGNED = 24;
-TraductorParser.SIZEOF = 25;
-TraductorParser.STATIC = 26;
-TraductorParser.STRUCT = 27;
-TraductorParser.SWITCH = 28;
-TraductorParser.TYPEDEF = 29;
-TraductorParser.UNION = 30;
-TraductorParser.UNSIGNED = 31;
-TraductorParser.VOID = 32;
-TraductorParser.VOLATILE = 33;
-TraductorParser.WHILE = 34;
-TraductorParser.INCLUDE = 35;
-TraductorParser.PRINTF = 36;
-TraductorParser.SCANF = 37;
-TraductorParser.FPRINTF = 38;
-TraductorParser.FSCANF = 39;
-TraductorParser.SPRINTF = 40;
-TraductorParser.FSEEK = 41;
-TraductorParser.FOPEN = 42;
-TraductorParser.FCLOSE = 43;
-TraductorParser.GETCH = 44;
-TraductorParser.VOID_MAIN = 45;
-TraductorParser.ID = 46;
-TraductorParser.NUM = 47;
-TraductorParser.CADENA = 48;
-TraductorParser.DEC = 49;
-TraductorParser.SEMI = 50;
-TraductorParser.ALLAVE = 51;
-TraductorParser.CLLAVE = 52;
-TraductorParser.APARENTESIS = 53;
-TraductorParser.CPARENTESIS = 54;
-TraductorParser.AADMIRACION = 55;
-TraductorParser.MUL = 56;
-TraductorParser.DIV = 57;
-TraductorParser.ADD = 58;
-TraductorParser.SUB = 59;
-TraductorParser.ASIGNACION = 60;
-TraductorParser.MAYORQ = 61;
-TraductorParser.MENORQ = 62;
-TraductorParser.MAYOR_IGUAL = 63;
-TraductorParser.MENOR_IGUAL = 64;
-TraductorParser.IGUALDAD_DEBIL = 65;
-TraductorParser.IGUALDAD_FUERTE = 66;
-TraductorParser.DIF_DEBIL = 67;
-TraductorParser.DIF_FUERTE = 68;
-TraductorParser.OR = 69;
-TraductorParser.AND = 70;
-TraductorParser.WS = 71;
+TraductorParser.BREAK = 2;
+TraductorParser.CASE = 3;
+TraductorParser.CHAR = 4;
+TraductorParser.CONST = 5;
+TraductorParser.DO = 6;
+TraductorParser.DOUBLE = 7;
+TraductorParser.ELSE_IF = 8;
+TraductorParser.ELSE = 9;
+TraductorParser.FLOAT = 10;
+TraductorParser.FOR = 11;
+TraductorParser.IF = 12;
+TraductorParser.INT = 13;
+TraductorParser.SWITCH = 14;
+TraductorParser.UNSIGNED = 15;
+TraductorParser.VOID = 16;
+TraductorParser.WHILE = 17;
+TraductorParser.PRINTF = 18;
+TraductorParser.VOID_MAIN = 19;
+TraductorParser.TRUE = 20;
+TraductorParser.FALSE = 21;
+TraductorParser.ID = 22;
+TraductorParser.NUM = 23;
+TraductorParser.CADENA = 24;
+TraductorParser.DEC = 25;
+TraductorParser.SEMI = 26;
+TraductorParser.COMA = 27;
+TraductorParser.ALLAVE = 28;
+TraductorParser.CLLAVE = 29;
+TraductorParser.APARENTESIS = 30;
+TraductorParser.CPARENTESIS = 31;
+TraductorParser.AADMIRACION = 32;
+TraductorParser.MUL = 33;
+TraductorParser.DIV = 34;
+TraductorParser.ADD = 35;
+TraductorParser.SUB = 36;
+TraductorParser.ASIGNACION = 37;
+TraductorParser.MAYORQ = 38;
+TraductorParser.MENORQ = 39;
+TraductorParser.MAYOR_IGUAL = 40;
+TraductorParser.MENOR_IGUAL = 41;
+TraductorParser.IGUALDAD_DEBIL = 42;
+TraductorParser.IGUALDAD_FUERTE = 43;
+TraductorParser.DIF_DEBIL = 44;
+TraductorParser.DIF_FUERTE = 45;
+TraductorParser.RESIDUO = 46;
+TraductorParser.OR = 47;
+TraductorParser.AND = 48;
+TraductorParser.WS = 49;
 
 TraductorParser.RULE_contenido = 0;
 TraductorParser.RULE_pr = 1;
@@ -361,10 +328,6 @@ class PrContext extends antlr4.ParserRuleContext {
 	    return this.getToken(TraductorParser.MAIN, 0);
 	};
 
-	AUTO() {
-	    return this.getToken(TraductorParser.AUTO, 0);
-	};
-
 	BREAK() {
 	    return this.getToken(TraductorParser.BREAK, 0);
 	};
@@ -407,10 +370,6 @@ class PrContext extends antlr4.ParserRuleContext {
 
 	INT() {
 	    return this.getToken(TraductorParser.INT, 0);
-	};
-
-	RETURN() {
-	    return this.getToken(TraductorParser.RETURN, 0);
 	};
 
 	SWITCH() {

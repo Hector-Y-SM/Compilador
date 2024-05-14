@@ -35,9 +35,17 @@ const Page  = ()=>{
     const ejecutar = () => {
         const limpio = limpiarComentarios(salida)
         const txt = analizar(limpio);
+
         setResultadoAnalisis(txt);
         setMostrarTerminal(true);
     };
+
+    const generarJasmin = () =>{
+        const limpio = limpiarComentarios(salida)
+        const txt = analizar(limpio);
+        
+    }
+
 
     const leerArchivo = (archivo) => {
         const lector = new FileReader();
@@ -79,6 +87,7 @@ const Page  = ()=>{
             cerrarTerminal={cerrarTerminal}
             limpiarC={limpiarC}
             limpiarM={limpiarM}
+            jasmin={generarJasmin}
             tema={tema}
             mostrarTerminal={mostrarTerminal}
             resultadoAnalisis={resultadoAnalisis}

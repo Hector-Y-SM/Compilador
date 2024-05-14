@@ -1,7 +1,7 @@
 import React from "react";
 import ReactCodeMirror from "@uiw/react-codemirror";
 
-const Traductor = ({ generar, limpiarC, cargarDocumento, soltarDocumento, arrastrarDocumento, tema, entrada, actualizarTexto, ejecutar, limpiarM, salida, mostrarTerminal, resultadoAnalisis, cerrarTerminal}) => {
+const Traductor = ({ generar, limpiarC, cargarDocumento, soltarDocumento, arrastrarDocumento, tema, entrada, actualizarTexto, ejecutar, limpiarM, jasmin, salida, mostrarTerminal, resultadoAnalisis, cerrarTerminal}) => {
     return (
         <main className="min-h-screen w-full flex flex-col items-center" style={{ backgroundColor: '#1E212D' }}>
             <header className="my-4">
@@ -36,6 +36,7 @@ const Traductor = ({ generar, limpiarC, cargarDocumento, soltarDocumento, arrast
                 <div className="w-full md:w-1/2">
                     <button className="text-white px-4 py-2 mb-1" onClick={ejecutar}>Ejecutar</button>
                     <button className="text-white px-4 py-2 mb-1" onClick={limpiarM}>Limpiar</button>
+                    <button className="text-white px-4 py-2 mb-1" onClick={jasmin}>Generar Jasmin</button>
                     <div className="border rounded-xl flex-grow w-full p-2 relative">
                         <h1>Mi Lenguaje</h1>
                         <ReactCodeMirror 

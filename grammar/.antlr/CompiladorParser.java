@@ -22,7 +22,7 @@ public class CompiladorParser extends Parser {
 		MENOR_IGUAL=24, IGUALDAD_DEBIL=25, IGUALDAD_FUERTE=26, DIF_DEBIL=27, DIF_FUERTE=28, 
 		RESIDUO=29, OR=30, AND=31, TPG=32, ALLAVE=33, CLLAVE=34, APARENTESIS=35, 
 		CPARENTESIS=36, AADMIRACION=37, ID=38, NUM=39, CADENA=40, DEC=41, SEMI=42, 
-		WS=43;
+		COMA=43, WS=44;
 	public static final int
 		RULE_init = 0, RULE_contenido = 1, RULE_inicializacion = 2, RULE_declaracion = 3, 
 		RULE_asignacion = 4, RULE_print = 5, RULE_if_estructuras = 6, RULE_if = 7, 
@@ -44,7 +44,7 @@ public class CompiladorParser extends Parser {
 			"'lewhi'", "'fofo'", "'true'", "'false'", "'nc'", "'im'", "'jgl'", "'*'", 
 			"'/'", "'+'", "'-'", "'='", "'>'", "'<'", "'>='", "'<='", "'=='", "'==='", 
 			"'!='", "'!=='", "'%'", "'||'", "'&&'", "'W7HLM'", "'{'", "'}'", "'('", 
-			"')'", "'!'", null, null, null, null, "';'"
+			"')'", "'!'", null, null, null, null, "';'", "','"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -55,7 +55,7 @@ public class CompiladorParser extends Parser {
 			"DIV", "ADD", "SUB", "ASIGNACION", "MAYORQ", "MENORQ", "MAYOR_IGUAL", 
 			"MENOR_IGUAL", "IGUALDAD_DEBIL", "IGUALDAD_FUERTE", "DIF_DEBIL", "DIF_FUERTE", 
 			"RESIDUO", "OR", "AND", "TPG", "ALLAVE", "CLLAVE", "APARENTESIS", "CPARENTESIS", 
-			"AADMIRACION", "ID", "NUM", "CADENA", "DEC", "SEMI", "WS"
+			"AADMIRACION", "ID", "NUM", "CADENA", "DEC", "SEMI", "COMA", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -1647,7 +1647,7 @@ public class CompiladorParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001+\u00d1\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001,\u00d1\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+

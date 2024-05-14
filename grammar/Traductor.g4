@@ -6,7 +6,6 @@ contenido: (pr | varios)*?
 
 pr:   VOID_MAIN
     | MAIN          
-    | AUTO          
     | BREAK         
     | CASE          
     | CHAR
@@ -18,7 +17,6 @@ pr:   VOID_MAIN
     | FOR
     | IF
     | INT
-    | RETURN
     | SWITCH
     | VOID
     | WHILE

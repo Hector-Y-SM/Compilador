@@ -42,7 +42,9 @@ export function argumentosValidos(arg1, arg2, err){
 }
 
 export function comparaciones(arg1, arg2, err, simbolo) {
+    console.log('en esta funcion es ', arg1)
     function obtenerValor(arg) {
+        console.log(variables)
         if (typeof arg !== 'number') {
             if (!arg.match(/"('\\"|.)*?"/g)) {
                 if (!variables.has(arg)) {
