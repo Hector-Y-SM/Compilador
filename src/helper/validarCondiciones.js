@@ -18,6 +18,7 @@ export function noCadenasNiBoolean(arg1, arg2, err) {
                         throw new Error(`Error en la linea ${err}, argumentos no validos`);
                     }
                 }
+                return variables.get(arg).valor;
               }
         }
     }

@@ -5,7 +5,7 @@ import { createTheme } from '@uiw/codemirror-themes';
 import { analizar, traducir } from "../../../module/generador.js";
 import { limpiarComentarios } from "@/helper/comentarios";
 
-const Page  = ()=>{
+const Page  = () => {
     const [entrada, setEntrada] = useState('');
     const [salida, setSalida] = useState('');
     const [mostrarTerminal, setMostrarTerminal] = useState(false);
@@ -33,23 +33,36 @@ const Page  = ()=>{
     
     const actualizarTexto = (nuevoTexto) => { setEntrada(nuevoTexto); };
     const ejecutar = () => {
-        const limpio = limpiarComentarios(salida)
+        const limpio = limpiarComentarios(salida);
         const txt = analizar(limpio);
 
-        setResultadoAnalisis(txt);
+        setResultadoAnalisis(txt.mensaje == undefined? txt : txt.mensaje);
         setMostrarTerminal(true);
     };
 
-    const generarJasmin = () =>{
-        const limpio = limpiarComentarios(salida)
+    const generarJasmin = () => {
+        const limpio = limpiarComentarios(salida);
         const txt = analizar(limpio);
-        
+        setSalida(txt.jasmin);
     }
 
+    const ejecutarJasmin = () => {
+        console.log('esto deberia ', salida)
+        fetch('http://localhost:8080/jasmin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({codigoJasmin: salida}),
+        })
+        .then(res => res.text())
+        .then(data => setResultadoAnalisis(data))
+        .catch(err => setResultadoAnalisis(err));
+        setMostrarTerminal(true);
+    }
 
     const leerArchivo = (archivo) => {
         const lector = new FileReader();
-
         lector.onload = (e) =>{
             const contenido = e.target.result;
             setEntrada(contenido);
@@ -88,6 +101,7 @@ const Page  = ()=>{
             limpiarC={limpiarC}
             limpiarM={limpiarM}
             jasmin={generarJasmin}
+            ejecutarJasmin={ejecutarJasmin}
             tema={tema}
             mostrarTerminal={mostrarTerminal}
             resultadoAnalisis={resultadoAnalisis}

@@ -1,4 +1,5 @@
 import CompiladorVisitor from "../grammar/CompiladorVisitor.js";
+import { variables } from "./memoria.js";
 import { operacionesBasicas } from "./operacionesBasicas.js";
 import { validarOperacionMatematica } from "./sintaxisMatematicas.js";
 import { argumentosValidos, comparaciones, noCadenasNiBoolean } from "./validarCondiciones.js";
@@ -7,11 +8,13 @@ export default class CustomVisitor extends CompiladorVisitor{
 	constructor(){
 		super();
 		this.impresiones = [];
-		this.bandera = false; 
 		this.controlador = false;
 		this.condicion = false;
 		this.impresionesPorLinea = new Map();
 		this.contenidoJasmin = [];
+		this.inicioContadorJasmin;
+		this.limiteContadorJasmin;
+		this.signoCondicionJasmin;
 		this.operacionesRealizadas = new Set();
 		this.dobleCodigo = false;
 		this.jasmin = [`.class public Jasmin\n.super java/lang/Object
@@ -34,13 +37,10 @@ export default class CustomVisitor extends CompiladorVisitor{
 		}).join('\n'); 
 		
 		this.jasmin = jasminString;
-		console.log('contenido Jasmin \n', this.jasmin);
-		if(this.impresiones.length >= 1){
-			return this.impresiones.join('\n');
-		}
-		return 'todo bien pa'
+		return this.impresiones.length >= 1 ? 
+							{ mensaje: this.impresiones.join('\n'), jasmin: this.jasmin}
+							: {mensaje: 'todo bien pa', jasmin: this.jasmin } 
 	}
-
 
 	//! Manejar declaracion de variables (tipo-dato ID = valor)
 	visitDefinido(ctx) {
@@ -48,7 +48,6 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const variable = ctx.ID().getText();
 		const tipoDato = ctx.PR().getText();
 		const valor = typeof this.visit(ctx.valor(0)) == 'object'? this.visit(ctx.valor(0))[1] : this.visit(ctx.valor(0));
-
 		if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(variable)) {
 			throw new Error(`Error en la linea ${ctx.start.line}, El nombre de la variable: ${variable} no es válido`);
 		}
@@ -60,6 +59,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		if(typeof valor == 'string'){
 			if(valor.match(/"('\\"|.)*?"/g)){
 				variables.set(variable, {tipo: tipoDato, valor: valor, valorJasmin:this.contadorIstore});
+				this.pushJasmin(`\nldc ${valor}\nistore_${this.contadorIstore}\n`,this.contadorIstore++);
 				return;
 			}
 		}
@@ -70,12 +70,13 @@ export default class CustomVisitor extends CompiladorVisitor{
 
 		if(typeof valor == 'number' || valor == true || valor == false){
 			variables.set(variable, {tipo: tipoDato, valor: valor, valorJasmin:this.contadorIstore});
+			this.pushJasmin(`\nldc ${valor}\nistore_${this.contadorIstore}\n`,this.contadorIstore++); 
 			return;
 		}
 
 		const aux = variables.get(valor);
 		variables.set(variable, {tipo: tipoDato, valor: aux.valor, valorJasmin:this.contadorIstore});
-		console.log('por ahora ', variables)
+		this.pushJasmin(`\nldc ${valor}\nistore_${this.contadorIstore}\n`,this.contadorIstore++);
 		return this.visitChildren(ctx);
 	}
 
@@ -95,7 +96,6 @@ export default class CustomVisitor extends CompiladorVisitor{
 
 		if(typeof nuevoValor == 'number' || nuevoValor.match(/"('\\"|.)*?"/g) || nuevoValor == true || nuevoValor == false){
 			variables.get(variable).valor = nuevoValor;
-			this.contenidoJasmin.push(`\nldc ${nuevoValor}\nistore_${variables.get(variable).valorJasmin}`);
 			return
 		}
 
@@ -106,7 +106,6 @@ export default class CustomVisitor extends CompiladorVisitor{
 		if (variables.has(variable)) {
 			const aux = variables.get(nuevoValor);
 			variables.get(variable).valor = aux.valor;
-			this.contenidoJasmin.push(`\nldc ${nuevoValor}\nistore_${variables.get(variable).valorJasmin}`);
 			return;
 		}
 	  throw new Error(`Error en la linea ${ctx.start.line}, la variable ${variable} no ha sido declarada`);
@@ -156,7 +155,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 
 		if (variables.has(valor)) {
 			const aux = variables.get(valor);
-			this.pushJasmin(`\ngetstatic java/lang/System/out Ljava/io/PrintStream;\niload_${aux.valorJasmin}\ninvokevirtual java/io/PrintStream/println(I)V\n`);
+			this.pushJasmin(`\ngetstatic java/lang/System/out Ljava/io/PrintStream;\niload_${this.contadorIload}\ninvokevirtual java/io/PrintStream/println(I)V\n`);
 			this.impresiones.push(aux.valor);
 			this.impresionesPorLinea.set(nuevaLinea, true);
 			return;
@@ -172,10 +171,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		}
 	}
 	//! Manejar el contenido del ciclo
-	visitReglaDoWhile(ctx) {
-	  	return this.visitChildren(ctx);
-	}
-
+	visitReglaDoWhile(ctx) { return this.visitChildren(ctx); }
 	//! una vuelta si o si, luego damos vueltas
 	visitCicloDoWhile(ctx) {
 		const condicion = this.visit(ctx.condiciones(0));
@@ -188,20 +184,21 @@ export default class CustomVisitor extends CompiladorVisitor{
 	}
 
 	//! enviarnos al while
-	visitReglaWhile(ctx) {
-		return this.visitChildren(ctx);
-	}
-	
+	visitReglaWhile(ctx) { return this.visitChildren(ctx); }
 	//! Manejar las vueltas del ciclo while
 	visitCicloWhile(ctx) {
+		console.log('ciclo while ');
 		const condicion = this.visit(ctx.condiciones(0));
 		let aux = condicion;
-		//this.pushJasmin(`\nciclo_while\niload_${condicion? 1 : 0}\nif_icmpne fin_while`);
+		let operador = this.mnemonicoComando(this.signoCondicionJasmin, true);
+		this.pushJasmin(`\n${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}\n`
+						: `ldc ${variables.has(this.inicioContadorJasmin)? variables.get(this.inicioContadorJasmin).valor : this.inicioContadorJasmin}\nistore_${this.contadorIstore}`}`)
+		this.pushJasmin(`ciclo_while:\niload_${this.contadorIload}\n${variables.has(this.limiteContadorJasmin) ? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}` : `ldc ${this.limiteContadorJasmin}`}\n${operador} fin_while\n`);
 		while(aux){
 			this.visitChildren(ctx);
 			aux = this.visit(ctx.condiciones(0));
 		}
-		//this.pushJasmin(`\ngoto ciclo_while\nfin_while`);
+		this.pushJasmin(`\ngoto ciclo_while\nfin_while:`);
 		return;
 	}
 
@@ -210,7 +207,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const variable = ctx.ID().getText();
 		const nuevaLinea = ctx.start.line;
 		this.impresionesPorLinea.set(nuevaLinea, true);
-		this.pushJasmin(`\niinc ${variables.get(variable).valorJasmin} 1\n`);
+		this.pushJasmin(`\niinc 0 1\n`); //el cero es la posicion del iload o la variable q usara como contador
 		this.masMenos(ctx.start.line, variable, 1);	
 	}
 
@@ -219,7 +216,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const variable = ctx.ID().getText();
 		const nuevaLinea = ctx.start.line;
 		this.impresionesPorLinea.set(nuevaLinea, true);
-		this.pushJasmin(`\niinc ${variables.get(variable).valorJasmin} -1\n`);
+		this.pushJasmin(`\niinc 0 -1\n`);
 		this.masMenos(ctx.start.line, variable, 0);
 	  }
 
@@ -241,16 +238,54 @@ export default class CustomVisitor extends CompiladorVisitor{
 	visitIfPuro(ctx) {
 		console.log('if');
 		const condicion = this. visit(ctx.condiciones(0));
+		let operador = this.mnemonicoComando(this.signoCondicionJasmin, false);
 		if(!condicion){
 			this.controlador = false;
 			return }
 		if(condicion){
-			this.pushJasmin(`\ncondicion:`);
-			this.controlador = true
+			this.dobleCodigo == true? '' : this.pushJasmin(`\n${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}` 
+																			: `ldc ${variables.has(this.inicioContadorJasmin)? variables.get(this.inicioContadorJasmin) : this.inicioContadorJasmin}`}
+															\n${variables.has(this.limiteContadorJasmin)? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}` 
+																			: `ldc ${variables.has(this.limiteContadorJasmin)? variables.get(this.limiteContadorJasmin) : this.limiteContadorJasmin}`}\n${operador} condicion_if\ngoto fin_if\ncondicion_if:`);
+			this.controlador = true;
 			this.visitChildren(ctx);
-			this.pushJasmin(`\nfin:`);
+			this.dobleCodigo == true? '' : this.pushJasmin(`\nfin_if:`);
+			this.dobleCodigo = true;
 			return;
 		}
+		this.dobleCodigo = false;
+	}
+
+	mnemonicoComando(simbolo, ciclo){
+		let mnemonico;
+		switch(simbolo){
+			case '>':
+				mnemonico = ciclo == true? 'if_icmple' : 'if_icmpgt';  //orig if_icmplt
+				break;
+			case '<':
+				mnemonico = ciclo == true?  'if_icmpgt' : 'if_icmplt'; //orig if_icmpgt
+				break;
+			case '<=':
+				mnemonico = ciclo == true? 'if_icmpgt' : 'if_icmple'; //orig if_icmple 
+				break;
+			case '>=':
+				mnemonico = ciclo == true? 'if_icmplt' : 'if_icmpgt'; //orig if_icmpge
+				break;
+			case '==':
+				mnemonico = ciclo == true? 'if_icmpne': 'if_icmpeq';
+				break;
+			case '===':
+				mnemonico = ciclo == true? 'if_icmpne':'if_icmpeq';
+                break;
+            case '!=':
+				mnemonico = ciclo == true? 'if_icmpeq' : 'if_icmpne';
+				break;
+			case '!==':
+				mnemonico = ciclo == true? 'if_icmpeq' : 'if_icmpne';
+				break;
+			default: '';	
+		}
+		return mnemonico;
 	}
 
 	visitElseIfPuro(ctx) {
@@ -261,17 +296,30 @@ export default class CustomVisitor extends CompiladorVisitor{
 			this.controlador = false;
 			return }
 		if(condicion){
+			this.dobleCodigo == true? '' : this.pushJasmin(`\n${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}` 
+																			: `ldc ${variables.has(this.inicioContadorJasmin)? variables.get(this.inicioContadorJasmin) : this.inicioContadorJasmin}`}
+															\n${variables.has(this.limiteContadorJasmin)? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}` 
+																			: `ldc ${variables.has(this.limiteContadorJasmin)? variables.get(this.limiteContadorJasmin) : this.limiteContadorJasmin}`}\n${operador} condicion_if\ngoto fin_if\ncondicion_if:`);
+			this.visitChildren(ctx);
+			this.dobleCodigo == true? '' : this.pushJasmin(`\nfin_if:`);
+			this.dobleCodigo = true;
 			this.controlador = true;
-			return this.visitChildren(ctx);
+			return 
 		}
 	}
 
 	visitElsePuro(ctx) {
 		console.log('else')
 		if(this.controlador) { return }
-	  return this.visitChildren(ctx);
+		this.dobleCodigo == true? '' : this.pushJasmin(`\n${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}` 
+																			: `ldc ${variables.has(this.inicioContadorJasmin)? variables.get(this.inicioContadorJasmin) : this.inicioContadorJasmin}`}
+															\n${variables.has(this.limiteContadorJasmin)? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}` 
+																			: `ldc ${variables.has(this.limiteContadorJasmin)? variables.get(this.limiteContadorJasmin) : this.limiteContadorJasmin}`}\n${operador} condicion_if\ngoto fin_if\ncondicion_if:`);
+		this.visitChildren(ctx);
+		this.dobleCodigo == true? '' : this.pushJasmin(`\nfin_if:`);
+		this.dobleCodigo = true;
+	  return
 	}
-
 
 	// Visit a parse tree produced by CompiladorParser#Comparacion.
 	visitComparacion(ctx) {
@@ -282,47 +330,50 @@ export default class CustomVisitor extends CompiladorVisitor{
 		switch(simbolo){
 			case 21: // >
 				noCadenasNiBoolean(arg1, arg2, ctx.start.line);
-				this.pushJasmin(`\nldc ${typeof arg1 == 'string'? variables.get(arg1).valor : arg1}\nldc ${typeof arg2 == 'string'? variables.get(arg2).valor : arg2}\nif_icmpgt condicion\ngoto fin`);
+				this.signoCondicionJasmin = '>';
 				this.condicion = comparaciones(arg1, arg2, ctx.start.line, '>');
 				break;
 			case 22: // <
 				noCadenasNiBoolean(arg1, arg2,  ctx.start.line);
-				this.pushJasmin(`\nldc ${typeof arg1 == 'string'? variables.get(arg1).valor : arg1}\nldc ${typeof arg2 == 'string'? variables.get(arg2).valor : arg2}\nif_icmplt condicion\ngoto fin`);
+				this.signoCondicionJasmin = '<';
 				this.condicion = comparaciones(arg1, arg2,  ctx.start.line, '<');
 			  break;
 			case 23: // >=
 				noCadenasNiBoolean(arg1, arg2, ctx.start.line);
-				this.pushJasmin(`\nldc ${typeof arg1 == 'string'? variables.get(arg1).valor : arg1}\nldc ${typeof arg2 == 'string'? variables.get(arg2).valor : arg2}\nif_icmpge condicion\ngoto fin`);
+				this.signoCondicionJasmin = '>=';
 				this.condicion = comparaciones(arg1, arg2,  ctx.start.line, '>=');
 			  break;
 			case 24: // <=
 				noCadenasNiBoolean(arg1, arg2, ctx.start.line);
-				this.pushJasmin(`\nldc ${typeof arg1 == 'string'? variables.get(arg1).valor : arg1}\nldc ${typeof arg2 == 'string'? variables.get(arg2).valor : arg2}\nif_icmple condicion\ngoto fin`);
+				this.signoCondicionJasmin = '<=';
 				this.condicion = comparaciones(arg1, arg2, ctx.start.line, '<=');
 			  break;
 			case 25: //- ==
 				argumentosValidos(arg1, arg2, ctx.start.line);
-				this.pushJasmin(`\nldc ${typeof arg1 == 'string'? variables.get(arg1).valor : arg1}\nldc ${typeof arg2 == 'string'? variables.get(arg2).valor : arg2}\nif_icmpeq condicion\ngoto fin`);
+				this.signoCondicionJasmin = '==';
 				this.condicion = comparaciones(arg1, arg2, ctx.start.line, '==');
 			  break;
 			case 26: //- ===
 				argumentosValidos(arg1, arg2, ctx.start.line);
-				this.pushJasmin(`\nldc ${typeof arg1 == 'string'? variables.get(arg1).valor : arg1}\nldc ${typeof arg2 == 'string'? variables.get(arg2).valor : arg2}\nif_icmpeq condicion\ngoto fin`);
+				this.signoCondicionJasmin = '===';
 				this.condicion = comparaciones(arg1, arg2, ctx.start.line, '===');
 			  break;
 			case 27: //- !=
 				argumentosValidos(arg1, arg2, ctx.start.line);
-				this.pushJasmin(`\nldc ${typeof arg1 == 'string'? variables.get(arg1).valor : arg1}\nldc ${typeof arg2 == 'string'? variables.get(arg2).valor : arg2}\nif_icmpne condicion\ngoto fin`);
+				this.signoCondicionJasmin = '!=';
 				this.condicion = comparaciones(arg1, arg2, ctx.start.line, '!=');
 			  break;
 			case 28: //- !==
 				argumentosValidos(arg1, arg2, ctx.start.line);
-				this.pushJasmin(`\nldc ${typeof arg1 == 'string'? variables.get(arg1).valor : arg1}\nldc ${typeof arg2 == 'string'? variables.get(arg2).valor : arg2}\nif_icmpne condicion\ngoto fin`);
+
+				this.signoCondicionJasmin = '!==';
 				this.condicion = comparaciones(arg1, arg2, ctx.start.line, '!==');
 			  break;
 			default : 
 			throw new Error('Este simbolo no existe pa');
 		}
+		this.inicioContadorJasmin = arg1;
+		this.limiteContadorJasmin = arg2;
 		return this.condicion;
 	  }
 
@@ -332,7 +383,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		console.log('argumento unico ',  argumento);
 		switch(argumento){
 			case true:
-				this.condicion = true
+				this.condicion = true;
 				break;
 			case false:
 				this.condicion = false;
@@ -348,7 +399,6 @@ export default class CustomVisitor extends CompiladorVisitor{
 					throw new Error(`Error en la linea ${ctx.start.line}, no se puede evaluar esta condicion`)
 				}
 		}
-		this.pushJasmin(`\nldc ${this.condicion == true? 1 : 0}\nifne condicion\ngoto fin`);
 		return this.condicion;
 	}
 
@@ -358,7 +408,6 @@ export default class CustomVisitor extends CompiladorVisitor{
 		const argumento1 = typeof this.visit(ctx.valor(0)) == 'object'? this.visit(ctx.valor(0))[1] : this.visit(ctx.valor(0));
 		const argumento2 = typeof this.visit(ctx.valor(1)) == 'object'? this.visit(ctx.valor(1))[1] : this.visit(ctx.valor(1));
 		const simbolo = ctx.op.type;
-
 		switch(simbolo){
 			case 30: // ||
 				argumento1 == false && argumento2 == false ? this.condicion = false : this.condicion = true;
@@ -382,8 +431,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 				if(!variables.has(arg) || arg.match(/"('\\"|.)*?"/g)) {
 					throw new Error(`Error en la linea ${ctx.start.line}, el argumento ${arg} no se puede evaluar`);
 				}
-				const aux = variables.has(arg) ? variables : this.scope;
-				return aux.get(arg).valor
+				return variables.get(arg).valor
 			}
 			return arg
 		}
@@ -406,7 +454,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		} else {
 			this.operacionesRealizadas.add(operacionKey); //agregar la op al set para q no se repita
 			this.pushJasmin(`\niload_${this.contadorIload}`, this.contadorIload++);
-			this.pushJasmin(`\niload_${this.contadorIload}\n${ctx.op.type == 16? 'imul' : 'idiv'}\nistore_${this.contadorIstore}`, this.contadorIload++, this.contadorIstore++);
+			this.pushJasmin(`\niload_${this.contadorIload}\n${ctx.op.type == 16? 'imul' : 'idiv'}\nistore_${this.contadorIstore}`, this.contadorIstore++);
 		}
 		return ctx.op.type == 16? valor1 * valor2 : valor1 / valor2;
 	}
@@ -424,7 +472,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 		  } else {
 		  	this.operacionesRealizadas.add(operacionKey); //agregar la op al set para q no se repita
 		  	this.pushJasmin(`\niload_${this.contadorIload}`, this.contadorIload++);
-		  	this.pushJasmin(`\niload_${this.contadorIload}\n${ctx.op.type == 18 ? 'iadd' : 'isub'}\nistore_${this.contadorIstore}`, this.contadorIload++, this.contadorIstore++);
+		  	this.pushJasmin(`\niload_${this.contadorIload}\n${ctx.op.type == 18 ? 'iadd' : 'isub'}\nistore_${this.contadorIstore}`,this.contadorIload++ ,this.contadorIstore++);
 		  }
 		return ctx.op.type == 18? valor1 + valor2 : valor1 - valor2;
 	}
@@ -443,15 +491,6 @@ export default class CustomVisitor extends CompiladorVisitor{
 	visitParens(ctx) {return this.visit(ctx.valor()); }
 	visitCadenas(ctx) { return ctx.getText(); }
 	visitId(ctx) { return isNaN(ctx.getText())? ctx.getText() : Number(ctx.getText()); }
-	visitNumero(ctx) { 
-		const limit = ctx.parentCtx.op == undefined? undefined : ctx.parentCtx.op;
-		if(!this.dobleCodigo){
-			limit == undefined? this.pushJasmin(`\nldc ${ctx.getText()}\nistore_${this.contadorIstore}\n`,this.contadorIstore++) : '';
-			this.dobleCodigo = true;
-			return Number(ctx.getText());
-		}
-		this.dobleCodigo = false;
-		return Number(ctx.getText()); 
-	}
+	visitNumero(ctx) { return Number(ctx.getText()); }
 	visitDecimal(ctx) { return Number(ctx.getText()); }
 }
