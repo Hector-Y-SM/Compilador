@@ -197,6 +197,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 			this.controlador = false;
 			return }
 		if(condicion){
+			this.controlador = true;
 			this.visitChildren(ctx);
 			return;
 		}
@@ -210,6 +211,7 @@ export default class CustomVisitor extends CompiladorVisitor{
 			this.controlador = false;
 			return }
 		if(condicion){
+			this.controlador = true;
 			this.visitChildren(ctx);
 			return 
 		}

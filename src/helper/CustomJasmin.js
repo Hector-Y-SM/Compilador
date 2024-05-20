@@ -9,7 +9,9 @@ export default class CustomJasmin extends JasminVisitor{
 		this.inicioContadorJasmin;
 		this.limiteContadorJasmin;
 		this.signoCondicionJasmin;
-        this.codigo = ''
+        this.codigo = '';
+		this.banderaElse = false;
+		this.banderaElseIf = false;
 		this.contadorIstore = 0;
 		this.contadorIload = 0;
 		this.vueltas = 0;
@@ -174,6 +176,16 @@ export default class CustomJasmin extends JasminVisitor{
 
 
 	visitEstructuraIf(ctx) {
+		const datos = ctx.children;
+		for(const index in datos){
+			console.log('dentro del arr ',datos[index].invokingState)
+			if(datos[index].invokingState == 94){
+				this.banderaElse = true;
+			}
+			if(datos[index].invokingState == 88){
+				this.banderaElseIf = true;
+			}
+		}
 		return this.visitChildren(ctx);
 	}
 	visitIfPuro(ctx) {
@@ -184,16 +196,31 @@ export default class CustomJasmin extends JasminVisitor{
 		if (this.lineasVisitadas.has(linea)) {
 			return null;  
 		}
-		console.log('inivio ', this.inicioContadorJasmin)
 		this.codigo += `\n${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}` 
 												: `ldc ${variables.has(this.inicioContadorJasmin)? variables.get(this.inicioContadorJasmin) 
 																				: this.inicioContadorJasmin}`}
 												\n${variables.has(this.limiteContadorJasmin)? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}` 
 																	: `ldc ${variables.has(this.limiteContadorJasmin)? variables.get(this.limiteContadorJasmin) 
-																		: this.limiteContadorJasmin}`}\n${operador} condicion_if\ngoto fin_if\ncondicion_if:\n`
-		this.visitChildren(ctx);
-		this.codigo +=`fin_if:\n`;
+																		: this.limiteContadorJasmin}`}\n${operador} condicion_if\n`
+		
 		this.lineasVisitadas.add(linea);
+		this.visitChildren(ctx);
+		if(this.banderaElse == false && this.banderaElseIf == false){
+			this.codigo += `condicion_if:\n`;
+			return;
+		}
+		if(this.banderaElseIf == true && this.banderaElse == false){
+			this.codigo += `goto ifElseIf\n`;
+			return;
+		}
+		if(this.banderaElseIf == false && this.banderaElse == true){
+			this.codigo += `goto endIfElse\n`
+			return;
+		}
+		if(this.banderaElse == true && this.banderaElseIf == true){
+			this.codigo += `goto ifElseIfElse\n`;
+			return;
+		}
 		return;
 		
 	}
@@ -202,10 +229,10 @@ export default class CustomJasmin extends JasminVisitor{
 		let mnemonico;
 		switch(simbolo){
 			case '>':
-				mnemonico = ciclo == true? 'if_icmple' : 'if_icmpgt';  //orig if_icmplt
+				mnemonico = ciclo == true? 'if_icmple' : 'if_icmplt';  //orig if_icmplt
 				break;
 			case '<':
-				mnemonico = ciclo == true?  'if_icmpgt' : 'if_icmplt'; //orig if_icmpgt
+				mnemonico = ciclo == true?  'if_icmpgt' : 'if_icmpgt'; //orig if_icmpgt
 				break;
 			case '<=':
 				mnemonico = ciclo == true? 'if_icmpgt' : 'if_icmple'; //orig if_icmple 
@@ -214,16 +241,16 @@ export default class CustomJasmin extends JasminVisitor{
 				mnemonico = ciclo == true? 'if_icmplt' : 'if_icmpgt'; //orig if_icmpge
 				break;
 			case '==':
-				mnemonico = ciclo == true? 'if_icmpne': 'if_icmpeq';
+				mnemonico = ciclo == true? 'if_icmpne': 'if_icmpne';
 				break;
 			case '===':
-				mnemonico = ciclo == true? 'if_icmpne':'if_icmpeq';
+				mnemonico = ciclo == true? 'if_icmpne':'if_icmpne';
                 break;
             case '!=':
-				mnemonico = ciclo == true? 'if_icmpeq' : 'if_icmpne';
+				mnemonico = ciclo == true? 'if_icmpeq' : 'if_icmpeq';
 				break;
 			case '!==':
-				mnemonico = ciclo == true? 'if_icmpeq' : 'if_icmpne';
+				mnemonico = ciclo == true? 'if_icmpeq' : 'if_icmpeq';
 				break;
 			default: '';	
 		}
@@ -237,16 +264,22 @@ export default class CustomJasmin extends JasminVisitor{
 		if (this.lineasVisitadas.has(linea)) {
 			return null;  
 		}
-		
+		let operador = this.mnemonicoComando(this.signoCondicionJasmin, false);
+		this.codigo += `condicion_if:\n`
 		this.codigo += `\n${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}` 
                                     : `ldc ${variables.has(this.inicioContadorJasmin)? variables.get(this.inicioContadorJasmin) 
                                         : this.inicioContadorJasmin}`}
                                     \n${variables.has(this.limiteContadorJasmin)? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}` 
                                             : `ldc ${variables.has(this.limiteContadorJasmin)? variables.get(this.limiteContadorJasmin) 
-                                                : this.limiteContadorJasmin}`}\n${operador} condicion_if\ngoto fin_if\ncondicion_if:`
-		this.visitChildren(ctx);
-		this.codigo += `\nfin_if:`;
+                                                : this.limiteContadorJasmin}`}\n${operador} ifElseIf\n`
+		
 		this.lineasVisitadas.add(linea);
+		this.visitChildren(ctx);
+		if(this.banderaElse == true){
+			this.codigo += `goto ifElseIfElse\n`
+			return;
+		}
+		this.codigo += `ifElseIf:\n`;
 		return;
 	}
 
@@ -256,16 +289,15 @@ export default class CustomJasmin extends JasminVisitor{
 		if (this.lineasVisitadas.has(linea)) {
 			return null;  
 		}
-			this.codigo += `\n${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}` 
-			: `ldc ${variables.has(this.inicioContadorJasmin)? variables.get(this.inicioContadorJasmin) 
-												: this.inicioContadorJasmin}`}
-					\n${variables.has(this.limiteContadorJasmin)? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}` 
-													: `ldc ${variables.has(this.limiteContadorJasmin)? variables.get(this.limiteContadorJasmin) 
-																	: this.limiteContadorJasmin}`}\n${operador} condicion_if\ngoto fin_if\ncondicion_if:`
-
-			this.visitChildren(ctx);
-			this.codigo += `\nfin_if:`;
-			this.lineasVisitadas.add(linea);
+		//this.codigo += `goto condicion_if:\n`;
+		if(this.banderaElseIf == true){
+			this.codigo += `ifElseIf:\n`; 
+		}else{
+			this.codigo += `condicion_if:\n`;
+		}
+		this.lineasVisitadas.add(linea);
+		this.visitChildren(ctx);
+		this.codigo += this.banderaElseIf == true? `ifElseIfElse:\n` : `endIfElse:\n`;
 		return;
 	}
 

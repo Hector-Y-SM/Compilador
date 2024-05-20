@@ -27,10 +27,10 @@ app.post('/jasmin', (req, res) => {
             res.send(stdout);
         });
     });
-    fs.unlinkSync('Jasmin.j');
-    fs.unlinkSync('Jasmin.class');
 });
 
+    //fs.unlinkSync('Jasmin.j');
+    //fs.unlinkSync('Jasmin.class');
 app.listen(8080, () => {
     console.log(`servidor 8080`);
 });
