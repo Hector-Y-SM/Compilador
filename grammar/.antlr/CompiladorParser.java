@@ -1,4 +1,4 @@
-// Generated from /home/hector/6to/automatas_2/Compilador/grammar/Compilador.g4 by ANTLR 4.13.1
+// Generated from /home/hector/6to/automatas_2/compilador-traductor_online/grammar/Compilador.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;

@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import Traductor from "../../components/Traductor"
 import { createTheme } from '@uiw/codemirror-themes';
-import { analizar, traducir } from "../../../module/generador.js";
+import { analizar } from "../../../module/generador.js";
 import { limpiarComentarios } from "@/helper/comentarios";
+import { traducir } from "../../../module/traductor.js";
 
 const Page  = () => {
     const [entrada, setEntrada] = useState('');
@@ -27,8 +28,11 @@ const Page  = () => {
     });
 
     const generar = () => {
+        console.log('si pasamos')
         const resultado = traducir(entrada);
+        //console.log('estttt ', resultado)
         setSalida(resultado);
+        console.log('aqqqq')
     }
     
     const actualizarTexto = (nuevoTexto) => { setEntrada(nuevoTexto); };

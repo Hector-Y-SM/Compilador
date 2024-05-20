@@ -1,4 +1,4 @@
-// Generated from /home/hector/6to/automatas_2/Compilador/grammar/CommonLexerRules.g4 by ANTLR 4.13.1
+// Generated from /home/hector/6to/automatas_2/compilador-traductor_online/grammar/CommonLexerRules.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

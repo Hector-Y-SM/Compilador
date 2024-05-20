@@ -22,8 +22,8 @@ VOID_MAIN: 'void main()';
 TRUE: 'true';
 FALSE: 'false';
 
-ID          : [a-zA-Z0-9_]+;
-NUM         : [0-9]+           ;
+ID          : [a-zA-Z_][a-zA-Z_0-9]*    ;
+NUM         : '-'? [0-9]+      ;
 CADENA      : '"' .*? '"'      ;
 DEC         : [0-9]+'.'[0-9]+  ;
 SEMI        : ';'              ;

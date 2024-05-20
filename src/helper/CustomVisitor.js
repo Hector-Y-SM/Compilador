@@ -490,7 +490,7 @@ export default class CustomVisitor extends CompiladorVisitor{
   	visitTrueFalse(ctx) { return ctx.getText() == 'true'? true : false }
 	visitParens(ctx) {return this.visit(ctx.valor()); }
 	visitCadenas(ctx) { return ctx.getText(); }
-	visitId(ctx) { return isNaN(ctx.getText())? ctx.getText() : Number(ctx.getText()); }
+	visitId(ctx) { return ctx.getText(); }
 	visitNumero(ctx) { return Number(ctx.getText()); }
 	visitDecimal(ctx) { return Number(ctx.getText()); }
 }
