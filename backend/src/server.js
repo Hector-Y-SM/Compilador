@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 
 app.post('/jasmin', (req, res) => {
     const codigoJasmin = req.body.codigoJasmin;
-    fs.writeFileSync('Jasmin.j', codigoJasmin, 'utf8'); //archivo para jasmin
+    fs.writeFileSync('Jasmin.j', codigoJasmin, 'utf8');
 
     exec('java -jar jasmin.jar Jasmin.j', (error, stdout, stderr) => {
         if (error) {
@@ -27,6 +27,8 @@ app.post('/jasmin', (req, res) => {
             res.send(stdout);
         });
     });
+    fs.unlinkSync('Jasmin.j');
+    fs.unlinkSync('Jasmin.class');
 });
 
 app.listen(8080, () => {

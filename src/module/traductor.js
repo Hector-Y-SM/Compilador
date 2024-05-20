@@ -14,21 +14,20 @@ export const traducir = (input) => {
     const parser = new TraductorParser(tokens);
     parser.buildParseTrees = true;
   
-    //parser.removeErrorListeners(); 
-    //lexer.removeErrorListeners();
+    parser.removeErrorListeners(); 
+    lexer.removeErrorListeners();
   
-    //parser.addErrorListener(new ErrorSintaxis()); 
-    //lexer.addErrorListener(new ErrorLexico());
+    parser.addErrorListener(new ErrorSintaxis()); 
+    lexer.addErrorListener(new ErrorLexico());
   
-    //try {
+    try {
       const tree = parser.contenido(); 
       const customVisitor = new CustomTraductor();
       console.log(tree.toStringTree(parser.ruleNames));
-      //console.log('arbol \n', tree.start.source[1].strdata)
       //const seguirFormato = tree.start.source[1].strdata
       return customVisitor.visitContenido(tree);
-    //} 
-    //  catch (error) {
-    //  return error.message;
-    //}
+    } 
+      catch (error) {
+      return error.message;
+    }
   }

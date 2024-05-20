@@ -34,4 +34,3 @@ export const analizar = (input) => {
     return error.message;
   }
 };
-

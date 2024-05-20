@@ -7,7 +7,7 @@ export default class CustomTraductor extends TraductorVisitor {
     }   
     visitContenido(ctx) {
             this.visit(ctx.relleno());
-            console.log('mi code ', this.codigo)
+            console.log('mi codigo ', this.codigo)
             return `W7HLM{\n${this.codigo}}`;
           }
       

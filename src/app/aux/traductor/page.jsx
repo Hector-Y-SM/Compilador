@@ -5,6 +5,7 @@ import { createTheme } from '@uiw/codemirror-themes';
 import { analizar } from "../../../module/generador.js";
 import { limpiarComentarios } from "@/helper/comentarios";
 import { traducir } from "../../../module/traductor.js";
+import { obtenerJasmin } from "../../../module/jasmin.js";
 
 const Page  = () => {
     const [entrada, setEntrada] = useState('');
@@ -28,11 +29,8 @@ const Page  = () => {
     });
 
     const generar = () => {
-        console.log('si pasamos')
         const resultado = traducir(entrada);
-        //console.log('estttt ', resultado)
         setSalida(resultado);
-        console.log('aqqqq')
     }
     
     const actualizarTexto = (nuevoTexto) => { setEntrada(nuevoTexto); };
@@ -46,8 +44,9 @@ const Page  = () => {
 
     const generarJasmin = () => {
         const limpio = limpiarComentarios(salida);
-        const txt = analizar(limpio);
-        setSalida(txt.jasmin);
+        analizar(limpio);
+        const txt = obtenerJasmin(limpio);
+        setSalida(txt);
     }
 
     const ejecutarJasmin = () => {
