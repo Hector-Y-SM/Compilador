@@ -14,13 +14,13 @@ app.post('/jasmin', (req, res) => {
 
     exec('java -jar jasmin.jar Jasmin.j', (error, stdout, stderr) => {
         if (error) {
-            console.error(`Error al compilar Jasmin: ${stderr}`);
+            //console.error(`Error al compilar Jasmin: ${stderr}`);
             return res.status(500).send(`Error al compilar Jasmin: ${stderr}`);
         }
 
         exec('java Jasmin', (error, stdout, stderr) => {
             if (error) {
-                console.error(`Error al ejecutar .class: ${stderr}`);
+                //console.error(`Error al ejecutar .class: ${stderr}`);
                 return res.status(500).send(`Error al ejecutar .class: ${stderr}`);
             }
 

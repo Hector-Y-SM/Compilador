@@ -14,7 +14,21 @@ export default class CustomJasmin extends JasminVisitor{
 		this.banderaElseIf = false;
 		this.contadorIstore = 0;
 		this.contadorIload = 0;
-		this.vueltas = 0;
+		this.banderaLogica = '';
+		this.ifEt = 0;
+		this.ifEtc = 0;
+		this.elseEt = 0;
+		this.elseEtc = 0;
+		this.elseIFet = 0;
+		this.elseIFetc = 0;
+		this.whileEt = 0;
+		this.whileEtc = 0;
+		this.andEt = 0;
+		this.andEtc = 0;
+		this.orEt = 0;
+		this.orEtc = 0;
+		this.andBandera = false;
+		this.orBandera = false;
 	}
 
     // Visit a parse tree produced by JasminParser#prog.
@@ -31,8 +45,6 @@ export default class CustomJasmin extends JasminVisitor{
       }
 	// Visit a parse tree produced by ArrayInitParser#init.
 	visitInit(ctx) {
-		console.log('Aqui quiero llegar');
-		const resultados = this.visit(ctx.contenido());
 		return this.visitChildren(ctx);
 	}
 	
@@ -43,16 +55,14 @@ export default class CustomJasmin extends JasminVisitor{
 		const variable = ctx.ID().getText();
 		const tipoDato = ctx.PR().getText();
 		const linea = ctx.start.line;
-
+        // Marca esta línea como visitada
+        //this.lineasVisitadas.add(linea);
+		const valor = this.visit(ctx.valor(0));
+		
 		if (this.lineasVisitadas.has(linea)) {
             return null;  
         }
-
-        // Marca esta línea como visitada
-        this.lineasVisitadas.add(linea);
-		const valor = this.visit(ctx.valor(0));
-		
-		this.codigo += `ldc ${valor}\n`
+		this.codigo += `ldc ${valor}\n`;
 		this.codigo += `istore_${this.contadorIstore}\n`, this.contadorIstore++;
 		return this.visitChildren(ctx);
 	}
@@ -133,19 +143,22 @@ export default class CustomJasmin extends JasminVisitor{
 	visitCicloWhile(ctx) {
 		console.log('ciclo while ');
 		const condicion = this.visit(ctx.condiciones(0));
+		let operador = this.mnemonicoComando(this.signoCondicionJasmin, true);
 		const linea = ctx.start.line;
 		if (this.lineasVisitadas.has(linea)) {
 			return null;  
 		}
 
-		let operador = this.mnemonicoComando(this.signoCondicionJasmin, true);
-		this.codigo += `${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}\n`
-                        : `ldc ${variables.has(this.inicioContadorJasmin)? variables.get(this.inicioContadorJasmin).valor : this.inicioContadorJasmin}\nistore_${this.contadorIstore}`}`;
-		this.codigo += `ciclo_while:\niload_${this.contadorIload}\n${variables.has(this.limiteContadorJasmin) ? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}` : `ldc ${this.limiteContadorJasmin}`}\n${operador} fin_while\n`;
-		
-		this.visitChildren(ctx);
-		this.codigo += `goto ciclo_while\nfin_while:\n`;
+		this.codigo += `while_inicio${this.whileEt}:\n`
+		this.codigo += `${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}`:`ldc ${this.inicioContadorJasmin}`}\n`;
+		this.codigo += `${variables.has(this.limiteContadorJasmin)? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}`:`ldc ${this.limiteContadorJasmin}`}\n`;
+		this.codigo += `${operador} while_final${this.whileEtc}\n`;
 		this.lineasVisitadas.add(linea);
+		this.visitChildren(ctx);
+		this.codigo += `goto while_inicio${this.whileEt}\n`;
+		this.codigo += `while_final${this.whileEtc}:\n`;
+		this.whileEt++;
+		this.whileEtc++;
         return;
 	}
 
@@ -174,134 +187,7 @@ export default class CustomJasmin extends JasminVisitor{
 		return;
 	  }
 
-
-	visitEstructuraIf(ctx) {
-		const datos = ctx.children;
-		for(const index in datos){
-			console.log('dentro del arr ',datos[index].invokingState)
-			if(datos[index].invokingState == 94){
-				this.banderaElse = true;
-			}
-			if(datos[index].invokingState == 88){
-				this.banderaElseIf = true;
-			}
-		}
-		return this.visitChildren(ctx);
-	}
-	visitIfPuro(ctx) {
-		console.log('if');
-		const condicion = this. visit(ctx.condiciones(0));
-		let operador = this.mnemonicoComando(this.signoCondicionJasmin, false);
-		const linea = ctx.start.line;
-		if (this.lineasVisitadas.has(linea)) {
-			return null;  
-		}
-		this.codigo += `\n${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}` 
-												: `ldc ${variables.has(this.inicioContadorJasmin)? variables.get(this.inicioContadorJasmin) 
-																				: this.inicioContadorJasmin}`}
-												\n${variables.has(this.limiteContadorJasmin)? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}` 
-																	: `ldc ${variables.has(this.limiteContadorJasmin)? variables.get(this.limiteContadorJasmin) 
-																		: this.limiteContadorJasmin}`}\n${operador} condicion_if\n`
-		
-		this.lineasVisitadas.add(linea);
-		this.visitChildren(ctx);
-		if(this.banderaElse == false && this.banderaElseIf == false){
-			this.codigo += `condicion_if:\n`;
-			return;
-		}
-		if(this.banderaElseIf == true && this.banderaElse == false){
-			this.codigo += `goto ifElseIf\n`;
-			return;
-		}
-		if(this.banderaElseIf == false && this.banderaElse == true){
-			this.codigo += `goto endIfElse\n`
-			return;
-		}
-		if(this.banderaElse == true && this.banderaElseIf == true){
-			this.codigo += `goto ifElseIfElse\n`;
-			return;
-		}
-		return;
-		
-	}
-
-	mnemonicoComando(simbolo, ciclo){
-		let mnemonico;
-		switch(simbolo){
-			case '>':
-				mnemonico = ciclo == true? 'if_icmple' : 'if_icmplt';  //orig if_icmplt
-				break;
-			case '<':
-				mnemonico = ciclo == true?  'if_icmpgt' : 'if_icmpgt'; //orig if_icmpgt
-				break;
-			case '<=':
-				mnemonico = ciclo == true? 'if_icmpgt' : 'if_icmple'; //orig if_icmple 
-				break;
-			case '>=':
-				mnemonico = ciclo == true? 'if_icmplt' : 'if_icmpgt'; //orig if_icmpge
-				break;
-			case '==':
-				mnemonico = ciclo == true? 'if_icmpne': 'if_icmpne';
-				break;
-			case '===':
-				mnemonico = ciclo == true? 'if_icmpne':'if_icmpne';
-                break;
-            case '!=':
-				mnemonico = ciclo == true? 'if_icmpeq' : 'if_icmpeq';
-				break;
-			case '!==':
-				mnemonico = ciclo == true? 'if_icmpeq' : 'if_icmpeq';
-				break;
-			default: '';	
-		}
-		return mnemonico;
-	}
-
-	visitElseIfPuro(ctx) {
-		console.log('else if')
-		const condicion = this.visit(ctx.condiciones(0))
-		const linea = ctx.start.line;
-		if (this.lineasVisitadas.has(linea)) {
-			return null;  
-		}
-		let operador = this.mnemonicoComando(this.signoCondicionJasmin, false);
-		this.codigo += `condicion_if:\n`
-		this.codigo += `\n${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}` 
-                                    : `ldc ${variables.has(this.inicioContadorJasmin)? variables.get(this.inicioContadorJasmin) 
-                                        : this.inicioContadorJasmin}`}
-                                    \n${variables.has(this.limiteContadorJasmin)? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}` 
-                                            : `ldc ${variables.has(this.limiteContadorJasmin)? variables.get(this.limiteContadorJasmin) 
-                                                : this.limiteContadorJasmin}`}\n${operador} ifElseIf\n`
-		
-		this.lineasVisitadas.add(linea);
-		this.visitChildren(ctx);
-		if(this.banderaElse == true){
-			this.codigo += `goto ifElseIfElse\n`
-			return;
-		}
-		this.codigo += `ifElseIf:\n`;
-		return;
-	}
-
-	visitElsePuro(ctx) {
-		console.log('else');
-		const linea = ctx.start.line;
-		if (this.lineasVisitadas.has(linea)) {
-			return null;  
-		}
-		//this.codigo += `goto condicion_if:\n`;
-		if(this.banderaElseIf == true){
-			this.codigo += `ifElseIf:\n`; 
-		}else{
-			this.codigo += `condicion_if:\n`;
-		}
-		this.lineasVisitadas.add(linea);
-		this.visitChildren(ctx);
-		this.codigo += this.banderaElseIf == true? `ifElseIfElse:\n` : `endIfElse:\n`;
-		return;
-	}
-
-	// Visit a parse tree produced by CompiladorParser#Comparacion.
+	  	// Visit a parse tree produced by CompiladorParser#Comparacion.
 	visitComparacion(ctx) {
 		console.log('en las comparaciones ');
 		const arg1 = this.visit(ctx.valor(0));
@@ -337,7 +223,11 @@ export default class CustomJasmin extends JasminVisitor{
 		}
 		this.inicioContadorJasmin = arg1;
 		this.limiteContadorJasmin = arg2;
-		return this.condicion;
+		return {
+			v1: arg1,
+            v2: arg2,
+            simbolo: this.signoCondicionJasmin
+		};
 	  }
 
 	//! Metodo para controlar el if con condicion simple, ejemplo: if(true)
@@ -354,7 +244,7 @@ export default class CustomJasmin extends JasminVisitor{
 			default:
 				'tambien obtendre los arg de aqui'
 		}
-		return this.condicion;
+		return;
 	}
 
 	// Visit a parse tree produced by CompiladorParser#logicas.
@@ -363,55 +253,253 @@ export default class CustomJasmin extends JasminVisitor{
 		const argumento1 = this.visit(ctx.valor(0));
 		const argumento2 = this.visit(ctx.valor(1));
 		const simbolo = ctx.op.type;
+		const obj_p1_1 = argumento1.v1;
+		const obj_p1_2 = argumento1.v2;
+		const obj_s1_1 = argumento1.simbolo;
+		const obj_p2_1 = argumento2.v1;
+		const obj_p2_2 = argumento2.v2;
+		const obj_s2_1 = argumento2.simbolo;
+		const linea = ctx.start.line;
 		switch(simbolo){
 			case 30: // ||
-				argumento1 == false && argumento2 == false ? this.condicion = false : this.condicion = true;
+				//primera parte de la condicion logica 
+				if (this.lineasVisitadas.has(linea)) {
+					return null;  
+				}
+				this.orBandera = true;
+				this.codigo += `${variables.has(obj_p1_1)? `iload_${variables.get(obj_p1_1).valorJasmin}`:`ldc ${obj_p1_1}`}\n`;
+				this.codigo += `${variables.has(obj_p1_2)? `iload_${variables.get(obj_p1_2).valorJasmin}`:`ldc ${obj_p1_2}`}\n`;
+				this.codigo += `${this.mnemonicoComando(obj_s1_1, false)} ${this.banderaLogica == 'ifLogico'? `IF${this.ifEt}`: ``}\n`;	
+		
+				//segunda parte de la condicion
+				this.codigo += `${variables.has(obj_p2_1)? `iload_${variables.get(obj_p2_1).valorJasmin}`:`ldc ${obj_p2_1}`}\n`;
+				this.codigo += `${variables.has(obj_p2_2)? `iload_${variables.get(obj_p2_2).valorJasmin}`:`ldc ${obj_p2_2}`}\n`;
+				this.codigo += `${this.mnemonicoComando(obj_s2_1, false)} ${this.banderaLogica == 'ifLogico'? `IF${this.ifEt}`: ``}\n`;	
+				this.banderaLogica = 'OR'
 				break;
 	  		case 31: // &&
-				argumento1 == false || argumento2 == false ? this.condicion = false : this.condicion = true;
-			break;
+			  	//primera parte de la condicion logica 
+				  if (this.lineasVisitadas.has(linea)) {
+					return null;  
+				}
+				this.andBandera = true;
+			  	this.codigo += `${variables.has(obj_p1_1)? `iload_${variables.get(obj_p1_1).valorJasmin}`:`ldc ${obj_p1_1}`}\n`;
+			  	this.codigo += `${variables.has(obj_p1_2)? `iload_${variables.get(obj_p1_2).valorJasmin}`:`ldc ${obj_p1_2}`}\n`;
+			  	this.codigo += `${this.mnemonicoComando(obj_s1_1, false)} ${this.banderaLogica == 'ifLogico'? `IF${this.ifEt}`: `ELSE_IF${this.elseIFet}`}\n`;	
+			
+			  	//segunda parte de la condicion
+			  	this.codigo += `${variables.has(obj_p2_1)? `iload_${variables.get(obj_p2_1).valorJasmin}`:`ldc ${obj_p2_1}`}\n`;
+			  	this.codigo += `${variables.has(obj_p2_2)? `iload_${variables.get(obj_p2_2).valorJasmin}`:`ldc ${obj_p2_2}`}\n`;
+			  	this.codigo += `${this.mnemonicoComando(obj_s2_1, false)} ${this.banderaLogica == 'ifLogico'? `IF${this.ifEt}`: `ELSE_IF${this.elseIFet}`}\n`;	
+				this.banderaLogica = 'AND'
+				break;
 			default : throw new Error('Este simbolo no existe pa');
 		}
 	  return this.condicion;
 	}
 
+	visitEstructuraIf(ctx) {
+		const datos = ctx.children;
+		for(const index in datos){
+			console.log('dentro del arr ',datos[index].invokingState)
+			if(datos[index].invokingState == 94){ //existe eun else al menos
+				this.banderaElse = true;
+			}
+			if(datos[index].invokingState == 88){ //existe un else if al menos
+				this.banderaElseIf = true;
+			}
+		}
+		return this.visitChildren(ctx);
+	}
+	visitIfPuro(ctx) {
+		console.log('if');
+		this.banderaLogica = 'ifLogico'
+		const linea = ctx.start.line;
+
+		const condicion = this. visit(ctx.condiciones(0));
+		let operador = this.mnemonicoComando(this.signoCondicionJasmin, false);
+		if (this.lineasVisitadas.has(linea)) {
+			return null;  
+		}
+		if(this.banderaLogica == 'OR'){
+			this.lineasVisitadas.add(linea);
+			this.banderaElse == true? this.codigo += `goto ELSE${this.elseEt}\n` 
+								  : this.banderaElseIf == true? 
+										  this.codigo += `goto ELSE_IF${this.elseIFet}\n`:`goto fin_or${this.orEt}\n`, this.orEt++;;
+			this.codigo += `IF${this.ifEtc}:\n`;
+			this.visitChildren(ctx);
+			this.codigo += this.banderaLogica == 'OR'? this.banderaElse == true? `goto endIFElse${this.elseEt}\n`
+									: this.banderaElseIf == true? `goto endIFElseIf\n`
+									: ``:``;
+			this.banderaElse == true? this.codigo += `ELSE${this.elseEt}:\n` 
+								  : this.banderaElseIf == true? 
+										  this.codigo += `ELSE_IF${this.elseIFet}:\n`:`fin_or${this.orEtc}:\n`, this.orEtc++;;
+			this.ifEt++;
+			this.ifEtc++;
+			this.banderaLogica = '';
+			return;
+		}
+		if(this.banderaLogica == 'AND'){
+			this.lineasVisitadas.add(linea);
+			this.visitChildren(ctx);
+			this.codigo += `goto fin_and${this.andEt}\n`, this.andEt++;
+			this.codigo += `IF${this.ifEtc}:\n`;
+			this.codigo += `fin_and${this.andEtc}:\n`, this.andEtc++;
+			this.ifEt++;
+			this.ifEtc++;
+			this.banderaLogica = '';
+			return;
+		}
+
+		this.codigo += `${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}`:`ldc ${this.inicioContadorJasmin}`}\n`;
+		this.codigo += `${variables.has(this.limiteContadorJasmin)? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}`:`ldc ${this.limiteContadorJasmin}`}\n`;
+		this.codigo += `${operador} IF${this.ifEt}\n`;
+		this.lineasVisitadas.add(linea);
+		this.visitChildren(ctx);
+		this.banderaElse == true? this.codigo += `goto ELSE${this.elseEt}\n` 
+								  : this.banderaElseIf == true? 
+										  this.codigo += `goto ELSE_IF${this.elseIFet}\n`:``;
+		this.codigo += `IF${this.ifEtc}:\n`;
+		this.ifEt++;
+		this.ifEtc++;
+		
+
+		return;	
+	}
+
+	visitElseIfPuro(ctx) {
+		console.log('else if')
+		const condicion = this.visit(ctx.condiciones(0));
+		let operador = this.mnemonicoComando(this.signoCondicionJasmin, false);
+		const linea = ctx.start.line;
+		if (this.lineasVisitadas.has(linea)) {
+			return null;  
+		}
+		if(this.banderaLogica == 'OR'){
+			this.lineasVisitadas.add(linea);
+			this.codigo += `goto fin_or${this.orEt}\n`, this.orEt++;
+			this.codigo += `ELSE_IF${this.elseIFetc}:\n`;
+			this.visitChildren(ctx);
+			this.codigo += `fin_or${this.orEtc}:\n`, this.orEtc++;
+			this.elseIFet++;
+			this.elseIFetc++;
+			this.banderaLogica = '';
+			return;
+		}
+		if(this.banderaLogica == 'AND'){
+			this.lineasVisitadas.add(linea);
+			this.visitChildren(ctx);
+			this.codigo += `goto fin_and${this.andEt}\n`, this.andEt++;
+			this.codigo += `ELSE_IF${this.elseIFetc}:\n`;
+			this.codigo += `fin_and${this.andEtc}:\n`, this.andEtc++;
+			this.elseIFet++;
+			this.elseIFetc++;
+			this.banderaLogica = '';
+			return;
+		}
+
+		this.codigo += `${variables.has(this.inicioContadorJasmin)? `iload_${variables.get(this.inicioContadorJasmin).valorJasmin}`:`ldc ${this.inicioContadorJasmin}`}\n`;
+		this.codigo += `${variables.has(this.limiteContadorJasmin)? `iload_${variables.get(this.limiteContadorJasmin).valorJasmin}`:`ldc ${this.limiteContadorJasmin}`}\n`;
+		this.codigo += `${operador} ELSE_IF${this.elseIFet}\n`;
+
+		this.lineasVisitadas.add(linea);
+		this.visitChildren(ctx);
+		this.banderaElse == true? this.codigo += `goto ELSE${this.elseEt}\n`:``
+		this.codigo += `ELSE_IF${this.elseIFetc}:\n`;
+		this.elseIFet++;
+		this.elseIFetc++;
+		return;
+	}
+
+	visitElsePuro(ctx) {
+		console.log('else');
+		const linea = ctx.start.line;
+		if (this.lineasVisitadas.has(linea)) {
+			return null;  
+		}
+
+		this.lineasVisitadas.add(linea);
+		this.visitChildren(ctx);
+		this.codigo += this.orBandera == true? `endIFElse${this.elseEtc}:\n` : `ELSE${this.elseEtc}:\n`
+		this.elseEt++;
+		this.elseEtc++;
+		return;
+	}
+
+	mnemonicoComando(simbolo, ciclo){
+		let mnemonico;
+		switch(simbolo){
+			case '>':
+				mnemonico = ciclo == true? 'if_icmple' : 'if_icmple';  //orig if_icmplt
+				break;
+			case '<':
+				mnemonico = ciclo == true?  'if_icmpge' : 'if_icmpge'; //orig if_icmpgt
+				break;
+			case '<=':
+				mnemonico = ciclo == true? 'if_icmple' : 'if_icmple'; //orig if_icmple 
+				break;
+			case '>=':
+				mnemonico = ciclo == true? 'if_icmpge' : 'if_icmpge'; //orig if_icmpge
+				break;
+			case '==':
+				mnemonico = ciclo == true? 'if_icmpeq': 'if_icmpeq';
+				break;
+			case '===':
+				mnemonico = ciclo == true? 'if_icmpeq':'if_icmpeq';
+                break;
+            case '!=':
+				mnemonico = ciclo == true? 'if_icmpne' : 'if_icmpne';
+				break;
+			case '!==':
+				mnemonico = ciclo == true? 'if_icmpne' : 'if_icmpne';
+				break;
+			default: '';	
+		}
+		return mnemonico;
+	}
 	// Visit a parse tree produced by CompiladorParser#residuo.
 	visitResiduo(ctx) {
+		const linea = ctx.start.line;
+		this.lineasVisitadas.add(linea);
 		const arg1 = this.visit(ctx.valor(0));
 		const arg2 = this.visit(ctx.valor(1));
-		return `${arg1} % ${arg2}`;
+		this.codigo += `${variables.has(arg1)? `iload_${variables.get(arg1).valorJasmin}`:`ldc ${arg1}`}\n`;
+		this.codigo += `${variables.has(arg2)? `iload_${variables.get(arg2).valorJasmin}`:`ldc ${arg2}`}\n`;
+		this.codigo += `irem\n`;
+		this.codigo += `istore_${this.contadorIstore}\n`, this.contadorIstore++;
+		return;
 	}
 	  
 
 	//! Trabajamos con una funcion auxiliar dentro de esta para poder controlar tanto multiplicacion como division
 	visitMulDiv(ctx) {
 		console.log('multiplicacion o division');
+		const linea = ctx.start.line;
+		this.lineasVisitadas.add(linea);
 		const n1 = this.visit(ctx.valor(0));
 		const n2 = this.visit(ctx.valor(1));
 		
-		const linea = ctx.start.line;
-		if (this.lineasVisitadas.has(linea)) {
-			return null;  
-		}
-			this.codigo += `\niload_${this.contadorIload}`, this.contadorIload++;
-			this.codigo += `\niload_${this.contadorIload}\n${ctx.op.type == 16? 'imul' : 'idiv'}\nistore_${this.contadorIstore}`, this.contadorIstore++;
-			this.lineasVisitadas.add(linea);
-		return ctx.op.type == 16? `${n1} * ${n2}` : `${n1} / ${n2}`;
+		this.codigo += `${variables.has(n1)? `iload_${variables.get(n1).valorJasmin}`:`ldc ${n1}`}\n`;
+		this.codigo += `${variables.has(n2)? `iload_${variables.get(n2).valorJasmin}`:`ldc ${n2}`}\n`;
+		this.codigo += `${ctx.op.type == 16? 'imul' : 'idiv'}\n`;
+		this.codigo += `istore_${this.contadorIstore}\n`, this.contadorIstore++;
+		return;
 	}
   
 	//! Trabajamos con una funcion auxiliar dentro de esta para poder controlar tanto sumas o restas
 	visitAddSub(ctx) {
-		console.log('suma o resta')
+		console.log('suma o resta');
+		const linea = ctx.start.line;
+		this.lineasVisitadas.add(linea);
 		const n1 = this.visit(ctx.valor(0));
 		const n2 = this.visit(ctx.valor(1));
-		const linea = ctx.start.line;
-		if (this.lineasVisitadas.has(linea)) {
-			return null;  
-		}
-			this.codigo +=`\niload_${this.contadorIload}`, this.contadorIload++;
-			this.codigo +=`\niload_${this.contadorIload}\n${ctx.op.type == 18 ? 'iadd' : 'isub'}\nistore_${this.contadorIstore}`,this.contadorIload++ ,this.contadorIstore++;
-			this.lineasVisitadas.add(linea);
-		return ctx.op.type == 18? `${n1} + ${n2}` : `${n1} - ${n2}`;
+		//if (this.lineasVisitadas.has(linea))  return null; 
+
+		this.codigo += `${variables.has(n1)? `iload_${variables.get(n1).valorJasmin}`:`ldc ${n1}`}\n`;
+		this.codigo += `${variables.has(n2)? `iload_${variables.get(n2).valorJasmin}`:`ldc ${n2}`}\n`;
+		this.codigo += `${ctx.op.type == 18 ? 'iadd' : 'isub'}\n`;
+		this.codigo += `istore_${this.contadorIstore}\n`, this.contadorIstore++;
+		return;
 	}
 
 	//! Funcion para controlar como se ingresan las opciones con parentesis
